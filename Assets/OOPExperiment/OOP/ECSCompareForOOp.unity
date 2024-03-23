@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2cacda70bdb69542b83aa84194294ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExperiExecute: 1
+  ExperiExecute: 0
 --- !u!114 &1777680466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ExperiPalumonPrefab: {fileID: 8682113802506604995, guid: 5c1260f2c96fd6a40995b45f99238b83,
     type: 3}
-  count: 10000
+  count: 25000
   ExperiMovingTargetPrefab: {fileID: 2395393490666986798, guid: 85c5fd3a11224c241a124094fc18f92e,
     type: 3}
 --- !u!1660057539 &9223372036854775807

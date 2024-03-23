@@ -19,6 +19,7 @@ namespace OOPExperiment
 
         }
 
+        //[BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
             // Entity + ComponentLookup to get the position from LocalTransform
@@ -110,11 +111,23 @@ namespace OOPExperiment
             //var palumonFollowJob = new ExperiPalumonFollowJob { deltaTime = SystemAPI.Time.DeltaTime, localTransformLookup = localTransformLookup };
             //state.Dependency = palumonFollowJob.Schedule(state.Dependency);
 
-            //10k  1.38ms ScheduleParallel unbursted    and 0.13ms for bursted ScheduleParallel
-            localTransformLookup.Update(ref state);
-            var palumonFollowJob = new ExperiPalumonFollowJob { deltaTime = SystemAPI.Time.DeltaTime, localTransformLookup = localTransformLookup };
-            state.Dependency = palumonFollowJob.ScheduleParallel(state.Dependency);
+            //10k  1.38ms ScheduleParallel unbursted    and 0.13ms for bursted ScheduleParallel    and   0.5ms for bursted Schedule
+            //localTransformLookup.Update(ref state);
+            //var palumonFollowJob = new ExperiPalumonFollowJob { deltaTime = SystemAPI.Time.DeltaTime, localTransformLookup = localTransformLookup };
+            //state.Dependency = palumonFollowJob.ScheduleParallel(state.Dependency);
 
+            //10k  0.17ms Bursted UpdateFunction  
+            var deltaTime = SystemAPI.Time.DeltaTime;
+            localTransformLookup.Update(ref state);
+            foreach (var (palumonTransform, palumonSpeed, palumonTarget) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ExperiPalumonSpeed>, RefRO<ExperiPalumonTargetEntity>>())
+            {
+                var tarDir = localTransformLookup[palumonTarget.ValueRO.targetEntity].Position - palumonTransform.ValueRO.Position;
+                if (tarDir.x != 0 || tarDir.y != 0 || tarDir.z != 0)
+                {
+                    palumonTransform.ValueRW.Position += math.normalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
+                    palumonTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
+                }
+            }
         }
         public static float MyMagnitude(float3 vector)
         {

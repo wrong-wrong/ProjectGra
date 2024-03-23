@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
     public partial struct PlayerInputSystem : ISystem
     {
         public class Singleton : IComponentData
@@ -17,10 +18,12 @@ namespace ProjectGra
             state.EntityManager.AddComponentObject(state.SystemHandle, new Singleton { Value = inputActions });
             state.RequireForUpdate<PlayerTag>();
             state.RequireForUpdate<TestSceneExecuteTag>();
+            state.RequireForUpdate<GameControllNotPaused>();
         }
 
         public void OnUpdate(ref SystemState state)
         {
+
             var inputActionMap = SystemAPI.ManagedAPI.GetComponent<Singleton>(state.SystemHandle).Value.DefaultMap;
 
             foreach (var(moveAndLook, sprint, shoot) in SystemAPI.Query<RefRW<MoveAndLookInput>

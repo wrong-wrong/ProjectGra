@@ -17,6 +17,7 @@ namespace ProjectGra
             state.EntityManager.AddComponentObject(singleton, new CameraTargetReference { 
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
                 ghoshPlayer = CameraTargetMonoSingleton.instance.transform});
+            state.EntityManager.AddComponent<GameControllNotPaused>(singleton);
         }
     }
 

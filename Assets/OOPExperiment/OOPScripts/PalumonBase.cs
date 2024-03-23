@@ -76,7 +76,7 @@ namespace OOPExperiment
         {
             Vector3 dir = Target.position - transform.position;
             transform.position += dir.normalized * Time.deltaTime * MoveSpeed;
-            transform.rotation = Quaternion.LookRotation(dir);
+            //transform.rotation = Quaternion.LookRotation(dir);
         }
 
     }

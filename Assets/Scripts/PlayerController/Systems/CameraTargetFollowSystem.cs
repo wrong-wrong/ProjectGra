@@ -4,26 +4,35 @@ using UnityEngine;
 using Unity.Mathematics;
 namespace ProjectGra.PlayerController
 {
-    public partial struct CameraTargetFollowSystem : ISystem
+    public partial struct CameraTargetFollowSystem : ISystem,ISystemStartStop
     {
         private float _cameraPitch;
         private float _topClamp;
         private float _bottomClamp;
+        private float CamYSensitivity;
         public void OnCreate(ref SystemState state)
         {
             _cameraPitch = 0.0f;
             _topClamp = 90.0f;
             _bottomClamp = -90.0f;
+            state.RequireForUpdate<ConfigComponent>();
             state.RequireForUpdate<CameraTargetReference>();
             state.RequireForUpdate<TestSceneExecuteTag>();
+            state.RequireForUpdate<GameControllNotPaused>();
         }
+        public void OnStartRunning(ref SystemState state)
+        {
+            var configCom = SystemAPI.GetSingleton<ConfigComponent>();
+            CamYSensitivity = configCom.CamYSensitivity;
+        }
+        public void OnStopRunning(ref SystemState state) { }
         public void OnUpdate(ref SystemState state)
         {
             var camReference= SystemAPI.ManagedAPI.GetSingleton<CameraTargetReference>();
             var deltaTime = SystemAPI.Time.DeltaTime;
             foreach(var (localtransform, moveandlook) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<MoveAndLookInput>>())
             {
-                _cameraPitch -= moveandlook.ValueRO.lookVal.y;
+                _cameraPitch -= moveandlook.ValueRO.lookVal.y * CamYSensitivity;
                 _cameraPitch = clampAngle(_cameraPitch);
                 //Debug.Log(_cameraPitch);
                 camReference.ghoshPlayer.position = localtransform.ValueRO.Position;

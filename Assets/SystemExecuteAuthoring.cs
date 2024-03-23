@@ -16,5 +16,5 @@ public class SystemExecuteAuthoring : MonoBehaviour
     }
 }
 
-public struct TestSceneExecuteTag : IComponentData { }
+public struct TestSceneExecuteTag : IComponentData,IEnableableComponent { }
 public struct OOPExperimentExecuteTag : IComponentData { }
