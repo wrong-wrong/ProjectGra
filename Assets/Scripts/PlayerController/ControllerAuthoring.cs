@@ -18,6 +18,36 @@ namespace ProjectGra
         public Transform cameraTarget;
     }
 
+    //split the Attribute into different Component later
+    //public struct PlayerAttribute : IComponentData
+    //{
+    //    public float MaxHealthPoint;
+    //    public float HealthRegain;
+    //    public float CriticalHitChance;
+    //    public float AttackSpeed;
+    //    public float PhysicalResistance;
+    //    public float LifeStealPercentage;
+    //    public float DamagePercentage;
+    //}
+    public struct PlayerAtttributeDamageRelated : IComponentData
+    {
+        public float4 MeleeRangedElementAttSpd;
+        //Melee damage
+        //Ranged damage
+        //Element damage
+        //Attack speed
+
+        public float CriticalHitChange;
+        public float DamagePercentage;
+    }
+    public struct PlayerAttributeMain : IComponentData
+    {
+        public float MaxHealthPoint;
+        public float HealthRegain;
+        public float Armor;
+        public float SpeedPercentage;
+        public float Range;
+    }
     public class ControllerAuthoring : MonoBehaviour
     {
         public class Baker : Baker<ControllerAuthoring>
@@ -29,6 +59,8 @@ namespace ProjectGra
                 AddComponent<MoveAndLookInput>(entity);
                 AddComponent<SprintInput>(entity);
                 AddComponent<ShootInput>(entity);
+                AddComponent<PlayerAttributeMain>(entity);
+                AddComponent<PlayerAtttributeDamageRelated>(entity);
             }
         }
     }

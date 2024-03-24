@@ -295,6 +295,16 @@ MonoBehaviour:
   CameraYSensitivity: 0.8
   PlayerBasicMoveSpeed: 3
   PlayerSprintMultiplier: 1.5
+  MaxHealthPoint: 100
+  HealthRegain: 0
+  Armor: 0
+  SpeedPercentage: 0
+  MeleeDamage: 0
+  RangedDamage: 0
+  ElementDamage: 0
+  AttackSpeed: 0
+  DamagePercentage: 0
+  CriticalHitChance: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

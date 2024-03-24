@@ -18,6 +18,5 @@ namespace ProjectGra.PlayerController
             instance = this;
             //CameraTargetTransform = transform;
         }
-
     }
 }

@@ -1,4 +1,3 @@
-using JetBrains.Annotations;
 using Unity.Entities;
 using UnityEngine;
 
@@ -10,6 +9,25 @@ namespace ProjectGra
         [SerializeField] private float CameraYSensitivity = 1f;
         [SerializeField] private float PlayerBasicMoveSpeed = 1f;
         [SerializeField] private float PlayerSprintMultiplier = 1f;
+
+        [SerializeField] private float MaxHealthPoint;
+        [SerializeField] private float HealthRegain;
+        [SerializeField] private float Armor;
+        [SerializeField] private float SpeedPercentage;
+
+
+
+        [SerializeField] private float MeleeDamage;
+        [SerializeField] private float RangedDamage;
+        [SerializeField] private float ElementDamage;
+        [SerializeField] private float AttackSpeed;
+
+        [SerializeField] private float DamagePercentage;
+        [SerializeField] private float CriticalHitChance;
+        [SerializeField] private float Range;
+
+
+
         public class Baker : Baker<ConfigAuthoringAddToSS>
         {
             public override void Bake(ConfigAuthoringAddToSS authoring)
@@ -21,6 +39,20 @@ namespace ProjectGra
                     CamYSensitivity = authoring.CameraYSensitivity,
                     PlayerBasicMoveSpeedValue = authoring.PlayerBasicMoveSpeed,
                     PlayerSprintMultiplierValue = authoring.PlayerSprintMultiplier,
+
+                    MaxHealthPoint = authoring.MaxHealthPoint,
+                    HealthRegain = authoring.HealthRegain,
+                    Armor = authoring.Armor,
+                    SpeedPercentage = authoring.SpeedPercentage,
+
+                    MeleeDamage = authoring.MeleeDamage,
+                    RangedDamage = authoring.RangedDamage,
+                    ElementDamage = authoring.ElementDamage,
+                    AttackSpeed = authoring.AttackSpeed,
+
+                    CriticalHitChance = authoring.CriticalHitChance,
+                    DamagePercentage = authoring.DamagePercentage,
+                    Range = authoring.Range,
                 });
             }
         }
@@ -31,6 +63,20 @@ namespace ProjectGra
         public float CamYSensitivity;
         public float PlayerBasicMoveSpeedValue;
         public float PlayerSprintMultiplierValue;
+
+        public float MaxHealthPoint;
+        public float HealthRegain;
+        public float Armor;
+        public float SpeedPercentage;
+
+        public float MeleeDamage;
+        public float RangedDamage;
+        public float ElementDamage;
+        public float AttackSpeed;
+
+        public float DamagePercentage;
+        public float CriticalHitChance;
+        public float Range;
     }
 
 }
