@@ -15,7 +15,7 @@ namespace ProjectGra
         }
     }
 
-    public struct SpawneeTimer : IComponentData
+    public struct SpawneeTimer : IComponentData, IEnableableComponent
     {
         public float Value;
     }

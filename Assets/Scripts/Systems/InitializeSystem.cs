@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp),OrderFirst = true)]
     public partial struct InitializeSystem : ISystem
     {
         public void OnCreate(ref SystemState state) { 
@@ -55,7 +56,13 @@ namespace ProjectGra
                         Range = firstWeapon.Range,
                         RealCooldown = 0,
                         WeaponPositionOffset = firstWeapon.WeaponPositionOffset,
+                        DamageAfterBonus = firstWeapon.BasicDamage
                     });
+                    state.EntityManager.SetComponentData(firstWeapon.SpawneePrefab, new SpawneeTimer
+                    {
+                        Value = 3f
+                    });
+                    state.EntityManager.RemoveComponent<LinkedEntityGroup>(firstWeapon.SpawneePrefab);
                 }
             }
             state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated

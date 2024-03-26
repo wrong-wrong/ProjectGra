@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
     public partial struct PlayerMoveSystem : ISystem, ISystemStartStop
     {
         //TODO config : speed; sprint multiplier;
@@ -28,7 +29,7 @@ namespace ProjectGra
         public void OnUpdate(ref SystemState state) 
         {
             var deltaTime = SystemAPI.Time.DeltaTime;
-            foreach(var(localtransform, moveandlook, sprint,mainWeaponState) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<MoveAndLookInput>, EnabledRefRO<SprintInput>,MainWeaponState>()
+            foreach(var(localtransform, moveandlook, sprint) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<MoveAndLookInput>, EnabledRefRO<SprintInput>>()
                 .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
                 float sprintMultiplier = sprint.ValueRO ? playerSprintMultiplier : 1;

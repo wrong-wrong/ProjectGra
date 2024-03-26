@@ -4,6 +4,8 @@ using UnityEngine;
 using Unity.Mathematics;
 namespace ProjectGra.PlayerController
 {
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(PlayerMoveSystem))]
     public partial struct CameraTargetFollowSystem : ISystem,ISystemStartStop
     {
         private float _cameraPitch;
@@ -32,7 +34,7 @@ namespace ProjectGra.PlayerController
             var ghostPlayer = camReference.ghostPlayer;
             var cameraTarget = camReference.cameraTarget;
             var deltaTime = SystemAPI.Time.DeltaTime;
-            foreach(var (localtransform, moveandlook, mainWeaponState) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<MoveAndLookInput>,RefRO<MainWeaponState>>())
+            foreach(var (localtransform, moveandlook, mainWeaponState) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<MoveAndLookInput>,RefRW<MainWeaponState>>())
             {
                 _cameraPitch -= moveandlook.ValueRO.lookVal.y * CamYSensitivity;
                 _cameraPitch = clampAngle(_cameraPitch);
@@ -52,7 +54,7 @@ namespace ProjectGra.PlayerController
                 mainWeaponTransformRW.ValueRW.Position = (float3)(cameraTarget.position +camforward* offset.z + cameraTarget.right * offset.x + cameraTarget.up * offset.y);
                 //!!!   offset can't be 0,0,0,     or LookRotation would be NaN!!!!
                 mainWeaponTransformRW.ValueRW.Rotation = quaternion.LookRotation(camforward, math.up());
-
+                mainWeaponState.ValueRW.mainWeaponLocalTransform = mainWeaponTransformRW.ValueRO;
             }
 
         }

@@ -24,6 +24,7 @@ namespace ProjectGra
 
         public void Awake()
         {
+            //HideCursor();
             if (instance != null)
             {
                 Destroy(gameObject);
@@ -47,9 +48,12 @@ namespace ProjectGra
             text10.text = damageRelatedAttribute.DamagePercentage.ToString();
             text11.text = attributeStruct.Range.ToString();
         }
+
     }
+
     public class MyCanvasGroupManagedCom : IComponentData
     {
         public CanvasGroup canvasGroup;
+        public Cursor cursor;
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
 namespace ProjectGra
@@ -70,7 +71,9 @@ namespace ProjectGra
         public float Range;
         public float3 WeaponPositionOffset;
 
+        public int DamageAfterBonus;
         public float RealCooldown;
+        public LocalTransform mainWeaponLocalTransform;
 
     }
 }

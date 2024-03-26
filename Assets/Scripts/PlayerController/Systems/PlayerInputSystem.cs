@@ -4,6 +4,7 @@ using UnityEngine;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
+    [UpdateAfter(typeof(PauseSystem))]
     public partial struct PlayerInputSystem : ISystem
     {
         public class Singleton : IComponentData

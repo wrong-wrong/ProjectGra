@@ -1,10 +1,11 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp),OrderFirst = true)]
+    [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
     public partial struct PauseSystem : ISystem
     {
         bool IsPause;
@@ -14,7 +15,7 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
-            if(Input.GetKeyUp(KeyCode.Escape))
+            if(Input.GetKeyUp(KeyCode.P))
             {
                 
                 var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
@@ -31,6 +32,7 @@ namespace ProjectGra
                         canvasGrpCom.canvasGroup.interactable = false;
                         canvasGrpCom.canvasGroup.blocksRaycasts = false;
                     }
+                    Cursor.lockState = CursorLockMode.Locked;
                 }   
                 else
                 {
@@ -47,6 +49,8 @@ namespace ProjectGra
                         canvasGrpCom.canvasGroup.interactable = true;
                         canvasGrpCom.canvasGroup.blocksRaycasts = true;
                     }
+                    //show Cursor
+                    Cursor.lockState = CursorLockMode.None;
                 }
                 IsPause = !IsPause;
             }
