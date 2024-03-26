@@ -34,7 +34,13 @@ namespace ProjectGra
                 SpeedPercentage = configCom.SpeedPercentage,
                 Range = configCom.Range,
             });
-            if(SystemAPI.TryGetSingletonBuffer<WeaponTypeList>(out var weaponTypeList))
+            state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated
+            {
+                MeleeRangedElementAttSpd = new float4(configCom.MeleeDamage, configCom.RangedDamage, configCom.ElementDamage, configCom.AttackSpeed),
+                CriticalHitChance = configCom.CriticalHitChance,
+                DamagePercentage = configCom.DamagePercentage,
+            });
+            if (SystemAPI.TryGetSingletonBuffer<WeaponTypeList>(out var weaponTypeList))
             {
                 if(weaponTypeList.Length == 0)
                 {
@@ -44,6 +50,10 @@ namespace ProjectGra
                 {
                     var firstWeapon = weaponTypeList[0];
                     var weaponInstance = state.EntityManager.Instantiate(firstWeapon.WeaponModel);
+                    var playerAttribute = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
+                    var calculatedDamageAfterBonus = ((firstWeapon.BasicDamage
+                        + math.csum(firstWeapon.DamageBonus * playerAttribute.MeleeRangedElementAttSpd))
+                        * (1 + playerAttribute.DamagePercentage));
                     state.EntityManager.SetComponentData(playerEntity, new MainWeaponState
                     {
                         WeaponModel = weaponInstance,
@@ -56,21 +66,21 @@ namespace ProjectGra
                         Range = firstWeapon.Range,
                         RealCooldown = 0,
                         WeaponPositionOffset = firstWeapon.WeaponPositionOffset,
-                        DamageAfterBonus = firstWeapon.BasicDamage
+                        DamageAfterBonus = (int)calculatedDamageAfterBonus
                     });
                     state.EntityManager.SetComponentData(firstWeapon.SpawneePrefab, new SpawneeTimer
                     {
-                        Value = 3f
+                        Value = firstWeapon.Range / 20f
+                    });
+                    state.EntityManager.SetComponentData(firstWeapon.SpawneePrefab, new SpawneeCurDamage
+                    {
+                        damage = (int)calculatedDamageAfterBonus
                     });
                     state.EntityManager.RemoveComponent<LinkedEntityGroup>(firstWeapon.SpawneePrefab);
+
                 }
             }
-            state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated
-            {
-                MeleeRangedElementAttSpd = new float4(configCom.MeleeDamage, configCom.RangedDamage, configCom.ElementDamage, configCom.AttackSpeed),
-                CriticalHitChange = configCom.CriticalHitChance,
-                DamagePercentage = configCom.DamagePercentage,
-            });
+
         }
     }
 

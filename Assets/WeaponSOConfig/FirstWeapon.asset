@@ -21,10 +21,10 @@ MonoBehaviour:
   ElementBonus: 0
   AttackSpeedBonus: 0
   BasicDamage: 10
-  WeaponCriticalHitChance: 0.1
+  WeaponCriticalHitChance: 0.6
   WeaponCriticalHitRatio: 2
-  Cooldown: 1
-  Range: 10
+  Cooldown: 0.5
+  Range: 100
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0.5
     y: 0

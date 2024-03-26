@@ -34,8 +34,6 @@ namespace ProjectGra
     {
         [ReadOnly]public float deltatime;
         public EntityCommandBuffer.ParallelWriter ecb;
-        //[NativeDisableParallelForRestriction]
-        //public ComponentLookup<SpawneeTimer> timerLookup;
         public void Execute(Entity entity,[ChunkIndexInQuery] int index, ref SpawneeTimer timer, ref LocalTransform localTransform)
         {
             localTransform.Position += localTransform.Forward() * 20f * deltatime;

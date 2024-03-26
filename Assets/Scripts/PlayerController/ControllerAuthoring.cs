@@ -37,7 +37,7 @@ namespace ProjectGra
         //Element damage
         //Attack speed
 
-        public float CriticalHitChange;
+        public float CriticalHitChance;
         public float DamagePercentage;
     }
     public struct PlayerAttributeMain : IComponentData

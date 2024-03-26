@@ -40,7 +40,7 @@ namespace ProjectGra
             text3.text = attributeStruct.Armor.ToString();
             text4.text = attributeStruct.SpeedPercentage.ToString();
 
-            text5.text = damageRelatedAttribute.CriticalHitChange.ToString();
+            text5.text = damageRelatedAttribute.CriticalHitChance.ToString();
             text6.text = damageRelatedAttribute.MeleeRangedElementAttSpd.x.ToString();
             text7.text = damageRelatedAttribute.MeleeRangedElementAttSpd.y.ToString();
             text8.text = damageRelatedAttribute.MeleeRangedElementAttSpd.z.ToString();
