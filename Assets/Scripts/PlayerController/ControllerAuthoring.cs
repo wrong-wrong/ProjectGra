@@ -14,7 +14,7 @@ namespace ProjectGra
     public struct PlayerTag : IComponentData { }
     public class CameraTargetReference : IComponentData
     {
-        public Transform ghoshPlayer;
+        public Transform ghostPlayer;
         public Transform cameraTarget;
     }
 
@@ -61,6 +61,9 @@ namespace ProjectGra
                 AddComponent<ShootInput>(entity);
                 AddComponent<PlayerAttributeMain>(entity);
                 AddComponent<PlayerAtttributeDamageRelated>(entity);
+
+                //
+                AddComponent<MainWeaponState>(entity);
             }
         }
     }

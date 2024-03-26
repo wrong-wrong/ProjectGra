@@ -1,6 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace ProjectGra
 {
@@ -27,14 +28,16 @@ namespace ProjectGra
         public void OnUpdate(ref SystemState state) 
         {
             var deltaTime = SystemAPI.Time.DeltaTime;
-            foreach(var(localtransform, moveandlook, sprint) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<MoveAndLookInput>, EnabledRefRO<SprintInput>>()
+            foreach(var(localtransform, moveandlook, sprint,mainWeaponState) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<MoveAndLookInput>, EnabledRefRO<SprintInput>,MainWeaponState>()
                 .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
                 float sprintMultiplier = sprint.ValueRO ? playerSprintMultiplier : 1;
                 var moveVector = new float3(moveandlook.ValueRO.moveVal.x, 0, moveandlook.ValueRO.moveVal.y) * deltaTime * playerBasicSpeed * sprintMultiplier;
                 moveVector = math.mul(localtransform.ValueRO.Rotation, moveVector);
                 localtransform.ValueRW = localtransform.ValueRO.Translate(moveVector);
-                localtransform.ValueRW = localtransform.ValueRW.RotateY(moveandlook.ValueRO.lookVal.x *  deltaTime * CamXSensitivity);
+                var targetRotationVal = moveandlook.ValueRO.lookVal.x * deltaTime * CamXSensitivity;
+                localtransform.ValueRW = localtransform.ValueRW.RotateY(targetRotationVal);
+
             }
         }
     }

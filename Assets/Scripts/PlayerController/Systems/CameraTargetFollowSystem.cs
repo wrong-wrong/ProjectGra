@@ -29,18 +29,29 @@ namespace ProjectGra.PlayerController
         public void OnUpdate(ref SystemState state)
         {
             var camReference= SystemAPI.ManagedAPI.GetSingleton<CameraTargetReference>();
+            var ghostPlayer = camReference.ghostPlayer;
+            var cameraTarget = camReference.cameraTarget;
             var deltaTime = SystemAPI.Time.DeltaTime;
-            foreach(var (localtransform, moveandlook) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<MoveAndLookInput>>())
+            foreach(var (localtransform, moveandlook, mainWeaponState) in SystemAPI.Query<RefRO<LocalTransform>, RefRO<MoveAndLookInput>,RefRO<MainWeaponState>>())
             {
                 _cameraPitch -= moveandlook.ValueRO.lookVal.y * CamYSensitivity;
                 _cameraPitch = clampAngle(_cameraPitch);
                 //Debug.Log(_cameraPitch);
-                camReference.ghoshPlayer.position = localtransform.ValueRO.Position;
-                camReference.ghoshPlayer.rotation = localtransform.ValueRO.Rotation;
-                camReference.cameraTarget.localRotation = quaternion.Euler(math.radians(_cameraPitch), 0f, 0f);
-                //cameraTarget.rotation = math.mul(localtransform.ValueRO.Rotation, quaternion.RotateX(_cameraPitch));
-                //cameraTarget.localRotation = quaternion.Euler(_cameraPitch, 0f, 0f); //should be child of the ghost player
+                ghostPlayer.position = localtransform.ValueRO.Position;
+                ghostPlayer.rotation = localtransform.ValueRO.Rotation;
+                cameraTarget.localRotation = quaternion.Euler(math.radians(_cameraPitch), 0f, 0f);
 
+
+                var offset = mainWeaponState.ValueRO.WeaponPositionOffset;
+
+                //trying   pos + Forward * offset.z + Right * offset.x + Up * offset.y;
+                //this can make the position fixed at a point relative to the camera
+                // and LookRotation handling the rotation
+                var mainWeaponTransformRW = SystemAPI.GetComponentRW<LocalTransform>(mainWeaponState.ValueRO.WeaponModel);
+                var camforward = cameraTarget.forward;
+                mainWeaponTransformRW.ValueRW.Position = (float3)(cameraTarget.position +camforward* offset.z + cameraTarget.right * offset.x + cameraTarget.up * offset.y);
+                //!!!   offset can't be 0,0,0,     or LookRotation would be NaN!!!!
+                mainWeaponTransformRW.ValueRW.Rotation = quaternion.LookRotation(camforward, math.up());
 
             }
 

@@ -18,7 +18,7 @@ namespace ProjectGra
             var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
             state.EntityManager.AddComponentObject(singleton, new CameraTargetReference { 
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
-                ghoshPlayer = CameraTargetMonoSingleton.instance.transform});
+                ghostPlayer = CameraTargetMonoSingleton.instance.transform});
             state.EntityManager.AddComponent<GameControllNotPaused>(singleton);
             state.EntityManager.AddComponentObject(singleton, new MyCanvasGroupManagedCom { canvasGroup = CanvasMonoSingleton.instance.canvasGroup });
 
@@ -33,6 +33,31 @@ namespace ProjectGra
                 SpeedPercentage = configCom.SpeedPercentage,
                 Range = configCom.Range,
             });
+            if(SystemAPI.TryGetSingletonBuffer<WeaponTypeList>(out var weaponTypeList))
+            {
+                if(weaponTypeList.Length == 0)
+                {
+                    Debug.Log("weaponTypeList.Length is zero");
+                }
+                else
+                {
+                    var firstWeapon = weaponTypeList[0];
+                    var weaponInstance = state.EntityManager.Instantiate(firstWeapon.WeaponModel);
+                    state.EntityManager.SetComponentData(playerEntity, new MainWeaponState
+                    {
+                        WeaponModel = weaponInstance,
+                        SpawneePrefab = firstWeapon.SpawneePrefab,
+                        DamageBonus = firstWeapon.DamageBonus,
+                        BasicDamage = firstWeapon.BasicDamage,
+                        WeaponCriticalHitChance = firstWeapon.WeaponCriticalHitChance,
+                        WeaponCriticalHitRatio = firstWeapon.WeaponCriticalHitRatio,
+                        Cooldown = firstWeapon.Cooldown,
+                        Range = firstWeapon.Range,
+                        RealCooldown = 0,
+                        WeaponPositionOffset = firstWeapon.WeaponPositionOffset,
+                    });
+                }
+            }
             state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated
             {
                 MeleeRangedElementAttSpd = new float4(configCom.MeleeDamage, configCom.RangedDamage, configCom.ElementDamage, configCom.AttackSpeed),

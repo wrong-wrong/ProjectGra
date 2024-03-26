@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
+  m_Name: FirstWeapon
+  m_EditorClassIdentifier: 
+  WeaponModel: {fileID: 5069078350183642497, guid: c9d9bb21ae68e76469eeafedbb4142df,
+    type: 3}
+  SpawneePrefabs: {fileID: 1601605760723225021, guid: cb6fe829959919d4c8ba9a3d041702a0,
+    type: 3}
+  MeleeBonus: 0
+  RangedBonus: 0
+  ElementBonus: 0
+  AttackSpeedBonus: 0
+  BasicDamage: 10
+  WeaponCriticalHitChance: 0.1
+  WeaponCriticalHitRatio: 2
+  Cooldown: 1
+  Range: 10
+  WeaponPositionOffsetRelativeToCameraTarget:
+    x: 0.5
+    y: 0
+    z: 0.7
