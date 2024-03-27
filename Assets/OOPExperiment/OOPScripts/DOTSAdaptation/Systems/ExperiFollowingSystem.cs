@@ -95,6 +95,19 @@ namespace OOPExperiment
             //    }
             //}
 
+            //10K  14.4ms roughly the same using math.any(tarDir != float3.zero) using math.normalize & unsafe lookRotation  
+            //var deltaTime = SystemAPI.Time.DeltaTime;
+            //localTransformLookup.Update(ref state);
+            //foreach (var (palumonTransform, palumonSpeed, palumonTarget) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ExperiPalumonSpeed>, RefRO<ExperiPalumonTargetEntity>>())
+            //{
+            //    var tarDir = localTransformLookup[palumonTarget.ValueRO.targetEntity].Position - palumonTransform.ValueRO.Position;
+            //    if (math.any(tarDir != float3.zero))
+            //    {
+            //        palumonTransform.ValueRW.Position += math.normalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
+            //        palumonTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
+            //    }
+            //}
+
             //10K  18.4ms  even worse  transformLookup & lookRotation first then move forward
             //var deltaTime = SystemAPI.Time.DeltaTime;
             //localTransformLookup.Update(ref state);
@@ -122,7 +135,7 @@ namespace OOPExperiment
             foreach (var (palumonTransform, palumonSpeed, palumonTarget) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ExperiPalumonSpeed>, RefRO<ExperiPalumonTargetEntity>>())
             {
                 var tarDir = localTransformLookup[palumonTarget.ValueRO.targetEntity].Position - palumonTransform.ValueRO.Position;
-                if (tarDir.x != 0 || tarDir.y != 0 || tarDir.z != 0)
+                if (math.any(tarDir!=float3.zero))
                 {
                     palumonTransform.ValueRW.Position += math.normalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
                     palumonTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
