@@ -18,6 +18,8 @@ namespace ProjectGra
         public float NormalSprintAttackCooldown;
         public float NormalSprintSprintSpeed;
         public float NormalSprintHitDistanceDuringSprint;
+        public float NormalSprintLootChance;
+
 
         [Header("NormalRangedConfig")]
         public float NormalRangedFollowSpeed;
@@ -48,6 +50,7 @@ namespace ProjectGra
                     DeathCountdown = authoring.NormalSprintDeathCountdown,
                     SprintSpeed = authoring.NormalSprintSprintSpeed,
                     HitDistance = authoring.NormalSprintHitDistanceDuringSprint,
+                    LootChance = authoring.NormalSprintLootChance,
                 });
                 AddComponent(entity, new NormalRangedConfigCom
                 {
@@ -80,6 +83,7 @@ namespace ProjectGra
         public float SprintSpeed;
         public float DeathCountdown;
         public float HitDistance;
+        public float LootChance;
     }
 
     public struct NormalMeleeConfigCom : IComponentData

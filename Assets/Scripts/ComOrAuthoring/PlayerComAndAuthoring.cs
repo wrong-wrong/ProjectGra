@@ -17,6 +17,7 @@ namespace ProjectGra
                 {
                     damagedThisFrame = 0
                 });
+                AddComponent(entity, new PlayerMaterialCount { Count = 0 });
                 //
                 AddComponent<MainWeaponState>(entity);
             }
@@ -45,5 +46,10 @@ namespace ProjectGra
         public float Armor;
         public float SpeedPercentage;
         public float Range;
+    }
+
+    public struct PlayerMaterialCount : IComponentData
+    {
+        public int Count;
     }
 }

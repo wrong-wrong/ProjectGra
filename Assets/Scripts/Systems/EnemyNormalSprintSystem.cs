@@ -2,7 +2,8 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-
+using static ProjectGra.PrefabAuthoringToContainer;
+using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
@@ -16,10 +17,15 @@ namespace ProjectGra
         float startSprintDistanceSq;
         float sprintDistance;
         float hitDistanceSq;
+
+        float lootChance;
+        Random random;
+        Entity MaterialPrefab;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
+            random = Random.CreateFromIndex(0);
         }
         public void OnStartRunning(ref SystemState state)
         {
@@ -31,6 +37,8 @@ namespace ProjectGra
             startSprintDistanceSq = config.AttackDistance * config.AttackDistance;
             sprintDistance = config.AttackDistance;
             hitDistanceSq = config.HitDistance * config.HitDistance;
+            lootChance = config.LootChance;
+            MaterialPrefab = SystemAPI.GetSingleton<MaterialPrefabCom>().Prefab;
         }
         public void OnStopRunning(ref SystemState state) { }
 
@@ -82,6 +90,12 @@ namespace ProjectGra
                 }else if(stateMachine.ValueRO.CurrentState == EnemyState.Dead)
                 {
                     ecb.DestroyEntity(entity);
+                    if (random.NextFloat() < lootChance)
+                    {
+                        var material = ecb.Instantiate(MaterialPrefab);
+                        ecb.SetComponent<LocalTransform>(material
+                            , localTransform.ValueRO);
+                    }
                 }
             }
         }
