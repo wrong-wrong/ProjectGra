@@ -5,11 +5,13 @@ using UnityEngine;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemyNormalMeleeSystem: ISystem, ISystemStartStop
     {
         float followSpeed;
         float attackDistanceSq;
         float cooldown;
+        float deathCountDown;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllNotPaused>();
@@ -23,6 +25,7 @@ namespace ProjectGra
             followSpeed = config.FollowSpeed;
             attackDistanceSq = config.AttackDistance * config.AttackDistance;
             cooldown = config.AttackCooldown;
+            deathCountDown = config.DeathCountdown;
         }
         public void OnStopRunning(ref SystemState state)
         {
@@ -32,11 +35,15 @@ namespace ProjectGra
         public void OnUpdate(ref SystemState state)
         {
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
-            
             var playerLocalTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
+            var playerDamageRecord = SystemAPI.GetComponentRW<PlayerDamagedRecordCom>(playerEntity);
+            var ecb = SystemAPI.GetSingleton<MyBeforeTransformECBSys.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach(var (localTransform, stateMachine, attack) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalMeleeStateMachine>, RefRW<NormalMeleeAttack>>())
+            foreach(var (localTransform, stateMachine, attack, death,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalMeleeStateMachine>, RefRW<NormalMeleeAttack>
+                , RefRW<NormalMeleeDeath>>()
+                .WithEntityAccess())
             {
                 var tarDir = playerLocalTransform.Position - localTransform.ValueRO.Position;
                 var disSq = math.csum(tarDir * tarDir);
@@ -60,13 +67,21 @@ namespace ProjectGra
                     }
                     else if((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
                     {
-                        Debug.Log("Player should take damage");
+                        //Debug.Log("Player should take damage");
+                        playerDamageRecord.ValueRW.damagedThisFrame += attack.ValueRO.AttackVal;
                         attack.ValueRW.AttackCooldown = cooldown;
                     }
                     
                 }else if(stateMachine.ValueRO.CurrentState == EnemyState.Dead)
                 {
-
+                    if((death.ValueRW.timer -= deltatime) > 0f)
+                    {
+                        localTransform.ValueRW.Scale = death.ValueRO.timer / deathCountDown;
+                    }
+                    else
+                    {
+                        ecb.DestroyEntity(entity);
+                    }
                 }
             }
         }

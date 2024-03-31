@@ -43,12 +43,15 @@ namespace ProjectGra
             //EntityA tends to be spawnee
             Entity Spawnee;
             Entity Enemy;
+            Debug.Log("TriggerJob");
             if (CurDamageLookup.HasComponent(triggerEvent.EntityA) && EnemyHealthPointLookup.HasComponent(triggerEvent.EntityB))
             {
+                
                 Spawnee = triggerEvent.EntityA;
                 Enemy = triggerEvent.EntityB;
             }else if(CurDamageLookup.HasComponent(triggerEvent.EntityB) && EnemyHealthPointLookup.HasComponent(triggerEvent.EntityA))
             {
+                Debug.LogError("Rare Situation in DetectSpawneeTriggerSystem, not always that Spawnee is EntityA. This time, Spawnee is EntityB, Enemy is EntityA");
                 Spawnee = triggerEvent.EntityB;
                 Enemy = triggerEvent.EntityA;
             }
@@ -60,7 +63,8 @@ namespace ProjectGra
             var refHP = EnemyHealthPointLookup.GetRefRW(Enemy);
             if ((refHP.ValueRW.HealthPoint -= CurDamageLookup[Spawnee].damage) <= 0)
             {
-                ecb.DestroyEntity(Enemy);
+                ecb.RemoveComponent<PhysicsCollider>(Enemy);
+                ecb.SetComponent(Enemy, new NormalMeleeStateMachine { CurrentState = EnemyState.Dead });    
             }
         }
     }

@@ -9,6 +9,7 @@ namespace ProjectGra
         public float MeleeFollowSpeed;
         public float MeleeAttackDistance;
         public float MeleeAttackCooldown;
+        public float MeleeDeathCountdown;
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
             public override void Bake(EnemyConfigAuthoringToSS authoring)
@@ -18,7 +19,8 @@ namespace ProjectGra
                 {
                     FollowSpeed = authoring.MeleeFollowSpeed,
                     AttackDistance = authoring.MeleeAttackDistance,
-                    AttackCooldown = authoring.MeleeAttackCooldown
+                    AttackCooldown = authoring.MeleeAttackCooldown,
+                    DeathCountdown = authoring.MeleeDeathCountdown
                 });
             }
         }
@@ -29,5 +31,6 @@ namespace ProjectGra
         public float FollowSpeed;
         public float AttackDistance;
         public float AttackCooldown;
+        public float DeathCountdown;
     }
 }

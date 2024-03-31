@@ -7,6 +7,8 @@ namespace ProjectGra
     public class NormalMeleeComAndAuthoring : MonoBehaviour
     {
         public float MeleeAttackCooldown;
+        public float AttackVal;
+        public float deathTimer;
         public class Baker : Baker<NormalMeleeComAndAuthoring>
         {
             public override void Bake(NormalMeleeComAndAuthoring authoring)
@@ -18,18 +20,27 @@ namespace ProjectGra
                 });
                 AddComponent(entity, new NormalMeleeAttack
                 {
-                    AttackCooldown = authoring.MeleeAttackCooldown
+                    AttackCooldown = authoring.MeleeAttackCooldown,
+                    AttackVal = authoring.AttackVal,
+                });
+                AddComponent(entity, new NormalMeleeDeath
+                {
+                    timer = authoring.deathTimer,
                 });
             }
         }
     }
-
+    public struct NormalMeleeDeath : IComponentData
+    {
+        public float timer;
+    }
     public struct NormalMeleeStateMachine : IComponentData
     {
         public EnemyState CurrentState;
     }
     public struct NormalMeleeAttack : IComponentData
     {
+        public float AttackVal;
         public float AttackCooldown;
     }
 }

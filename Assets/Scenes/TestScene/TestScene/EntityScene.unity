@@ -135,8 +135,9 @@ GameObject:
   - component: {fileID: 758639957}
   - component: {fileID: 758639956}
   - component: {fileID: 758639959}
+  - component: {fileID: 758639960}
   m_Layer: 0
-  m_Name: Capsule
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -217,6 +218,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e7957b2872ec09344b6d5c1e43dcc327, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &758639960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758639954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863b2d6e11ed3d44cbfeccaac4c6f203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1829473135
@@ -337,6 +350,7 @@ MonoBehaviour:
   MeleeFollowSpeed: 1
   MeleeAttackDistance: 2
   MeleeAttackCooldown: 1
+  MeleeDeathCountdown: 1
 --- !u!1001 &174457505139717170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -345,6 +359,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1048006675933654597, guid: 1df3a143e78faa24c8b93a5c449580b0,
+        type: 3}
+      propertyPath: AttackVal
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1048006675933654597, guid: 1df3a143e78faa24c8b93a5c449580b0,
+        type: 3}
+      propertyPath: deathTimer
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1048006675933654597, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: MeleeAttackCooldown
@@ -403,7 +427,7 @@ PrefabInstance:
     - target: {fileID: 5522383359257495687, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: m_Material.m_CollisionResponse.m_Value
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5522383359257495687, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}

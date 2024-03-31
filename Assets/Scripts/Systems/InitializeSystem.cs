@@ -24,11 +24,13 @@ namespace ProjectGra
             state.EntityManager.AddComponentObject(singleton, new MyCanvasGroupManagedCom { canvasGroup = CanvasMonoSingleton.instance.canvasGroup });
 
             var configCom = SystemAPI.GetSingleton<ConfigComponent>();
-
+            
+            //Initializing Player
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             state.EntityManager.SetComponentData(playerEntity, new PlayerAttributeMain
             {
                 MaxHealthPoint = configCom.MaxHealthPoint,
+                CurrentHealthPoint = configCom.MaxHealthPoint,
                 HealthRegain = configCom.HealthRegain,
                 Armor = configCom.Armor,
                 SpeedPercentage = configCom.SpeedPercentage,
