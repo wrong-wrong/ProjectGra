@@ -10,6 +10,15 @@ namespace ProjectGra
         public float MeleeAttackDistance;
         public float MeleeAttackCooldown;
         public float MeleeDeathCountdown;
+
+        [Header("NormalSprintConfig")]
+        public float NormalSprintFollowSpeed;
+        public float NormalSprintAttackDistance;
+        public float NormalSprintDeathCountdown;
+        public float NormalSprintAttackCooldown;
+        public float NormalSprintSprintSpeed;
+        public float NormalSprintHitDistanceDuringSprint;
+
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
             public override void Bake(EnemyConfigAuthoringToSS authoring)
@@ -22,8 +31,27 @@ namespace ProjectGra
                     AttackCooldown = authoring.MeleeAttackCooldown,
                     DeathCountdown = authoring.MeleeDeathCountdown
                 });
+                AddComponent(entity, new NormalSprintConfigCom
+                {
+                    FollowSpeed = authoring.NormalSprintFollowSpeed,
+                    AttackDistance = authoring.NormalSprintAttackDistance,
+                    AttackCooldown = authoring.NormalSprintAttackCooldown,
+                    DeathCountdown = authoring.NormalSprintDeathCountdown,
+                    SprintSpeed = authoring.NormalSprintSprintSpeed,
+                    HitDistance = authoring.NormalSprintHitDistanceDuringSprint,
+                });
             }
         }
+    }
+
+    public struct NormalSprintConfigCom : IComponentData
+    {
+        public float FollowSpeed;
+        public float AttackDistance;
+        public float AttackCooldown;
+        public float SprintSpeed;
+        public float DeathCountdown;
+        public float HitDistance;
     }
 
     public struct NormalMeleeConfigCom : IComponentData
@@ -32,5 +60,6 @@ namespace ProjectGra
         public float AttackDistance;
         public float AttackCooldown;
         public float DeathCountdown;
+        public float SprintSpeed;
     }
 }

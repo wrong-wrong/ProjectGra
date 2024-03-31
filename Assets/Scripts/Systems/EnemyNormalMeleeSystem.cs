@@ -37,7 +37,7 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerLocalTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var playerDamageRecord = SystemAPI.GetComponentRW<PlayerDamagedRecordCom>(playerEntity);
-            var ecb = SystemAPI.GetSingleton<MyBeforeTransformECBSys.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();

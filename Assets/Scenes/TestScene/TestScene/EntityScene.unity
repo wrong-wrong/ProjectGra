@@ -351,6 +351,12 @@ MonoBehaviour:
   MeleeAttackDistance: 2
   MeleeAttackCooldown: 1
   MeleeDeathCountdown: 1
+  NormalSprintFollowSpeed: 2
+  NormalSprintAttackDistance: 8
+  NormalSprintDeathCountdown: 1
+  NormalSprintAttackCooldown: 3
+  NormalSprintSprintSpeed: 8
+  NormalSprintHitDistanceDuringSprint: 2
 --- !u!1001 &174457505139717170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -752,7 +758,7 @@ PrefabInstance:
     - target: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: m_Name
-      value: FirstEnemyPrefab
+      value: EnemyPrefab-NormalMelee
       objectReference: {fileID: 0}
     - target: {fileID: 8497083611644056969, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
@@ -774,10 +780,79 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1df3a143e78faa24c8b93a5c449580b0, type: 3}
+--- !u!1001 &6679034931847981330
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 810767918941992099, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemyPrefab-NormalSprint
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 958eeb8e711c66b449beb217fb811b89, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 6679034931847981330}
   - {fileID: 174457505139717170}
   - {fileID: 758639958}
   - {fileID: 1829473136}

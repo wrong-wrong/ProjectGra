@@ -8,6 +8,7 @@ namespace ProjectGra
 
         MeleeAttack,
 
+        SprintAttack,
 
         
     }

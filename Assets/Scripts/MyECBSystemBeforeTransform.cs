@@ -9,7 +9,7 @@ namespace ProjectGra
     [UpdateInGroup(typeof(SimulationSystemGroup))]
     [UpdateAfter(typeof(MySysGrpAfterFixedBeforeTransform))]
     [UpdateBefore(typeof(TransformSystemGroup))]
-    public partial class MyBeforeTransformECBSys : EntityCommandBufferSystem
+    public partial class MyECBSystemBeforeTransform : EntityCommandBufferSystem
     {
         // The singleton component data access pattern should be used to safely access
         // the command buffer system. This data will be stored in the derived ECB System's

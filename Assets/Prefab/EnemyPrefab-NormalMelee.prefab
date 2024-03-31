@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8497083611644056969}
   - component: {fileID: 1048006675933654597}
   m_Layer: 0
-  m_Name: FirstEnemyPrefab
+  m_Name: EnemyPrefab-NormalMelee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
