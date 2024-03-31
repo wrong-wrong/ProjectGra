@@ -232,6 +232,7 @@ GameObject:
   - component: {fileID: 1829473138}
   - component: {fileID: 1829473139}
   - component: {fileID: 1829473140}
+  - component: {fileID: 1829473141}
   m_Layer: 0
   m_Name: SuperSingleton
   m_TagString: Untagged
@@ -321,6 +322,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponSOList:
   - {fileID: 11400000, guid: 4b72dadedd9e8b64d97b05408777baf7, type: 2}
+--- !u!114 &1829473141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829473135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77b2d4aeac3e59a4f915fd7c4def009a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MeleeFollowSpeed: 1
+  MeleeAttackDistance: 2
+  MeleeAttackCooldown: 1
 --- !u!1001 &174457505139717170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -329,6 +345,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1048006675933654597, guid: 1df3a143e78faa24c8b93a5c449580b0,
+        type: 3}
+      propertyPath: MeleeAttackCooldown
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4617919976387815572, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: m_LocalPosition.x

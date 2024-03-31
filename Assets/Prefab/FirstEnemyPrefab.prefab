@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2799897256447030783}
   - component: {fileID: 5522383359257495687}
   - component: {fileID: 8497083611644056969}
+  - component: {fileID: 1048006675933654597}
   m_Layer: 0
   m_Name: FirstEnemyPrefab
   m_TagString: Untagged
@@ -238,5 +239,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34e0fa8ed16bb234fb3fcf0a368e8681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthPoint: 0
+--- !u!114 &1048006675933654597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7888725254493739217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 804a096382f27cd41a214be773b05ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
