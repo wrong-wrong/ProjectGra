@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7888725254493739217
+--- !u!1 &853683602565923496
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4617919976387815572}
-  - component: {fileID: 5731995526431390911}
-  - component: {fileID: 2799897256447030783}
-  - component: {fileID: 5522383359257495687}
-  - component: {fileID: 8497083611644056969}
-  - component: {fileID: 1048006675933654597}
+  - component: {fileID: 5634091514975756633}
+  - component: {fileID: 1881821291707744855}
+  - component: {fileID: 6592772389563531089}
   m_Layer: 0
-  m_Name: EnemyPrefab-NormalMelee
+  m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4617919976387815572
+--- !u!4 &5634091514975756633
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888725254493739217}
+  m_GameObject: {fileID: 853683602565923496}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.15, y: 0, z: 10}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 1.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5731995526431390911
+  m_Father: {fileID: 7854184295829290718}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!33 &1881821291707744855
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888725254493739217}
+  m_GameObject: {fileID: 853683602565923496}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &2799897256447030783
+--- !u!23 &6592772389563531089
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888725254493739217}
+  m_GameObject: {fileID: 853683602565923496}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -86,13 +83,100 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5522383359257495687
+--- !u!1 &4558332914012663045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7854184295829290718}
+  - component: {fileID: 6172356136507299969}
+  - component: {fileID: 1012843573684679948}
+  - component: {fileID: 631869840570895572}
+  - component: {fileID: -4282391613714548732}
+  - component: {fileID: -261238050905400600}
+  m_Layer: 0
+  m_Name: EnemyPrefab-NormalRanged
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7854184295829290718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4558332914012663045}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5634091514975756633}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &6172356136507299969
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4558332914012663045}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &1012843573684679948
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4558332914012663045}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &631869840570895572
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888725254493739217}
+  m_GameObject: {fileID: 4558332914012663045}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b275e5f92732148048d7b77e264ac30e, type: 3}
@@ -101,11 +185,11 @@ MonoBehaviour:
   m_ShapeType: 0
   m_PrimitiveCenter:
     x: 0
-    y: 0
+    y: 0.5500001
     z: 0
   m_PrimitiveSize:
-    x: 1
-    y: 2
+    x: 1.07
+    y: 3.1000001
     z: 1
   m_PrimitiveOrientation:
     Value:
@@ -114,19 +198,19 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 2
-    Radius: 0.5
+    Height: 3.1000001
+    Radius: 0.535
     Axis: 1
   m_Cylinder:
-    Height: 2
-    Radius: 0.5
+    Height: 3.1000001
+    Radius: 0.535
     Axis: 1
   m_CylinderSideCount: 20
-  m_SphereRadius: 1
-  m_MinimumSkinnedVertexWeight: 0.382
+  m_SphereRadius: 1.5500001
+  m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
-    m_SimplificationTolerance: 0.03
-    m_BevelRadius: 0
+    m_SimplificationTolerance: 0.0465
+    m_BevelRadius: 0.05
     m_MinimumAngle: 2.5000002
   m_CustomMesh: {fileID: 0}
   m_ForceUnique: 0
@@ -135,7 +219,7 @@ MonoBehaviour:
     m_Template: {fileID: 0}
     m_CollisionResponse:
       m_Override: 0
-      m_Value: 3
+      m_Value: 0
     m_Friction:
       m_Override: 0
       m_Value:
@@ -229,31 +313,30 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
---- !u!114 &8497083611644056969
+--- !u!114 &-4282391613714548732
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888725254493739217}
+  m_GameObject: {fileID: 4558332914012663045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e6c2ad1b762d54438531584f3385967, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AttackCooldown: 2
+  AttackVal: 20
+--- !u!114 &-261238050905400600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4558332914012663045}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34e0fa8ed16bb234fb3fcf0a368e8681, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HealthPoint: 100
---- !u!114 &1048006675933654597
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7888725254493739217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 804a096382f27cd41a214be773b05ba8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MeleeAttackCooldown: 1
-  AttackVal: 10
-  deathTimer: 1
+  HealthPoint: 50

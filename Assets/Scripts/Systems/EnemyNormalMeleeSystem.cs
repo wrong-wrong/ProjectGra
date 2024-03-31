@@ -41,7 +41,7 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach(var (localTransform, stateMachine, attack, death,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalMeleeStateMachine>, RefRW<NormalMeleeAttack>
+            foreach(var (localTransform, stateMachine, attack, death,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EnemyStateMachine>, RefRW<NormalMeleeAttack>
                 , RefRW<NormalMeleeDeath>>()
                 .WithEntityAccess())
             {

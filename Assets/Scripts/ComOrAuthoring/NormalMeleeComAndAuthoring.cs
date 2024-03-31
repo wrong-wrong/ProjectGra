@@ -14,10 +14,10 @@ namespace ProjectGra
             public override void Bake(NormalMeleeComAndAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent(entity, new NormalMeleeStateMachine
-                {
-                    CurrentState = EnemyState.Follow
-                });
+                //AddComponent(entity, new NormalMeleeStateMachine
+                //{
+                //    CurrentState = EnemyState.Follow
+                //});
                 AddComponent(entity, new NormalMeleeAttack
                 {
                     AttackCooldown = authoring.MeleeAttackCooldown,
@@ -34,10 +34,10 @@ namespace ProjectGra
     {
         public float timer;
     }
-    public struct NormalMeleeStateMachine : IComponentData
-    {
-        public EnemyState CurrentState;
-    }
+    //public struct NormalMeleeStateMachine : IComponentData
+    //{
+    //    public EnemyState CurrentState;
+    //}
     public struct NormalMeleeAttack : IComponentData
     {
         public float AttackVal;

@@ -44,7 +44,7 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach (var (localTransform, attack,stateMachine,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<NormalSprintStateMachine>>()
+            foreach (var (localTransform, attack,stateMachine,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EnemyStateMachine>>()
                 .WithEntityAccess())
             {
                 var tarDir = playerTransform.Position - localTransform.ValueRO.Position;

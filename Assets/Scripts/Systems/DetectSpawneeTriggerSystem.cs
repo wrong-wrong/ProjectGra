@@ -64,7 +64,7 @@ namespace ProjectGra
             if ((refHP.ValueRW.HealthPoint -= CurDamageLookup[Spawnee].damage) <= 0)
             {
                 ecb.RemoveComponent<PhysicsCollider>(Enemy);
-                ecb.SetComponent(Enemy, new NormalMeleeStateMachine { CurrentState = EnemyState.Dead });    
+                ecb.SetComponent(Enemy, new EnemyStateMachine { CurrentState = EnemyState.Dead });    
             }
         }
     }

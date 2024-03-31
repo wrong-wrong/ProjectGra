@@ -15,6 +15,7 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new EnemyHealthPoint { HealthPoint = authoring.HealthPoint });
                 //AddComponent(entity, new EnemyFollowState { FollowSpeed = authoring.FollowSpeed , StopDistance = authoring.StopDistance});
+                AddComponent(entity, new EnemyStateMachine { CurrentState = EnemyState.Follow });
             }
         }
     }
@@ -24,7 +25,10 @@ namespace ProjectGra
         public int HealthPoint;
     }
 
-
+    public struct EnemyStateMachine : IComponentData
+    {
+        public EnemyState CurrentState;
+    }
     
 
 }

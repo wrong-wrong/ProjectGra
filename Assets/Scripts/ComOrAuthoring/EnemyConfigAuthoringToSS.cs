@@ -19,6 +19,15 @@ namespace ProjectGra
         public float NormalSprintSprintSpeed;
         public float NormalSprintHitDistanceDuringSprint;
 
+        [Header("NormalRangedConfig")]
+        public float NormalRangedFollowSpeed;
+        public float NormalRangedAttackDistance;
+        public float NormalRangedAttackCooldown;
+        public float NormalRangedDeathCountdown;
+
+        public float NormalRangedFleeDistance;
+        public float NormalRangedFleeSpeed;
+
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
             public override void Bake(EnemyConfigAuthoringToSS authoring)
@@ -40,10 +49,29 @@ namespace ProjectGra
                     SprintSpeed = authoring.NormalSprintSprintSpeed,
                     HitDistance = authoring.NormalSprintHitDistanceDuringSprint,
                 });
+                AddComponent(entity, new NormalRangedConfigCom
+                {
+                    FollowSpeed = authoring.NormalRangedFollowSpeed,
+                    AttackDistance = authoring.NormalRangedAttackDistance,
+                    AttackCooldown = authoring.NormalRangedAttackCooldown,
+                    DeathCountdown = authoring.NormalRangedDeathCountdown,
+
+                    FleeDistance = authoring.NormalRangedFleeDistance,
+                    FleeSpeed = authoring.NormalRangedFleeSpeed,
+                });
             }
         }
     }
+    public struct NormalRangedConfigCom : IComponentData
+    {
+        public float FollowSpeed;
+        public float AttackDistance;
+        public float AttackCooldown;
+        public float DeathCountdown;
 
+        public float FleeDistance;
+        public float FleeSpeed;
+    }
     public struct NormalSprintConfigCom : IComponentData
     {
         public float FollowSpeed;

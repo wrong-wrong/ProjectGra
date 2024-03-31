@@ -16,15 +16,15 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new NormalSprintDeath { Timer = authoring.DeathTimer });
                 AddComponent(entity, new NormalSprintAttack { AttackVal = authoring.AttackVal, AttackCooldown = authoring.AttackCooldown });
-                AddComponent(entity, new NormalSprintStateMachine { CurrentState = EnemyState.Follow });
+                //AddComponent(entity, new NormalSprintStateMachine { CurrentState = EnemyState.Follow });
             }
         }
     }
 
-    public struct NormalSprintStateMachine : IComponentData
-    {
-        public EnemyState CurrentState;
-    }
+    //public struct NormalSprintStateMachine : IComponentData
+    //{
+    //    public EnemyState CurrentState;
+    //}
     public struct NormalSprintDeath : IComponentData
     {
         public float Timer;

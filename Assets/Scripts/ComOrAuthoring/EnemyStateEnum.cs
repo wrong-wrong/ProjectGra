@@ -10,6 +10,9 @@ namespace ProjectGra
 
         SprintAttack,
 
+        RangedAttack,
+        Flee,
+
         
     }
 }
