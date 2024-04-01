@@ -27,7 +27,7 @@ namespace ProjectGra
                     var playerMaterialsCount = SystemAPI.GetComponent<PlayerMaterialCount>(playerEntity);
                     var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
                     CanvasMonoSingleton.Instance.HideShop();
-                    UpdateInGameUI(PlayerAttibuteCom, playerHp, playerMaterialsCount);
+                    CanvasMonoSingleton.Instance.UpdateInGameUI(playerHp.HealthPoint, 0.5f, playerMaterialsCount.Count);
                     CanvasMonoSingleton.Instance.ShowInGameUI();
 
                     Cursor.lockState = CursorLockMode.Locked;
@@ -46,11 +46,7 @@ namespace ProjectGra
                 IsPause = !IsPause;
             }
         }
-        private void UpdateInGameUI(PlayerAttributeMain attribute, EntityHealthPoint hp, PlayerMaterialCount materialCount)
-        {
 
-            CanvasMonoSingleton.Instance.UpdateInGameUI((float)hp.HealthPoint/ attribute.MaxHealthPoint, 0.5f, materialCount.Count);
-        }
     }
 
     public struct GameControllNotPaused : IComponentData { }

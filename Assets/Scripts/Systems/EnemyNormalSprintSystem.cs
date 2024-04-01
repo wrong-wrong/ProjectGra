@@ -12,6 +12,7 @@ namespace ProjectGra
         float followSpeed;
         float deathTimer;
 
+        int attackVal;
         float attackCoolDown;
         float sprintSpeed;
         float startSprintDistanceSq;
@@ -38,6 +39,7 @@ namespace ProjectGra
             sprintDistance = config.AttackDistance;
             hitDistanceSq = config.HitDistance * config.HitDistance;
             lootChance = config.LootChance;
+            attackVal = config.AttackVal;
             MaterialPrefab = SystemAPI.GetSingleton<MaterialPrefabCom>().Prefab;
         }
         public void OnStopRunning(ref SystemState state) { }
@@ -46,7 +48,7 @@ namespace ProjectGra
         {
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            var playerDamageRecord = SystemAPI.GetComponentRW<PlayerDamagedRecordCom>(playerEntity);
+            var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
 
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
@@ -78,7 +80,7 @@ namespace ProjectGra
                     if (tarDirSq < hitDistanceSq)
                     {
                         Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
-                        playerDamageRecord.ValueRW.damagedThisFrame += attack.ValueRO.AttackVal;
+                        playerHealthPoint.ValueRW.HealthPoint -= attackVal;
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
                     if ((attack.ValueRW.SprintTimer -= deltatime)< 0f)

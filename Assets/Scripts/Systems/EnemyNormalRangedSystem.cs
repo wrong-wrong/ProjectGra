@@ -2,7 +2,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
-
+using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     public partial struct EnemyNormalRangedSystem : ISystem, ISystemStartStop
@@ -14,10 +14,20 @@ namespace ProjectGra
 
         float fleeDistanceSq;
         float fleeSpeed;
+
+        int attackVal;
+
+        Entity spawneePrefab;
+
+        float lootChance;
+        Random random;
+        Entity MaterialPrefab;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
+            random = Random.CreateFromIndex(0);
+
         }
 
         public void OnStartRunning(ref SystemState state) 
@@ -29,13 +39,17 @@ namespace ProjectGra
             deathCountdown = config.DeathCountdown;
             fleeDistanceSq = config.FleeDistance * config.FleeDistance;
             fleeSpeed = config.FleeSpeed;
+            spawneePrefab = config.SpawneePrefab;
+            attackVal = config.AttackVal;
+            state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
+            state.EntityManager.SetComponentData(spawneePrefab, new SpawneeCurDamage { damage = attackVal });
+            
         }
         public void OnStopRunning(ref SystemState state) { }
         public void OnUpdate(ref SystemState state)
         {
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerLocalTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            //var playerDamageRecord = SystemAPI.GetComponentRW<PlayerDamagedRecordCom>(playerEntity);
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
             var deltatime = SystemAPI.Time.DeltaTime;
@@ -71,12 +85,15 @@ namespace ProjectGra
                     }
                     if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
                     {
-                        //TODO Spawn
-                        Debug.Log("NormalRangedEnemy - Should shoot spawnee");
+
+                        localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                         attack.ValueRW.AttackCooldown = attackCooldown;
+                        var spawnee = ecb.Instantiate(spawneePrefab);
+                        ecb.SetComponent(spawnee, localTransform.ValueRO);
                     }
 
-                }else if(curstate == EntityState.Flee)
+                }
+                else if(curstate == EntityState.Flee)
                 {
                     localTransform.ValueRW.Position -= math.normalize(tarDir) * fleeSpeed * deltatime;
                     if(disSq > fleeDistanceSq * 1.6)
@@ -87,6 +104,12 @@ namespace ProjectGra
                 else if(curstate == EntityState.Dead)
                 {
                     ecb.DestroyEntity(entity);
+                    if (random.NextFloat() < lootChance)
+                    {
+                        var material = ecb.Instantiate(MaterialPrefab);
+                        ecb.SetComponent<LocalTransform>(material
+                            , localTransform.ValueRO);
+                    }
                 }
             }
 

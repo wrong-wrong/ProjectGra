@@ -15,7 +15,7 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new NormalSprintDeath { Timer = authoring.DeathTimer });
-                AddComponent(entity, new NormalSprintAttack { AttackVal = authoring.AttackVal, AttackCooldown = authoring.AttackCooldown });
+                AddComponent(entity, new NormalSprintAttack { AttackCooldown = authoring.AttackCooldown });
                 //AddComponent(entity, new NormalSprintStateMachine { CurrentState = EnemyState.Follow });
             }
         }
@@ -31,7 +31,7 @@ namespace ProjectGra
     }
     public struct NormalSprintAttack : IComponentData
     {
-        public int AttackVal;
+        //public int AttackVal;
         public float AttackCooldown;
         public float SprintTimer;
         public float3 SprintDirNormalized;

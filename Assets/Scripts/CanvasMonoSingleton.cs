@@ -57,10 +57,17 @@ namespace ProjectGra
             text11.text = attributeStruct.Range.ToString();
         }
 
-        public void UpdateInGameUI(float healthFillAmount, float expFillAmount, int materialsCount)
+        private int maxHp;
+        private float maxExp;
+        public void SetMaxHpExp(int maxHp, float maxExp)
         {
-            healthBar.fillAmount = healthFillAmount;
-            experienceBar.fillAmount = expFillAmount;
+            this.maxHp = maxHp;
+            this.maxExp = maxExp;
+        }
+        public void UpdateInGameUI(int hp, float exp, int materialsCount)
+        {
+            healthBar.fillAmount = (float)hp / maxHp;
+            experienceBar.fillAmount = exp / maxExp;
             MaterialCount.text = materialsCount.ToString();
         }
 

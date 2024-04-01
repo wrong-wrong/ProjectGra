@@ -537,10 +537,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b2d4aeac3e59a4f915fd7c4def009a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MeleeAttackVal: 5
   MeleeFollowSpeed: 1
   MeleeAttackDistance: 2
   MeleeAttackCooldown: 1
   MeleeDeathCountdown: 1
+  MeleeLootChance: 0.6
+  NormalSprintAttackVal: 20
   NormalSprintFollowSpeed: 2
   NormalSprintAttackDistance: 8
   NormalSprintDeathCountdown: 1
@@ -548,12 +551,18 @@ MonoBehaviour:
   NormalSprintSprintSpeed: 8
   NormalSprintHitDistanceDuringSprint: 2
   NormalSprintLootChance: 1
+  NormalRangedAttackVal: 15
   NormalRangedFollowSpeed: 1
-  NormalRangedAttackDistance: 18
   NormalRangedAttackCooldown: 3
   NormalRangedDeathCountdown: 1
-  NormalRangedFleeDistance: 10
-  NormalRangedFleeSpeed: 3
+  NormalRangedLootChance: 0.8
+  NormalRangedAttackDistance: 18
+  NormalRangedFleeDistance: 12
+  NormalRangedFleeSpeed: 6
+  NormalRangedSpawneePrefab: {fileID: 893634235989249865, guid: cb6b63e55936bd345a81ae4f77827c52,
+    type: 3}
+  SpawneeSpeed: 10
+  SpawneeTimer: 4
 --- !u!1001 &174457505139717170
 PrefabInstance:
   m_ObjectHideFlags: 0

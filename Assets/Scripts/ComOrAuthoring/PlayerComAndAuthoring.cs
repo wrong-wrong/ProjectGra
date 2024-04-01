@@ -13,12 +13,10 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent<PlayerAttributeMain>(entity);
                 AddComponent<PlayerAtttributeDamageRelated>(entity);
-                AddComponent(entity, new PlayerDamagedRecordCom
-                {
-                    damagedThisFrame = 0
-                });
+                //AddComponent(entity, new PlayerDamagedRecordCom{damagedThisFrame = 0});
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
+                AddComponent(entity, new PlayerExperience { Value = 0 });
                 AddComponent<EntityStateMachine>(entity);
                 //
                 AddComponent<MainWeaponState>(entity);
@@ -48,7 +46,10 @@ namespace ProjectGra
         public float SpeedPercentage;
         public float Range;
     }
-
+    public struct PlayerExperience : IComponentData
+    {
+        public float Value;
+    }
     public struct PlayerMaterialCount : IComponentData
     {
         public int Count;
