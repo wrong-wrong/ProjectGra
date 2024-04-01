@@ -41,7 +41,7 @@ namespace ProjectGra
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
 
-            foreach (var(localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EnemyStateMachine>>()
+            foreach (var(localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>>()
                 .WithEntityAccess())
             {
                 var curstate = stateMachine.ValueRO.CurrentState;
@@ -51,23 +51,23 @@ namespace ProjectGra
                 {
                     continue;
                 }
-                if (curstate == EnemyState.Follow)
+                if (curstate == EntityState.Follow)
                 {
                     localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
                     localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                     if(disSq < attackDistanceSq)
                     {
-                        stateMachine.ValueRW.CurrentState = EnemyState.RangedAttack;
+                        stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
                     }
-                }else if(curstate == EnemyState.RangedAttack)
+                }else if(curstate == EntityState.RangedAttack)
                 {
                     if (disSq < fleeDistanceSq)
                     {
-                        stateMachine.ValueRW.CurrentState = EnemyState.Flee;
+                        stateMachine.ValueRW.CurrentState = EntityState.Flee;
                     }
                     else if (disSq > attackDistanceSq)
                     {
-                        stateMachine.ValueRW.CurrentState = EnemyState.Follow;
+                        stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
                     if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
                     {
@@ -76,15 +76,15 @@ namespace ProjectGra
                         attack.ValueRW.AttackCooldown = attackCooldown;
                     }
 
-                }else if(curstate == EnemyState.Flee)
+                }else if(curstate == EntityState.Flee)
                 {
                     localTransform.ValueRW.Position -= math.normalize(tarDir) * fleeSpeed * deltatime;
                     if(disSq > fleeDistanceSq * 1.6)
                     {
-                        stateMachine.ValueRW.CurrentState = EnemyState.RangedAttack;
+                        stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
                     }
                 }
-                else if(curstate == EnemyState.Dead)
+                else if(curstate == EntityState.Dead)
                 {
                     ecb.DestroyEntity(entity);
                 }

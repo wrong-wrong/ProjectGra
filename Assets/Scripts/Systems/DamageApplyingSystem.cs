@@ -14,11 +14,11 @@ namespace ProjectGra
 
         public void OnUpdate(ref SystemState state)
         {
-            foreach(var (attribute, damageRecord) in SystemAPI.Query<RefRW<PlayerAttributeMain>, RefRW<PlayerDamagedRecordCom>>())
+            foreach(var (hp, damageRecord) in SystemAPI.Query<RefRW<EntityHealthPoint>, RefRW<PlayerDamagedRecordCom>>())
             {
                 if(damageRecord.ValueRO.damagedThisFrame > 0f)
                 {
-                    attribute.ValueRW.CurrentHealthPoint -= damageRecord.ValueRO.damagedThisFrame;
+                    hp.ValueRW.HealthPoint -= damageRecord.ValueRO.damagedThisFrame;
                     damageRecord.ValueRW.damagedThisFrame = 0;
                 }
             }

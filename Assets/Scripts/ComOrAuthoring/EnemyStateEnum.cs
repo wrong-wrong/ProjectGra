@@ -1,6 +1,6 @@
 namespace ProjectGra
 {
-    public enum EnemyState
+    public enum EntityState
     {
         // flickering ?
         Follow,

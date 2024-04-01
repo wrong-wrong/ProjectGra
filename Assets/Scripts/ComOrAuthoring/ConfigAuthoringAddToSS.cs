@@ -10,8 +10,8 @@ namespace ProjectGra
         [SerializeField] private float PlayerBasicMoveSpeed = 1f;
         [SerializeField] private float PlayerSprintMultiplier = 1f;
 
-        [SerializeField] private float MaxHealthPoint;
-        [SerializeField] private float HealthRegain;
+        [SerializeField] private int MaxHealthPoint;
+        [SerializeField] private int HealthRegain;
         [SerializeField] private float Armor;
         [SerializeField] private float SpeedPercentage;
 
@@ -64,8 +64,8 @@ namespace ProjectGra
         public float PlayerBasicMoveSpeedValue;
         public float PlayerSprintMultiplierValue;
 
-        public float MaxHealthPoint;
-        public float HealthRegain;
+        public int MaxHealthPoint;
+        public int HealthRegain;
         public float Armor;
         public float SpeedPercentage;
 

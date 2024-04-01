@@ -7,7 +7,7 @@ namespace ProjectGra
     public class NormalMeleeComAndAuthoring : MonoBehaviour
     {
         public float MeleeAttackCooldown;
-        public float AttackVal;
+        public int AttackVal;
         public float deathTimer;
         public class Baker : Baker<NormalMeleeComAndAuthoring>
         {
@@ -40,7 +40,7 @@ namespace ProjectGra
     //}
     public struct NormalMeleeAttack : IComponentData
     {
-        public float AttackVal;
+        public int AttackVal;
         public float AttackCooldown;
     }
 }

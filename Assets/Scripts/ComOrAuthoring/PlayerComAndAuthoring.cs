@@ -17,7 +17,9 @@ namespace ProjectGra
                 {
                     damagedThisFrame = 0
                 });
+                AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
+                AddComponent<EntityStateMachine>(entity);
                 //
                 AddComponent<MainWeaponState>(entity);
             }
@@ -26,7 +28,7 @@ namespace ProjectGra
 
     public struct PlayerDamagedRecordCom : IComponentData
     {
-        public float damagedThisFrame;
+        public int damagedThisFrame;
     }
     public struct PlayerAtttributeDamageRelated : IComponentData
     {
@@ -41,7 +43,6 @@ namespace ProjectGra
     public struct PlayerAttributeMain : IComponentData
     {
         public float MaxHealthPoint;
-        public float CurrentHealthPoint;
         public float HealthRegain;
         public float Armor;
         public float SpeedPercentage;

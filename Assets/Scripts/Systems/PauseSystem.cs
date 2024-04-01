@@ -1,6 +1,4 @@
 using Unity.Entities;
-using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 
 namespace ProjectGra
@@ -15,47 +13,73 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
-            if(Input.GetKeyUp(KeyCode.P))
+            if (Input.GetKeyUp(KeyCode.P))
             {
-                
+
                 var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
+                var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
 
                 if (IsPause)
                 {
 
                     state.EntityManager.AddComponent<GameControllNotPaused>(singleton);
-                    //hide UI
-                    var canvasGrpCom = SystemAPI.ManagedAPI.GetSingleton<MyCanvasGroupManagedCom>();
-                    if (canvasGrpCom != null)
-                    {
-                        canvasGrpCom.canvasGroup.alpha = 0f;
-                        canvasGrpCom.canvasGroup.interactable = false;
-                        canvasGrpCom.canvasGroup.blocksRaycasts = false;
-                    }
+                    var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
+                    var playerMaterialsCount = SystemAPI.GetComponent<PlayerMaterialCount>(playerEntity);
+                    var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
+                    CanvasMonoSingleton.Instance.HideShop();
+                    UpdateInGameUI(PlayerAttibuteCom, playerHp, playerMaterialsCount);
+                    CanvasMonoSingleton.Instance.ShowInGameUI();
+
                     Cursor.lockState = CursorLockMode.Locked;
-                }   
+                }
                 else
                 {
-                    state.EntityManager.RemoveComponent<GameControllNotPaused>(singleton);
-                    //show UI
-                    var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
-                    var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
-                    var canvasGrpCom = SystemAPI.ManagedAPI.GetSingleton<MyCanvasGroupManagedCom>();
-                    if (canvasGrpCom != null)
-                    {
-                        CanvasMonoSingleton.instance.UpdatePlayerAttribute(PlayerAttibuteCom,PlayerDamagedRelatedAttributeCom);
 
-                        canvasGrpCom.canvasGroup.alpha = 1f;
-                        canvasGrpCom.canvasGroup.interactable = true;
-                        canvasGrpCom.canvasGroup.blocksRaycasts = true;
-                    }
+                    state.EntityManager.RemoveComponent<GameControllNotPaused>(singleton);
+                    var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
+                    CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom);
+                    CanvasMonoSingleton.Instance.HideInGameUI();
+
                     //show Cursor
                     Cursor.lockState = CursorLockMode.None;
                 }
                 IsPause = !IsPause;
             }
         }
+        private void UpdateInGameUI(PlayerAttributeMain attribute, EntityHealthPoint hp, PlayerMaterialCount materialCount)
+        {
+
+            CanvasMonoSingleton.Instance.UpdateInGameUI((float)hp.HealthPoint/ attribute.MaxHealthPoint, 0.5f, materialCount.Count);
+        }
     }
 
-    public struct GameControllNotPaused:IComponentData { }
+    public struct GameControllNotPaused : IComponentData { }
 }
+
+
+
+
+
+
+//hide UI
+//var canvasGrpCom = SystemAPI.ManagedAPI.GetSingleton<MyCanvasGroupManagedCom>();
+//if (canvasGrpCom != null)
+//{
+//    canvasGrpCom.canvasGroup.alpha = 0f;
+//    canvasGrpCom.canvasGroup.interactable = false;
+//    canvasGrpCom.canvasGroup.blocksRaycasts = false;
+//}
+
+
+//show UI
+//var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
+//var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
+//var canvasGrpCom = SystemAPI.ManagedAPI.GetSingleton<MyCanvasGroupManagedCom>();
+//if (canvasGrpCom != null)
+//{
+//    CanvasMonoSingleton.instance.UpdatePlayerAttribute(PlayerAttibuteCom,PlayerDamagedRelatedAttributeCom);
+
+//    canvasGrpCom.canvasGroup.alpha = 1f;
+//    canvasGrpCom.canvasGroup.interactable = true;
+//    canvasGrpCom.canvasGroup.blocksRaycasts = true;
+//}

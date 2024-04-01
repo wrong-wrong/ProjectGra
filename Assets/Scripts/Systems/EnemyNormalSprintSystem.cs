@@ -52,12 +52,12 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach (var (localTransform, attack,stateMachine,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EnemyStateMachine>>()
+            foreach (var (localTransform, attack,stateMachine,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>>()
                 .WithEntityAccess())
             {
                 var tarDir = playerTransform.Position - localTransform.ValueRO.Position;
                 var tarDirSq = math.csum(tarDir * tarDir);
-                if (stateMachine.ValueRO.CurrentState == EnemyState.Follow)
+                if (stateMachine.ValueRO.CurrentState == EntityState.Follow)
                 {
                     attack.ValueRW.AttackCooldown -= deltatime;
                     if (tarDirSq < 0.001f) continue;
@@ -66,28 +66,28 @@ namespace ProjectGra
                     if (tarDirSq < startSprintDistanceSq && attack.ValueRO.AttackCooldown < 0f)
                     {
                         Debug.Log("Setting state to Sprint");
-                        stateMachine.ValueRW.CurrentState = EnemyState.SprintAttack;
+                        stateMachine.ValueRW.CurrentState = EntityState.SprintAttack;
                         attack.ValueRW.SprintDirNormalized = math.normalize(tarDir);
                         attack.ValueRW.AttackCooldown = attackCoolDown;
                         attack.ValueRW.SprintTimer = 1.5f * sprintDistance / sprintSpeed; // magic number trying to let the enemy sprint for a longer distance
                     }
 
-                }else if(stateMachine.ValueRO.CurrentState == EnemyState.SprintAttack)
+                }else if(stateMachine.ValueRO.CurrentState == EntityState.SprintAttack)
                 {
                     localTransform.ValueRW.Position += attack.ValueRO.SprintDirNormalized * sprintSpeed * deltatime;
                     if (tarDirSq < hitDistanceSq)
                     {
                         Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
                         playerDamageRecord.ValueRW.damagedThisFrame += attack.ValueRO.AttackVal;
-                        stateMachine.ValueRW.CurrentState = EnemyState.Follow;
+                        stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
                     if ((attack.ValueRW.SprintTimer -= deltatime)< 0f)
                     {
                         Debug.Log("Timer out - Setting state to Sprint");
-                        stateMachine.ValueRW.CurrentState = EnemyState.Follow;
+                        stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
                     
-                }else if(stateMachine.ValueRO.CurrentState == EnemyState.Dead)
+                }else if(stateMachine.ValueRO.CurrentState == EntityState.Dead)
                 {
                     ecb.DestroyEntity(entity);
                     if (random.NextFloat() < lootChance)

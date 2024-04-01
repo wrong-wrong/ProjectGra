@@ -41,28 +41,28 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach(var (localTransform, stateMachine, attack, death,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EnemyStateMachine>, RefRW<NormalMeleeAttack>
+            foreach(var (localTransform, stateMachine, attack, death,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
                 , RefRW<NormalMeleeDeath>>()
                 .WithEntityAccess())
             {
                 var tarDir = playerLocalTransform.Position - localTransform.ValueRO.Position;
                 var disSq = math.csum(tarDir * tarDir);
-                if (stateMachine.ValueRO.CurrentState == EnemyState.Follow)
+                if (stateMachine.ValueRO.CurrentState == EntityState.Follow)
                 {
                     if(disSq < attackDistanceSq)
                     {
-                        stateMachine.ValueRW.CurrentState = EnemyState.MeleeAttack;
+                        stateMachine.ValueRW.CurrentState = EntityState.MeleeAttack;
                     }
                     else
                     {
                         localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
                         localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                     }
-                }else if(stateMachine.ValueRO.CurrentState == EnemyState.MeleeAttack) 
+                }else if(stateMachine.ValueRO.CurrentState == EntityState.MeleeAttack) 
                 {
                     if(disSq > attackDistanceSq)
                     {
-                        stateMachine.ValueRW.CurrentState = EnemyState.Follow;
+                        stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         attack.ValueRW.AttackCooldown = cooldown;
                     }
                     else if((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
@@ -72,7 +72,7 @@ namespace ProjectGra
                         attack.ValueRW.AttackCooldown = cooldown;
                     }
                     
-                }else if(stateMachine.ValueRO.CurrentState == EnemyState.Dead)
+                }else if(stateMachine.ValueRO.CurrentState == EntityState.Dead)
                 {
                     if((death.ValueRW.timer -= deltatime) > 0f)
                     {

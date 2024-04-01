@@ -1,15 +1,17 @@
-using ProjectGra.PlayerController;
+using System.Text;
 using TMPro;
-using Unity.Entities;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ProjectGra
 {
     public class CanvasMonoSingleton : MonoBehaviour
     {
-        public static CanvasMonoSingleton instance;
+        private StringBuilder stringBuilder;
+        public static CanvasMonoSingleton Instance;
 
-        public CanvasGroup canvasGroup;
+        [SerializeField] CanvasGroup ShopCanvasGroup;
+        [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] TextMeshProUGUI text1;
         [SerializeField] TextMeshProUGUI text2;
         [SerializeField] TextMeshProUGUI text3;
@@ -22,16 +24,22 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI text10;
         [SerializeField] TextMeshProUGUI text11;
 
+
+        [Header("InGameUI")]
+        [SerializeField] Image healthBar;
+        [SerializeField] Image experienceBar;
+        [SerializeField] TextMeshProUGUI MaterialCount;
         public void Awake()
         {
-            //HideCursor();
-            if (instance != null)
+            if (Instance != null)
             {
                 Destroy(gameObject);
                 return;
             }
-            instance = this;
-            //CameraTargetTransform = transform;
+            stringBuilder = new StringBuilder();
+            Instance = this;
+            InGameUICanvasGroup.interactable = false;
+            InGameUICanvasGroup.blocksRaycasts = false;
         }
         public void UpdatePlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
@@ -49,11 +57,41 @@ namespace ProjectGra
             text11.text = attributeStruct.Range.ToString();
         }
 
+        public void UpdateInGameUI(float healthFillAmount, float expFillAmount, int materialsCount)
+        {
+            healthBar.fillAmount = healthFillAmount;
+            experienceBar.fillAmount = expFillAmount;
+            MaterialCount.text = materialsCount.ToString();
+        }
+
+
+
+        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
+        {
+            ShopCanvasGroup.alpha = 1;
+            ShopCanvasGroup.interactable = true;
+            ShopCanvasGroup.blocksRaycasts = true;
+            UpdatePlayerAttribute(attributeStruct, damageRelatedAttribute);
+        }
+        public void HideShop()
+        {
+            ShopCanvasGroup.alpha = 0;
+            ShopCanvasGroup.interactable = false;
+            ShopCanvasGroup.blocksRaycasts = false;
+        }
+        public void ShowInGameUI()
+        {
+            InGameUICanvasGroup.alpha = 1;
+        }
+        public void HideInGameUI()
+        {
+            InGameUICanvasGroup.alpha = 0;
+        }
     }
 
-    public class MyCanvasGroupManagedCom : IComponentData
-    {
-        public CanvasGroup canvasGroup;
-        public Cursor cursor;
-    }
+    //public class MyCanvasGroupManagedCom : IComponentData
+    //{
+    //    public CanvasGroup canvasGroup;
+    //    public Cursor cursor;
+    //}
 }

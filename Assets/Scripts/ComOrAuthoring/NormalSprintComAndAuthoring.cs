@@ -6,7 +6,7 @@ namespace ProjectGra
 {
     public class NormalSprintComAndAuthoring : MonoBehaviour
     {
-        public float AttackVal;
+        public int AttackVal;
         public float AttackCooldown;
         public float DeathTimer;
         public class Baker : Baker<NormalSprintComAndAuthoring>
@@ -31,7 +31,7 @@ namespace ProjectGra
     }
     public struct NormalSprintAttack : IComponentData
     {
-        public float AttackVal;
+        public int AttackVal;
         public float AttackCooldown;
         public float SprintTimer;
         public float3 SprintDirNormalized;

@@ -13,21 +13,21 @@ namespace ProjectGra
             public override void Bake(EnemyCommonComAndAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent(entity, new EnemyHealthPoint { HealthPoint = authoring.HealthPoint });
+                AddComponent(entity, new EntityHealthPoint { HealthPoint = authoring.HealthPoint });
                 //AddComponent(entity, new EnemyFollowState { FollowSpeed = authoring.FollowSpeed , StopDistance = authoring.StopDistance});
-                AddComponent(entity, new EnemyStateMachine { CurrentState = EnemyState.Follow });
+                AddComponent(entity, new EntityStateMachine { CurrentState = EntityState.Follow });
             }
         }
     }
 
-    public struct EnemyHealthPoint : IComponentData, IEnableableComponent
+    public struct EntityHealthPoint : IComponentData
     {
         public int HealthPoint;
     }
 
-    public struct EnemyStateMachine : IComponentData
+    public struct EntityStateMachine : IComponentData
     {
-        public EnemyState CurrentState;
+        public EntityState CurrentState;
     }
     
 

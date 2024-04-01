@@ -21,7 +21,7 @@ namespace ProjectGra
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
                 ghostPlayer = CameraTargetMonoSingleton.instance.transform});
             state.EntityManager.AddComponent<GameControllNotPaused>(singleton);
-            state.EntityManager.AddComponentObject(singleton, new MyCanvasGroupManagedCom { canvasGroup = CanvasMonoSingleton.instance.canvasGroup });
+            //state.EntityManager.AddComponentObject(singleton, new MyCanvasGroupManagedCom { canvasGroup = CanvasMonoSingleton.instance.ShopCanvasGroup });
 
             var configCom = SystemAPI.GetSingleton<ConfigComponent>();
             
@@ -30,12 +30,12 @@ namespace ProjectGra
             state.EntityManager.SetComponentData(playerEntity, new PlayerAttributeMain
             {
                 MaxHealthPoint = configCom.MaxHealthPoint,
-                CurrentHealthPoint = configCom.MaxHealthPoint,
                 HealthRegain = configCom.HealthRegain,
                 Armor = configCom.Armor,
                 SpeedPercentage = configCom.SpeedPercentage,
                 Range = configCom.Range,
             });
+            state.EntityManager.SetComponentData(playerEntity, new EntityHealthPoint { HealthPoint = configCom.MaxHealthPoint });
             state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated
             {
                 MeleeRangedElementAttSpd = new float4(configCom.MeleeDamage, configCom.RangedDamage, configCom.ElementDamage, configCom.AttackSpeed),
@@ -79,10 +79,21 @@ namespace ProjectGra
                         damage = (int)calculatedDamageAfterBonus
                     });
                     state.EntityManager.RemoveComponent<LinkedEntityGroup>(firstWeapon.SpawneePrefab);
-
                 }
             }
 
+            var playerMaterialsCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
+            var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
+            var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
+            UpdateInGameUI(PlayerAttibuteCom,playerHp, playerMaterialsCount);
+            CanvasMonoSingleton.Instance.HideShop();
+            CanvasMonoSingleton.Instance.ShowInGameUI();
+        }
+
+        private void UpdateInGameUI(PlayerAttributeMain attribute,EntityHealthPoint hp, PlayerMaterialCount materialCount)
+        {
+
+            CanvasMonoSingleton.Instance.UpdateInGameUI(hp.HealthPoint / attribute.MaxHealthPoint, 0.5f, materialCount.Count);
         }
     }
 
