@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -9,9 +10,13 @@ namespace ProjectGra
     {
         private StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
+        public Action OnContinueButtonClicked;
 
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup InGameUICanvasGroup;
+        [SerializeField] Button ContinueButton;
+
+        [Header("Player Attribute")]
         [SerializeField] TextMeshProUGUI text1;
         [SerializeField] TextMeshProUGUI text2;
         [SerializeField] TextMeshProUGUI text3;
@@ -25,6 +30,22 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI text11;
 
 
+        [Header("MainWeapon")]
+        [SerializeField] TextMeshProUGUI MainWeaponInfoText;
+        [SerializeField] TextMeshProUGUI text13;
+        [SerializeField] TextMeshProUGUI text14;
+
+        [SerializeField] TextMeshProUGUI attackSpeedBonus;
+        [SerializeField] TextMeshProUGUI critHitChance;
+        [SerializeField] TextMeshProUGUI critHitRatio;
+
+        [SerializeField] TextMeshProUGUI cooldown;
+        [SerializeField] TextMeshProUGUI range;
+        [SerializeField] TextMeshProUGUI damagePercentage;
+            
+
+
+
         [Header("InGameUI")]
         [SerializeField] Image healthBar;
         [SerializeField] Image experienceBar;
@@ -36,11 +57,23 @@ namespace ProjectGra
                 Destroy(gameObject);
                 return;
             }
-            stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder(100);
             Instance = this;
             InGameUICanvasGroup.interactable = false;
             InGameUICanvasGroup.blocksRaycasts = false;
+            ContinueButton.onClick.AddListener(ActionWrapper);
         }
+
+        public void OnDestroy()
+        {
+            ContinueButton.onClick.RemoveListener(ActionWrapper);   
+        }
+        private void ActionWrapper()
+        {
+            OnContinueButtonClicked?.Invoke();
+            //Debug.Log("ButtonClicked");
+        }
+        
         public void UpdatePlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
             text1.text = attributeStruct.MaxHealthPoint.ToString();
@@ -71,14 +104,39 @@ namespace ProjectGra
             MaterialCount.text = materialsCount.ToString();
         }
 
+        public void UpdateMainWeaponInfo(MainWeaponState mainWeaponState)
+        {
+            stringBuilder.AppendLine("Weapon Unknown");
+            stringBuilder.Append(mainWeaponState.BasicDamage);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.DamageBonus.x);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.DamageBonus.y);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.DamageBonus.z);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.DamageBonus.w);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.WeaponCriticalHitChance);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.WeaponCriticalHitRatio);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.Range);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(mainWeaponState.Cooldown);
+            stringBuilder.AppendLine();
+            MainWeaponInfoText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
+        }
 
 
-        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
+        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState)
         {
             ShopCanvasGroup.alpha = 1;
             ShopCanvasGroup.interactable = true;
             ShopCanvasGroup.blocksRaycasts = true;
             UpdatePlayerAttribute(attributeStruct, damageRelatedAttribute);
+            UpdateMainWeaponInfo(weaponState);
         }
         public void HideShop()
         {

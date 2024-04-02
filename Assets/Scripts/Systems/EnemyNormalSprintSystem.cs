@@ -67,7 +67,7 @@ namespace ProjectGra
                     localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                     if (tarDirSq < startSprintDistanceSq && attack.ValueRO.AttackCooldown < 0f)
                     {
-                        Debug.Log("Setting state to Sprint");
+                        //Debug.Log("Setting state to Sprint");
                         stateMachine.ValueRW.CurrentState = EntityState.SprintAttack;
                         attack.ValueRW.SprintDirNormalized = math.normalize(tarDir);
                         attack.ValueRW.AttackCooldown = attackCoolDown;
@@ -79,13 +79,13 @@ namespace ProjectGra
                     localTransform.ValueRW.Position += attack.ValueRO.SprintDirNormalized * sprintSpeed * deltatime;
                     if (tarDirSq < hitDistanceSq)
                     {
-                        Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
+                        //Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
                         playerHealthPoint.ValueRW.HealthPoint -= attackVal;
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
                     if ((attack.ValueRW.SprintTimer -= deltatime)< 0f)
                     {
-                        Debug.Log("Timer out - Setting state to Sprint");
+                        //Debug.Log("Timer out - Setting state to Sprint");
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
                     

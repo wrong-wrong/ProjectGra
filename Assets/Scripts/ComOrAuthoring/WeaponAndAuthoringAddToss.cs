@@ -62,13 +62,13 @@ namespace ProjectGra
         public Entity WeaponModel;
         public Entity SpawneePrefab;
 
-        public float4 DamageBonus;
         public int BasicDamage;
+        public float4 DamageBonus;
         public float WeaponCriticalHitChance;
         public float WeaponCriticalHitRatio;
-
-        public float Cooldown;
         public float Range;
+        public float Cooldown;
+
         public float3 WeaponPositionOffset;
 
         public int DamageAfterBonus;
