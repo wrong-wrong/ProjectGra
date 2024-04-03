@@ -3,6 +3,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Rendering.CameraUI;
 
 namespace ProjectGra
 {
@@ -119,7 +120,20 @@ namespace ProjectGra
             stringBuilder.Clear();
         }
 
-
+        public void SetSlotWeaponIdx(int idx, int idx1, int idx2, int idx3)
+        {
+            mainWeaponSlot.InitSlot(idx);
+            leftAutoSlot.InitSlot(idx1);
+            midAutoSlot.InitSlot(idx2);
+            rightAutoSlot.InitSlot(idx3);
+        }
+        public void GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3)
+        {
+            idx = mainWeaponSlot.WeaponIdx;
+            idx1 = leftAutoSlot.WeaponIdx;
+            idx2 = midAutoSlot.WeaponIdx;
+            idx3 = rightAutoSlot.WeaponIdx;
+        }
         public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState)
         {
             ShopCanvasGroup.alpha = 1;

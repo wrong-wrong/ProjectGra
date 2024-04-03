@@ -12,7 +12,7 @@ namespace ProjectGra
         [SerializeField] Image iconImg;
 
         //TODO a field to store current weapon data
-        public WeaponConfigInfoCom slotWeaponConfig;
+        public int WeaponIdx;
         private Transform iconTransform;
         private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化
 
@@ -59,19 +59,26 @@ namespace ProjectGra
         {
             iconTransform.localPosition = Vector3.zero;
         }
-        //public void InitSlot(CurrentPlayerWeaponConfigInfoBuffer config)
-        //{
-        //    slotWeaponConfig = config;
-        //    iconImg.color = slotWeaponConfig.
-        //}
-
+        public void InitSlot(int idx)
+        {
+            WeaponIdx = idx;
+            if (WeaponIdx == -1) 
+            { 
+                iconImg.color = Color.black;
+            }
+            else
+            {
+                var config = WeaponSOConfigSingleton.Instance.weaponMap.wpNativeHashMap[idx];
+                iconImg.color = new Color(config.color.x, config.color.y, config.color.z);
+            }
+        }
         public static void SwapWeaponSlot(WeaponSlot dragged, WeaponSlot slot2)
         {
-            var tmp = slot2.slotWeaponConfig;
-            slot2.slotWeaponConfig = dragged.slotWeaponConfig;
-            dragged.slotWeaponConfig = tmp;
+            var tmp = slot2.WeaponIdx;
+            slot2.InitSlot(dragged.WeaponIdx);
+            dragged.InitSlot(tmp);
         }
-
+        
     }
 
 }

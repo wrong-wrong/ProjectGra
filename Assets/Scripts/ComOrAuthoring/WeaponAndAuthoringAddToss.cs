@@ -24,6 +24,7 @@ namespace ProjectGra
 
                     buffer.Add(new WeaponConfigInfoCom
                     {
+                        color = new float3(so.color.r, so.color.g, so.color.b),
                         WeaponIndex = so.WeaponIndex,
                         WeaponPrefab = GetEntity(so.WeaponModel, TransformUsageFlags.Dynamic),
                         SpawneePrefab = GetEntity(so.SpawneePrefabs, TransformUsageFlags.Dynamic),
@@ -53,6 +54,7 @@ namespace ProjectGra
     [InternalBufferCapacity(0)]
     public struct WeaponConfigInfoCom : IBufferElementData
     {
+        public float3 color;
         //readonly 
         public int WeaponIndex;
         public Entity WeaponPrefab;  //this is Prefab

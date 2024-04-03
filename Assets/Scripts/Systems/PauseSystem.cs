@@ -8,31 +8,33 @@ namespace ProjectGra
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
     public partial struct PauseSystem : ISystem, ISystemStartStop
     {
-        public bool IsPause;
-        private NativeArray<int> idxList;
+        //public bool IsPause;
+        //private NativeArray<int> idxList;
         public void OnCreate(ref SystemState state)
         {
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
+            var l = new NativeArray<int>(3, Allocator.Persistent);
+            l[0] = 1; l[1] = 2; l[2] = 3;
             state.EntityManager.AddComponent<PauseSystemData>(state.SystemHandle);
-            state.EntityManager.SetComponentData(state.SystemHandle, new PauseSystemData { IsPause = false });
-            IsPause = false;
+            state.EntityManager.SetComponentData(state.SystemHandle, new PauseSystemData { IsPause = false , idxList = l});
+            state.RequireForUpdate<PlayerTag>();
+            //IsPause = false;
         }
         public void OnStartRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnContinueButtonClicked += UnpauseOnContinueButtonCallback;
-            idxList = new NativeArray<int>(3,Allocator.Persistent);
+            var idxList = SystemAPI.GetComponent<PauseSystemData>(state.SystemHandle).idxList;
+            PopulateWeaponStateWithWeaponIdx(ref state, 0, ref idxList);
         }
         public void OnStopRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnContinueButtonClicked -= UnpauseOnContinueButtonCallback;
-            idxList.Dispose();
         }
         public void UnpauseOnContinueButtonCallback()
         {
             
             ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<PauseSystem>();
             Unpause(ref state);
-            //IsPause = !IsPause;
         }
 
         private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int mainWeaponIdx,ref NativeArray<int> wpIdxList)
@@ -100,6 +102,12 @@ namespace ProjectGra
             autoWpEcb.Clear();
             for(int i = 0; i < 3; ++i)
             {
+                if (wpIdxList[i] == -1)
+                {
+                    autoWpEcb.Add(new AutoWeaponState { WeaponIndex = -1 });
+                    continue;
+                }
+
                 var config = wpHashMapWrapperCom.wpNativeHashMap[wpIdxList[i]];
 
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
@@ -129,10 +137,12 @@ namespace ProjectGra
         }
         private void Unpause(ref SystemState state)
         {
-            idxList[0] = 1;
-            idxList[1] = 2;
-            idxList[2] = 3;
-            PopulateWeaponStateWithWeaponIdx(ref state, 0, ref idxList);
+            CanvasMonoSingleton.Instance.GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3);
+            var sysData = SystemAPI.GetComponentRW<PauseSystemData>(state.SystemHandle);
+            sysData.ValueRW.idxList[0] = idx1;
+            sysData.ValueRW.idxList[1] = idx2;
+            sysData.ValueRW.idxList[2] = idx3;
+            PopulateWeaponStateWithWeaponIdx(ref state, idx, ref sysData.ValueRW.idxList);
 
             //flip isPause
             var com = SystemAPI.GetComponentRW<PauseSystemData>(state.SystemHandle);
@@ -157,12 +167,16 @@ namespace ProjectGra
 
             var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
-            var weaponinfo = SystemAPI.GetSingleton<MainWeaponState>();
-            CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, weaponinfo);
+            var mainWpstate= SystemAPI.GetSingleton<MainWeaponState>();
+            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
+            CanvasMonoSingleton.Instance.SetSlotWeaponIdx(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
+
+            CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, mainWpstate);
             CanvasMonoSingleton.Instance.HideInGameUI();
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
         }
+        
         public void OnUpdate(ref SystemState state)
         {
 
@@ -188,6 +202,7 @@ namespace ProjectGra
     public struct PauseSystemData : IComponentData
     {
         public bool IsPause;
+        public NativeArray<int> idxList;
     }
     public struct GameControllNotPaused : IComponentData { }
 }

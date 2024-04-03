@@ -27,6 +27,9 @@ namespace ProjectGra
         {
             
         }
-
+        public void GetColor(int weaponIdx)
+        {
+            //weaponMap.wpNativeHashMap[weaponIdx].
+        }
     }
 }
