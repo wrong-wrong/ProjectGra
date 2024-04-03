@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
+  m_Name: Blue2WeaponSO
+  m_EditorClassIdentifier: 
+  color: {r: 0.015686275, g: 0.427451, b: 0.6039216, a: 0}
+  WeaponIndex: 1
+  WeaponModel: {fileID: 5069078350183642497, guid: b5c57f669f99ab24e96c2ad2e032f46a,
+    type: 3}
+  SpawneePrefabs: {fileID: 1601605760723225021, guid: 50766e66c6f0c584f8715b5c29d5e68d,
+    type: 3}
+  MeleeBonus: 0
+  RangedBonus: 0
+  ElementBonus: 0
+  AttackSpeedBonus: 0
+  BasicDamage: 10
+  WeaponCriticalHitChance: 0.6
+  WeaponCriticalHitRatio: 2
+  Cooldown: 0.5
+  Range: 100
+  WeaponPositionOffsetRelativeToCameraTarget:
+    x: 0.3
+    y: 0.1
+    z: 0.7

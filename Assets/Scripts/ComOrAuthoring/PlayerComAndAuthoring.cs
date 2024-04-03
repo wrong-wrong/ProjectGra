@@ -19,7 +19,12 @@ namespace ProjectGra
                 AddComponent(entity, new PlayerExperience { Value = 0 });
                 AddComponent<EntityStateMachine>(entity);
                 //
-                AddComponent<MainWeaponState>(entity);
+                var buffer = AddBuffer<AutoWeaponState>(entity);
+                AddComponent<MainWeaponState>(entity, new MainWeaponState { WeaponIndex = -1});
+                for(int i = 0; i < 3; i++)
+                {
+                    buffer.Add(new AutoWeaponState {  WeaponIndex = -1 });
+                }
             }
         }
     }

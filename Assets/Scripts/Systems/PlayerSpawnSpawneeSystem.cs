@@ -1,7 +1,5 @@
 using ProjectGra.PlayerController;
 using Unity.Entities;
-using Unity.Mathematics;
-using UnityEngine;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
@@ -20,9 +18,10 @@ namespace ProjectGra
         {
             var deltatime = SystemAPI.Time.DeltaTime;
             //need cur main weapon position,  cur spawnee prefab, player input, real cooldown, 
-            foreach (var (mainWeaponState, inputState,playerAttribute) in SystemAPI.Query<RefRW<MainWeaponState>, EnabledRefRO<ShootInput>, RefRO<PlayerAtttributeDamageRelated>>()
+            foreach (var (mainWeaponState, inputState, playerAttribute) in SystemAPI.Query<RefRW<MainWeaponState>, EnabledRefRO<ShootInput>, RefRO<PlayerAtttributeDamageRelated>>()
                     .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
+                if (mainWeaponState.ValueRO.WeaponIndex == -1) continue;
                 ref var realcd = ref mainWeaponState.ValueRW.RealCooldown;
                 realcd -= deltatime;
                 if (realcd > 0.001f) { continue; }
@@ -30,7 +29,7 @@ namespace ProjectGra
                 realcd = mainWeaponState.ValueRO.Cooldown;
                 var spawnee = state.EntityManager.Instantiate(mainWeaponState.ValueRO.SpawneePrefab);
                 state.EntityManager.SetComponentData(spawnee, mainWeaponState.ValueRO.mainWeaponLocalTransform);
-                if(random.NextFloat()<mainWeaponState.ValueRO.WeaponCriticalHitChance + playerAttribute.ValueRO.CriticalHitChance)
+                if (random.NextFloat() < mainWeaponState.ValueRO.WeaponCriticalHitChance + playerAttribute.ValueRO.CriticalHitChance)
                 {
                     state.EntityManager.SetComponentData(spawnee, new SpawneeCurDamage
                     {

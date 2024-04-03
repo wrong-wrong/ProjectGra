@@ -15,6 +15,7 @@ namespace ProjectGra
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] Button ContinueButton;
+        public RectTransform DragLayer;
 
         [Header("Player Attribute")]
         [SerializeField] TextMeshProUGUI text1;
@@ -30,19 +31,22 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI text11;
 
 
-        [Header("MainWeapon")]
+        [Header("MainWeaponInfo")]
         [SerializeField] TextMeshProUGUI MainWeaponInfoText;
-        [SerializeField] TextMeshProUGUI text13;
-        [SerializeField] TextMeshProUGUI text14;
+        //[SerializeField] TextMeshProUGUI text13;
+        //[SerializeField] TextMeshProUGUI text14;
+        //[SerializeField] TextMeshProUGUI attackSpeedBonus;
+        //[SerializeField] TextMeshProUGUI critHitChance;
+        //[SerializeField] TextMeshProUGUI critHitRatio;
+        //[SerializeField] TextMeshProUGUI cooldown;
+        //[SerializeField] TextMeshProUGUI range;
+        //[SerializeField] TextMeshProUGUI damagePercentage;
 
-        [SerializeField] TextMeshProUGUI attackSpeedBonus;
-        [SerializeField] TextMeshProUGUI critHitChance;
-        [SerializeField] TextMeshProUGUI critHitRatio;
-
-        [SerializeField] TextMeshProUGUI cooldown;
-        [SerializeField] TextMeshProUGUI range;
-        [SerializeField] TextMeshProUGUI damagePercentage;
-            
+        [Header("WeaponSlot")]
+        [SerializeField] WeaponSlot mainWeaponSlot;
+        [SerializeField] WeaponSlot leftAutoSlot;
+        [SerializeField] WeaponSlot midAutoSlot;
+        [SerializeField] WeaponSlot rightAutoSlot;
 
 
 
@@ -88,20 +92,6 @@ namespace ProjectGra
             text9.text = damageRelatedAttribute.MeleeRangedElementAttSpd.w.ToString();
             text10.text = damageRelatedAttribute.DamagePercentage.ToString();
             text11.text = attributeStruct.Range.ToString();
-        }
-
-        private int maxHp;
-        private float maxExp;
-        public void SetMaxHpExp(int maxHp, float maxExp)
-        {
-            this.maxHp = maxHp;
-            this.maxExp = maxExp;
-        }
-        public void UpdateInGameUI(int hp, float exp, int materialsCount)
-        {
-            healthBar.fillAmount = (float)hp / maxHp;
-            experienceBar.fillAmount = exp / maxExp;
-            MaterialCount.text = materialsCount.ToString();
         }
 
         public void UpdateMainWeaponInfo(MainWeaponState mainWeaponState)
@@ -152,6 +142,22 @@ namespace ProjectGra
         {
             InGameUICanvasGroup.alpha = 0;
         }
+
+        #region In-game UI
+        private int maxHp;
+        private float maxExp;
+        public void SetMaxHpExp(int maxHp, float maxExp)
+        {
+            this.maxHp = maxHp;
+            this.maxExp = maxExp;
+        }
+        public void UpdateInGameUI(int hp, float exp, int materialsCount)
+        {
+            healthBar.fillAmount = (float)hp / maxHp;
+            experienceBar.fillAmount = exp / maxExp;
+            MaterialCount.text = materialsCount.ToString();
+        }
+        #endregion
     }
 
     //public class MyCanvasGroupManagedCom : IComponentData

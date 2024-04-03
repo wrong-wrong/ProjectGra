@@ -1,10 +1,16 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ProjectGra
 {
     public class ConfigAuthoringAddToSS : MonoBehaviour
     {
+        [SerializeField] private float3 mainWpOffset;
+        [SerializeField] private float3 leftAutoWpOffset;
+        [SerializeField] private float3 rightAutoWpOffset;
+        [SerializeField] private float3 midAutoWpOffset;
+
         [SerializeField] private float CameraXSensitivity = 1f;
         [SerializeField] private float CameraYSensitivity = 1f;
         [SerializeField] private float PlayerBasicMoveSpeed = 1f;
@@ -35,6 +41,10 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.None);
                 AddComponent(entity, new ConfigComponent
                 {
+                    mainWpOffset = authoring.mainWpOffset,
+                    midAutoWpOffset = authoring.midAutoWpOffset,
+                    leftAutoWpOffset = authoring.leftAutoWpOffset,
+                    rightAutoWpOffset = authoring.rightAutoWpOffset,
                     CamXSensitivity = authoring.CameraXSensitivity,
                     CamYSensitivity = authoring.CameraYSensitivity,
                     PlayerBasicMoveSpeedValue = authoring.PlayerBasicMoveSpeed,
@@ -59,6 +69,12 @@ namespace ProjectGra
     }
     public struct ConfigComponent : IComponentData
     {
+
+        public float3 mainWpOffset;
+        public float3 leftAutoWpOffset;
+        public float3 rightAutoWpOffset;
+        public float3 midAutoWpOffset;
+
         public float CamXSensitivity;
         public float CamYSensitivity;
         public float PlayerBasicMoveSpeedValue;

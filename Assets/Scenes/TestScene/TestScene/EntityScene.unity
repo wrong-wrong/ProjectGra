@@ -496,6 +496,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9212aca9ed9ba694e9181daec8e34945, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainWpOffset:
+    x: 0.3
+    y: 0.1
+    z: 0.7
+  leftAutoWpOffset:
+    x: -1.4
+    y: -0.6
+    z: 1.8
+  rightAutoWpOffset:
+    x: 1.4
+    y: -0.6
+    z: 1.8
+  midAutoWpOffset:
+    x: 0
+    y: -0.6
+    z: 2.2
   CameraXSensitivity: 2
   CameraYSensitivity: 0.8
   PlayerBasicMoveSpeed: 3
@@ -525,6 +541,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponSOList:
   - {fileID: 11400000, guid: 4b72dadedd9e8b64d97b05408777baf7, type: 2}
+  - {fileID: 11400000, guid: 9e1e5a45c6a31a24e896b055800c202e, type: 2}
+  - {fileID: 11400000, guid: 7acd499c5cd4b0a418640db3eb309644, type: 2}
+  - {fileID: 11400000, guid: 490c5a53843a0f142b1c05a97b02d329, type: 2}
 --- !u!114 &1829473141
 MonoBehaviour:
   m_ObjectHideFlags: 0
