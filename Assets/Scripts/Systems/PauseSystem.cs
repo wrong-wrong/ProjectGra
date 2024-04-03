@@ -1,3 +1,4 @@
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace ProjectGra
     public partial struct PauseSystem : ISystem, ISystemStartStop
     {
         public bool IsPause;
+        private NativeArray<int> idxList;
         public void OnCreate(ref SystemState state)
         {
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
@@ -18,10 +20,12 @@ namespace ProjectGra
         public void OnStartRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnContinueButtonClicked += UnpauseOnContinueButtonCallback;
+            idxList = new NativeArray<int>(3,Allocator.Persistent);
         }
         public void OnStopRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnContinueButtonClicked -= UnpauseOnContinueButtonCallback;
+            idxList.Dispose();
         }
         public void UnpauseOnContinueButtonCallback()
         {
@@ -31,7 +35,7 @@ namespace ProjectGra
             //IsPause = !IsPause;
         }
 
-        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int mainWeaponIdx,int leftAutoIdx, int midAutoIdx, int rightAutoIdx)
+        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int mainWeaponIdx,ref NativeArray<int> wpIdxList)
         {
             //Get configBuffer info from 
             
@@ -42,7 +46,7 @@ namespace ProjectGra
             var mainWeaponstate = SystemAPI.GetSingleton<MainWeaponState>();
             var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
             var wpHashMapWrapperCom = SystemAPI.GetSingleton<AllWeaponMap>();
-            var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             //destory model anyway;
             //need to destory earlier model entity if existed and instantiate new one;
             if (state.EntityManager.Exists(mainWeaponstate.WeaponModel))
@@ -82,56 +86,53 @@ namespace ProjectGra
                 //todo maybe divide range by config.spawneeSpeed;
                 ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
             }
-            
-            if(leftAutoIdx != -1)
+            //Destory previous model
+            for(int i = 0; i < 3; ++i)
             {
-                Debug.Log("leftAutoIdx : " + leftAutoIdx);
+                ref var autoWp = ref autoWeaponBuffer.ElementAt(i);
+                if (state.EntityManager.Exists(autoWp.WeaponModel))
+                {
+                    ecb.DestroyEntity(autoWp.WeaponModel);
+                }
             }
-            if(midAutoIdx != -1)
+            //record operation on the buffer
+            var autoWpEcb = ecb.SetBuffer<AutoWeaponState>(playerEntity);
+            autoWpEcb.Clear();
+            for(int i = 0; i < 3; ++i)
             {
-                Debug.Log("midAutoIdx : " + midAutoIdx);
+                var config = wpHashMapWrapperCom.wpNativeHashMap[wpIdxList[i]];
 
+                var newWpModel = ecb.Instantiate(config.WeaponPrefab);
+                var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
+                    * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
+                var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
+                var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
+                var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
+
+                autoWpEcb.Add(new AutoWeaponState
+                {
+                    WeaponIndex = wpIdxList[i],
+                    WeaponModel = newWpModel,
+                    WeaponPositionOffset = config.WeaponPositionOffset,
+                    RealCooldown = 0f,
+                    Cooldown = calculatedCooldown,
+                    DamageAfterBonus = calculatedDamageAfterBonus,
+                    WeaponCriticalHitChance = calculatedCritHitChance,
+                    WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                    SpawneePrefab = config.SpawneePrefab,
+                }); 
+                ecb.SetComponent(config.SpawneePrefab, new SpawneeCurDamage { damage = calculatedDamageAfterBonus });
+                //todo maybe divide range by config.spawneeSpeed;
+                ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
             }
-            if (rightAutoIdx != -1) 
-            { 
-                Debug.Log("rightAutoIdx : " + rightAutoIdx);
-            }
 
-
-            #region old setting code
-            //var firstWeapon = weaponConfigBuffer[0];
-            //var weaponInstance = state.EntityManager.Instantiate(firstWeapon.WeaponPrefab);
-            //var playerAttribute = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
-            //var calculatedDamageAfterBonus = ((firstWeapon.BasicDamage
-            //    + math.csum(firstWeapon.DamageBonus * playerAttribute.MeleeRangedElementAttSpd))
-            //    * (1 + playerAttribute.DamagePercentage));
-            //state.EntityManager.SetComponentData(playerEntity, new MainWeaponState
-            //{
-            //    WeaponModel = weaponInstance,
-            //    SpawneePrefab = firstWeapon.SpawneePrefab,
-            //    DamageBonus = firstWeapon.DamageBonus,
-            //    BasicDamage = firstWeapon.BasicDamage,
-            //    WeaponCriticalHitChance = firstWeapon.WeaponCriticalHitChance,
-            //    WeaponCriticalHitRatio = firstWeapon.WeaponCriticalHitRatio,
-            //    Cooldown = firstWeapon.Cooldown,
-            //    Range = firstWeapon.Range,
-            //    RealCooldown = 0,
-            //    WeaponPositionOffset = firstWeapon.WeaponPositionOffset,
-            //    DamageAfterBonus = (int)calculatedDamageAfterBonus
-            //});
-            //state.EntityManager.SetComponentData(firstWeapon.SpawneePrefab, new SpawneeTimer
-            //{
-            //    Value = firstWeapon.Range / 20f
-            //});
-            //state.EntityManager.SetComponentData(firstWeapon.SpawneePrefab, new SpawneeCurDamage
-            //{
-            //    damage = (int)calculatedDamageAfterBonus
-            //});
-            //state.EntityManager.RemoveComponent<LinkedEntityGroup>(firstWeapon.SpawneePrefab);
-            #endregion
         }
         private void Unpause(ref SystemState state)
         {
+            idxList[0] = 1;
+            idxList[1] = 2;
+            idxList[2] = 3;
+            PopulateWeaponStateWithWeaponIdx(ref state, 0, ref idxList);
 
             //flip isPause
             var com = SystemAPI.GetComponentRW<PauseSystemData>(state.SystemHandle);

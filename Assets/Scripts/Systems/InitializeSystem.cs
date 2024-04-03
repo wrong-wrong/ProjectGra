@@ -60,6 +60,7 @@ namespace ProjectGra
                     for(int i = 0, n = weaponConfigBuffer.Length; i < n; i++)
                     {
                         wpHashMp[weaponConfigBuffer[i].WeaponIndex] = weaponConfigBuffer[i];
+                        ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].WeaponPrefab);
                         ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].SpawneePrefab);
                     }
                     state.EntityManager.AddComponent<AllWeaponMap>(superSingleton);

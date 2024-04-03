@@ -43,7 +43,6 @@ namespace ProjectGra
             //EntityA tends to be spawnee
             Entity Spawnee;
             Entity Enemy;
-            Debug.Log("TriggerJob");
             if (CurDamageLookup.HasComponent(triggerEvent.EntityA) && EntityHealthPointLookup.HasComponent(triggerEvent.EntityB))
             {
                 

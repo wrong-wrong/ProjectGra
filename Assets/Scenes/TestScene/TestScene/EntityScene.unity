@@ -985,6 +985,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyPrefab-NormalMelee
       objectReference: {fileID: 0}
+    - target: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8497083611644056969, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: FollowSpeed
@@ -1203,6 +1208,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyPrefab-NormalSprint
+      objectReference: {fileID: 0}
+    - target: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
