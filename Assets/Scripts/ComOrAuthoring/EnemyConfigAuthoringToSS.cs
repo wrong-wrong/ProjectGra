@@ -6,14 +6,16 @@ namespace ProjectGra
     public class EnemyConfigAuthoringToSS : MonoBehaviour
     {
         [Header("NormalMeleeConfig")]
-        public int MeleeAttackVal;
-        public float MeleeFollowSpeed;
-        public float MeleeAttackDistance;
-        public float MeleeAttackCooldown;
-        public float MeleeDeathCountdown;
-        public float MeleeLootChance;
+        public GameObject NormalMeleePrefab;
+        public int NormalMeleeAttackVal;
+        public float NormalMeleeFollowSpeed;
+        public float NormalMeleeAttackDistance;
+        public float NormalMeleeAttackCooldown;
+        public float NormalMeleeDeathCountdown;
+        public float NormalMeleeLootChance;
 
         [Header("NormalSprintConfig")]
+        public GameObject NormalSprintPrefab;
         public int NormalSprintAttackVal;
         public float NormalSprintFollowSpeed;
         public float NormalSprintAttackDistance;
@@ -25,6 +27,7 @@ namespace ProjectGra
 
 
         [Header("NormalRangedConfig")]
+        public GameObject NormalRangedPrefab;
         public int NormalRangedAttackVal;
         public float NormalRangedFollowSpeed;
         public float NormalRangedAttackCooldown;
@@ -44,17 +47,23 @@ namespace ProjectGra
             public override void Bake(EnemyConfigAuthoringToSS authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
+                var NormalMeleePrefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic);
+                var buffer = AddBuffer<AllEnemyPrefabBuffer>(entity);
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = NormalMeleePrefab });
                 AddComponent(entity, new NormalMeleeConfigCom
                 {
-                    AttackVal = authoring.MeleeAttackVal,
-                    FollowSpeed = authoring.MeleeFollowSpeed,
-                    AttackDistance = authoring.MeleeAttackDistance,
-                    AttackCooldown = authoring.MeleeAttackCooldown,
-                    DeathCountdown = authoring.MeleeDeathCountdown,
-                    LootChance = authoring.MeleeLootChance,
+                    EnemyPrefab = NormalMeleePrefab,
+                    AttackVal = authoring.NormalMeleeAttackVal,
+                    FollowSpeed = authoring.NormalMeleeFollowSpeed,
+                    AttackDistance = authoring.NormalMeleeAttackDistance,
+                    AttackCooldown = authoring.NormalMeleeAttackCooldown,
+                    DeathCountdown = authoring.NormalMeleeDeathCountdown,
+                    LootChance = authoring.NormalMeleeLootChance,
                 });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalSprintConfigCom
                 {
+                    EnemyPrefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic),
                     AttackVal = authoring.NormalRangedAttackVal,
                     FollowSpeed = authoring.NormalSprintFollowSpeed,
                     AttackDistance = authoring.NormalSprintAttackDistance,
@@ -64,8 +73,10 @@ namespace ProjectGra
                     HitDistance = authoring.NormalSprintHitDistanceDuringSprint,
                     LootChance = authoring.NormalSprintLootChance,
                 });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalRangedConfigCom
                 {
+                    EnemyPrefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic),
                     AttackVal = authoring.NormalRangedAttackVal,
                     FollowSpeed = authoring.NormalRangedFollowSpeed,
                     AttackDistance = authoring.NormalRangedAttackDistance,
@@ -83,8 +94,14 @@ namespace ProjectGra
             }
         }
     }
+    [InternalBufferCapacity(0)]
+    public struct AllEnemyPrefabBuffer : IBufferElementData
+    {
+        public Entity Prefab;
+    }
     public struct NormalRangedConfigCom : IComponentData
     {
+        public Entity EnemyPrefab;
         //NormalCom
         public int AttackVal;
         public float FollowSpeed;
@@ -105,6 +122,7 @@ namespace ProjectGra
     }
     public struct NormalSprintConfigCom : IComponentData
     {
+        public Entity EnemyPrefab;
         public int AttackVal;
         public float FollowSpeed;
         public float AttackCooldown;
@@ -118,6 +136,7 @@ namespace ProjectGra
 
     public struct NormalMeleeConfigCom : IComponentData
     {
+        public Entity EnemyPrefab;
         public int AttackVal;
         public float FollowSpeed;
         public float AttackCooldown;
@@ -126,7 +145,6 @@ namespace ProjectGra
 
         public float AttackDistance;
         public float SprintSpeed;
-
 
     }
 }

@@ -91,13 +91,13 @@ namespace ProjectGra
                     
                 }else if(stateMachine.ValueRO.CurrentState == EntityState.Dead)
                 {
-                    ecb.DestroyEntity(entity);
                     if (random.NextFloat() < lootChance)
                     {
                         var material = ecb.Instantiate(MaterialPrefab);
                         ecb.SetComponent<LocalTransform>(material
                             , localTransform.ValueRO);
                     }
+                    ecb.DestroyEntity(entity);
                 }
             }
         }

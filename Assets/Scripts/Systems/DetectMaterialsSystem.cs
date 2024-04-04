@@ -26,6 +26,7 @@ namespace ProjectGra
             //if (!Input.GetKeyUp(KeyCode.Space)) return;
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<PlayerTag>());
             var playerMaterial = SystemAPI.GetSingletonRW<PlayerMaterialCount>();
+            var playerExperience = SystemAPI.GetSingletonRW<PlayerExperience>();
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
             var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var hits = new NativeList<DistanceHit>(state.WorldUpdateAllocator);
@@ -33,6 +34,7 @@ namespace ProjectGra
             {
                 foreach(var hit in hits)
                 {
+                    playerExperience.ValueRW.Value += 1f;
                     playerMaterial.ValueRW.Count += 1;
                     ecb.DestroyEntity(hit.Entity);
                 }

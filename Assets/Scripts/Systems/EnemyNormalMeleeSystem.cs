@@ -89,13 +89,14 @@ namespace ProjectGra
                     }
                     else
                     {
-                        ecb.DestroyEntity(entity);
                         if (random.NextFloat() < lootChance)
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
                             ecb.SetComponent<LocalTransform>(material
                                 , localTransform.ValueRO);
                         }
+                        ecb.DestroyEntity(entity);
+
                     }
                 }
             }

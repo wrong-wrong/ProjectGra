@@ -527,6 +527,9 @@ MonoBehaviour:
   DamagePercentage: 0
   CriticalHitChance: 0
   Range: 0
+  SpawningCooldown: 3
+  minRadius: 8
+  maxRadius: 16
 --- !u!114 &1829473140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,12 +559,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b2d4aeac3e59a4f915fd7c4def009a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeleeAttackVal: 5
-  MeleeFollowSpeed: 1
-  MeleeAttackDistance: 2
-  MeleeAttackCooldown: 1
-  MeleeDeathCountdown: 1
-  MeleeLootChance: 0.6
+  NormalMeleePrefab: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
+    type: 3}
+  NormalMeleeAttackVal: 10
+  NormalMeleeFollowSpeed: 3
+  NormalMeleeAttackDistance: 3
+  NormalMeleeAttackCooldown: 1
+  NormalMeleeDeathCountdown: 3
+  NormalMeleeLootChance: 0.5
+  NormalSprintPrefab: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
+    type: 3}
   NormalSprintAttackVal: 20
   NormalSprintFollowSpeed: 2
   NormalSprintAttackDistance: 8
@@ -570,6 +577,8 @@ MonoBehaviour:
   NormalSprintSprintSpeed: 8
   NormalSprintHitDistanceDuringSprint: 2
   NormalSprintLootChance: 1
+  NormalRangedPrefab: {fileID: 4558332914012663045, guid: 4e472d916b3157a48945b8eb855d2d8b,
+    type: 3}
   NormalRangedAttackVal: 15
   NormalRangedFollowSpeed: 1
   NormalRangedAttackCooldown: 3

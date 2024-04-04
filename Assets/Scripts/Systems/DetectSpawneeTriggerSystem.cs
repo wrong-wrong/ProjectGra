@@ -40,7 +40,7 @@ namespace ProjectGra
         [ReadOnly] public ComponentLookup<SpawneeCurDamage> CurDamageLookup;
         public void Execute(TriggerEvent triggerEvent)
         {
-            Debug.Log("Trigger Job");
+            //Debug.Log("Trigger Job");
             //EntityA tends to be spawnee
             Entity Spawnee;
             Entity Enemy;

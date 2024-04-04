@@ -163,7 +163,7 @@ namespace ProjectGra
             var playerMaterialsCount = SystemAPI.GetComponent<PlayerMaterialCount>(playerEntity);
             var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
             CanvasMonoSingleton.Instance.HideShop();
-            CanvasMonoSingleton.Instance.UpdateInGameUI(playerHp.HealthPoint, 0.5f, playerMaterialsCount.Count);
+            //CanvasMonoSingleton.Instance.UpdateInGameUI(playerHp.HealthPoint, 0.5f, playerMaterialsCount.Count);
             CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
 

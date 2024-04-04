@@ -32,7 +32,10 @@ namespace ProjectGra
         [SerializeField] private float CriticalHitChance;
         [SerializeField] private float Range;
 
-
+        [Header("Enemy Spawning Config")]
+        public float SpawningCooldown;
+        public float minRadius;
+        public float maxRadius;
 
         public class Baker : Baker<ConfigAuthoringAddToSS>
         {
@@ -64,8 +67,20 @@ namespace ProjectGra
                     DamagePercentage = authoring.DamagePercentage,
                     Range = authoring.Range,
                 });
+                AddComponent(entity, new EnemySpawningConfig
+                {
+                    SpawningCooldown = authoring.SpawningCooldown,
+                    maxRadius = authoring.maxRadius,
+                    minRadius = authoring.minRadius,
+                });
             }
         }
+    }
+    public struct EnemySpawningConfig : IComponentData
+    {
+        public float SpawningCooldown;
+        public float minRadius;
+        public float maxRadius;
     }
     public struct ConfigComponent : IComponentData
     {
