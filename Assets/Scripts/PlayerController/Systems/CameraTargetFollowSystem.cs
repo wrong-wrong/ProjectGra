@@ -72,7 +72,8 @@ namespace ProjectGra.PlayerController
                 mainWpState.ValueRW.mainWeaponLocalTransform = mainWeaponTransformRW.ValueRO;
             }
 
-
+            var forward = playerTransform.ValueRO.Forward();
+            var right = playerTransform.ValueRO.Right();
             for (int i = 0, n = autoWpBuffer.Length; i < n; ++i)
             {
                 ref var wp = ref autoWpBuffer.ElementAt(i);
@@ -80,8 +81,9 @@ namespace ProjectGra.PlayerController
                 {
                     var offset = wp.WeaponPositionOffset + offsetList[i];
                     var transformRW = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
-                    transformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
-                    wp.autoWeaponLocalTransform = transformRW.ValueRO;
+                    //transformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
+                    transformRW.ValueRW.Position = (forward * offset.z + right * offset.x + playerTransform.ValueRO.Position);
+                    wp.autoWeaponLocalTransform.Position = transformRW.ValueRO.Position;
                 }
             }
 

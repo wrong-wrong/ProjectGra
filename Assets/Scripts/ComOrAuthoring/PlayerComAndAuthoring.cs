@@ -25,6 +25,7 @@ namespace ProjectGra
                 {
                     buffer.Add(new AutoWeaponState {  WeaponIndex = -1 });
                 }
+                AddComponent(entity, new PlayerOverlapRadius { Value = 0 });
             }
         }
     }
@@ -50,6 +51,10 @@ namespace ProjectGra
         public float Armor;
         public float SpeedPercentage;
         public float Range;
+    }
+    public struct PlayerOverlapRadius : IComponentData
+    {
+        public float Value;
     }
     public struct PlayerExperience : IComponentData
     {

@@ -26,7 +26,7 @@ MonoBehaviour:
   WeaponCriticalHitChance: 0.6
   WeaponCriticalHitRatio: 2
   Cooldown: 0.5
-  Range: 100
+  Range: 10
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0.3
     y: 0.1

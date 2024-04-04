@@ -5,6 +5,7 @@ using UnityEngine;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemyNormalRangedSystem : ISystem, ISystemStartStop
     {
         float followSpeed;

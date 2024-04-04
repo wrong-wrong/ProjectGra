@@ -40,7 +40,7 @@ namespace ProjectGra
         private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int mainWeaponIdx,ref NativeArray<int> wpIdxList)
         {
             //Get configBuffer info from 
-            
+            float tmpRange = 0;
             //Get playerAttribute 
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerAttibute = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
@@ -48,6 +48,7 @@ namespace ProjectGra
             var mainWeaponstate = SystemAPI.GetSingleton<MainWeaponState>();
             var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
             var wpHashMapWrapperCom = SystemAPI.GetSingleton<AllWeaponMap>();
+            var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
             var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             //destory model anyway;
             //need to destory earlier model entity if existed and instantiate new one;
@@ -70,7 +71,6 @@ namespace ProjectGra
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
                 var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f,2f);
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
-
                 //using ecb or set directly
                 ecb.SetComponent(playerEntity, new MainWeaponState
                 {
@@ -116,7 +116,7 @@ namespace ProjectGra
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
                 var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
-
+                tmpRange = math.max(tmpRange, config.Range);
                 autoWpEcb.Add(new AutoWeaponState
                 {
                     WeaponIndex = wpIdxList[i],
@@ -128,12 +128,20 @@ namespace ProjectGra
                     WeaponCriticalHitChance = calculatedCritHitChance,
                     WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
                     SpawneePrefab = config.SpawneePrefab,
+                    Range = calculatedRange,
                 }); 
                 ecb.SetComponent(config.SpawneePrefab, new SpawneeCurDamage { damage = calculatedDamageAfterBonus });
                 //todo maybe divide range by config.spawneeSpeed;
                 ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
             }
-
+            if(tmpRange == 0)
+            {
+                ecb.SetComponent(playerEntity, new PlayerOverlapRadius { Value = 0f });
+            }
+            else
+            {
+                ecb.SetComponent(playerEntity, new PlayerOverlapRadius { Value = tmpRange + playerRange });
+            }
         }
         private void Unpause(ref SystemState state)
         {
