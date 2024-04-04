@@ -47,7 +47,7 @@ namespace ProjectGra
             var playerRange = SystemAPI.GetSingleton<PlayerAttributeMain>().Range;
             var mainWeaponstate = SystemAPI.GetSingleton<MainWeaponState>();
             var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
-            var wpHashMapWrapperCom = SystemAPI.GetSingleton<AllWeaponMap>();
+            var wpHashMapWrapperCom = SystemAPI.GetSingleton<WeaponIdxToConfigCom>();
             var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
             var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             //destory model anyway;

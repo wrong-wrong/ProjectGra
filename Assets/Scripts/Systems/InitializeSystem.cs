@@ -63,10 +63,16 @@ namespace ProjectGra
                         ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].WeaponPrefab);
                         ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].SpawneePrefab);
                     }
-                    state.EntityManager.AddComponent<AllWeaponMap>(superSingleton);
-                    var mpCom = new AllWeaponMap { wpNativeHashMap = wpHashMp };
+                    state.EntityManager.AddComponent<WeaponIdxToConfigCom>(superSingleton);
+                    var mpCom = new WeaponIdxToConfigCom { wpNativeHashMap = wpHashMp };
                     state.EntityManager.SetComponentData(superSingleton, mpCom);
-                    WeaponSOConfigSingleton.Instance.weaponMap = mpCom;
+                    WeaponSOConfigSingleton.Instance.MapCom = mpCom;
+                    if(SystemAPI.ManagedAPI.TryGetSingleton<WeaponManagedConfigCom>(out var managedConfig))
+                    {
+                        WeaponSOConfigSingleton.Instance.ManagedConfigCom = managedConfig;
+                        //Debug.Log("InitializaSystem - managedConfig set success");
+                    }
+
                     //Setting Weapon state should be take over by pause system
                     //but can do some initial work here , remove LEG for example
                 }

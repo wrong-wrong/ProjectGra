@@ -12,17 +12,18 @@ namespace ProjectGra
 
         public List<WeaponScriptableObjectConfig> WeaponSOList;
 
-        public class Baker : Baker<WeaponAndAuthoringAddToss> 
+        public class Baker : Baker<WeaponAndAuthoringAddToss>
         {
             public override void Bake(WeaponAndAuthoringAddToss authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                var buffer = AddBuffer<WeaponConfigInfoCom>(entity);
-                for(int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
+                var normalConfigBuffer = AddBuffer<WeaponConfigInfoCom>(entity);
+                var managedDic = new Dictionary<int, string>();
+                for (int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
                 {
                     var so = authoring.WeaponSOList[i];
 
-                    buffer.Add(new WeaponConfigInfoCom
+                    normalConfigBuffer.Add(new WeaponConfigInfoCom
                     {
                         color = new float3(so.color.r, so.color.g, so.color.b),
                         WeaponIndex = so.WeaponIndex,
@@ -42,12 +43,17 @@ namespace ProjectGra
                         Range = so.Range,
                         WeaponPositionOffset = so.WeaponPositionOffsetRelativeToCameraTarget,
                     });
+                    managedDic[so.WeaponIndex] = $"{i + 100}";
                 }
+                AddComponentObject<WeaponManagedConfigCom>(entity, new WeaponManagedConfigCom
+                {
+                    managedConfigMap = managedDic,
+                });
             }
         }
     }
 
-    public struct AllWeaponMap : IComponentData
+    public struct WeaponIdxToConfigCom : IComponentData
     {
         public NativeHashMap<int, WeaponConfigInfoCom> wpNativeHashMap;
     }
@@ -62,12 +68,17 @@ namespace ProjectGra
         public float3 WeaponPositionOffset;
         public int BasicDamage;
         public float4 DamageBonus;
-        public float WeaponCriticalHitChance;  
+        public float WeaponCriticalHitChance;
         public float WeaponCriticalHitRatio;
         public float Cooldown;
         public float Range;
     }
-    
+    public class WeaponManagedConfigCom : IComponentData
+    {
+        public Dictionary<int, string> managedConfigMap;
+    }
+
+
     public struct MainWeaponState : IComponentData
     {
         public int WeaponIndex; // -1 indicating the weapon not set
@@ -83,7 +94,7 @@ namespace ProjectGra
         public float Cooldown;                //affected by player's attribute  ,used by spawnee system
         public int DamageAfterBonus;          //affected by player's attribute  ,need to set to spawnee
         public float WeaponCriticalHitChance; //affected by player's attribute  ,used by spawnee system
-        public float WeaponCriticalHitRatio;  
+        public float WeaponCriticalHitRatio;
 
         //Need to set spawnee's curDamage & timer
         public Entity SpawneePrefab;

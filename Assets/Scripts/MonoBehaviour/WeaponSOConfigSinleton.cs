@@ -8,7 +8,8 @@ namespace ProjectGra
         //public List<WeaponScriptableObjectConfig> WeaponSOList;
         //public Dictionary<int, Color> WeaponIdxToColor;
 
-        public AllWeaponMap weaponMap;
+        public WeaponIdxToConfigCom MapCom;
+        public WeaponManagedConfigCom ManagedConfigCom;
         public static WeaponSOConfigSingleton Instance;
         public void Awake()
         {

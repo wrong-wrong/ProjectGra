@@ -3,7 +3,6 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.Rendering.CameraUI;
 
 namespace ProjectGra
 {
@@ -69,16 +68,20 @@ namespace ProjectGra
             ContinueButton.onClick.AddListener(ActionWrapper);
         }
 
+        private void Start()
+        {
+            mainWeaponSlot.isMainSlot = true;
+        }
         public void OnDestroy()
         {
-            ContinueButton.onClick.RemoveListener(ActionWrapper);   
+            ContinueButton.onClick.RemoveListener(ActionWrapper);
         }
         private void ActionWrapper()
         {
             OnContinueButtonClicked?.Invoke();
             //Debug.Log("ButtonClicked");
         }
-        
+
         public void UpdatePlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
             text1.text = attributeStruct.MaxHealthPoint.ToString();
@@ -95,26 +98,33 @@ namespace ProjectGra
             text11.text = attributeStruct.Range.ToString();
         }
 
-        public void UpdateMainWeaponInfo(MainWeaponState mainWeaponState)
+        public void UpdateMainWeaponInfo()
         {
-            stringBuilder.AppendLine("Weapon Unknown");
-            stringBuilder.Append(mainWeaponState.BasicDamage);
+            if(mainWeaponSlot.WeaponIdx == -1)
+            {
+                return;
+            }
+            var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[mainWeaponSlot.WeaponIdx];
+            var managedConfig = WeaponSOConfigSingleton.Instance.ManagedConfigCom.managedConfigMap[mainWeaponSlot.WeaponIdx];
+            stringBuilder.Append(managedConfig);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.DamageBonus.x);
+            stringBuilder.Append(config.BasicDamage);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.DamageBonus.y);
+            stringBuilder.Append(config.DamageBonus.x);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.DamageBonus.z);
+            stringBuilder.Append(config.DamageBonus.y);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.DamageBonus.w);
+            stringBuilder.Append(config.DamageBonus.z);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.WeaponCriticalHitChance);
+            stringBuilder.Append(config.DamageBonus.w);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.WeaponCriticalHitRatio);
+            stringBuilder.Append(config.WeaponCriticalHitChance);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.Range);
+            stringBuilder.Append(config.WeaponCriticalHitRatio);
             stringBuilder.AppendLine();
-            stringBuilder.Append(mainWeaponState.Cooldown);
+            stringBuilder.Append(config.Range);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.Cooldown);
             stringBuilder.AppendLine();
             MainWeaponInfoText.text = stringBuilder.ToString();
             stringBuilder.Clear();
@@ -140,7 +150,7 @@ namespace ProjectGra
             ShopCanvasGroup.interactable = true;
             ShopCanvasGroup.blocksRaycasts = true;
             UpdatePlayerAttribute(attributeStruct, damageRelatedAttribute);
-            UpdateMainWeaponInfo(weaponState);
+            UpdateMainWeaponInfo();
         }
         public void HideShop()
         {

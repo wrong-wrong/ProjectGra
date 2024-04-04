@@ -7,7 +7,7 @@ namespace ProjectGra
     public class WeaponSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public static WeaponSlot CurrentHoveredSlot;
-
+        public bool isMainSlot;
         [SerializeField] Image bgImg;
         [SerializeField] Image iconImg;
 
@@ -17,8 +17,9 @@ namespace ProjectGra
         private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化
 
         #region UnityFunction
-        public void Start()
+        public void Awake()
         {
+            isMainSlot = false;
             iconTransform = iconImg.transform;
             bgTransform = bgImg.transform;
         }
@@ -68,7 +69,7 @@ namespace ProjectGra
             }
             else
             {
-                var config = WeaponSOConfigSingleton.Instance.weaponMap.wpNativeHashMap[idx];
+                var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
                 iconImg.color = new Color(config.color.x, config.color.y, config.color.z);
             }
         }
@@ -77,6 +78,7 @@ namespace ProjectGra
             var tmp = slot2.WeaponIdx;
             slot2.InitSlot(dragged.WeaponIdx);
             dragged.InitSlot(tmp);
+            if(dragged.isMainSlot || slot2.isMainSlot) { CanvasMonoSingleton.Instance.UpdateMainWeaponInfo(); }
         }
         
     }
