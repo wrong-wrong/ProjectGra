@@ -25,6 +25,7 @@ namespace ProjectGra
         Entity MaterialPrefab;
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             random = Random.CreateFromIndex(0);

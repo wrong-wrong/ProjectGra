@@ -21,6 +21,7 @@ namespace ProjectGra.PlayerController
             _cameraPitch = 0.0f;
             _topClamp = 90.0f;
             _bottomClamp = -90.0f;
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<ConfigComponent>();
             state.RequireForUpdate<CameraTargetReference>();
             state.RequireForUpdate<TestSceneExecuteTag>();

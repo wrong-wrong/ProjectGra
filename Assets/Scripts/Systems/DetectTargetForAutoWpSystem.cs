@@ -15,6 +15,7 @@ namespace ProjectGra
         private float timer;
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             enemyCollisionFilter = new CollisionFilter
@@ -27,6 +28,7 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state) 
         {
+            //TODO playerRadius == 0 then return ?
             timer -= SystemAPI.Time.DeltaTime;
             if (timer > 0.01f) return;
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;

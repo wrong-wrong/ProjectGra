@@ -7,7 +7,7 @@ using UnityEngine;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp),OrderFirst = true)]
-    public partial struct InitializeSystem : ISystem
+    public partial struct GameInitializeSystem : ISystem
     {
         public void OnCreate(ref SystemState state) {
             state.RequireForUpdate<SuperSingletonTag>();
@@ -23,7 +23,7 @@ namespace ProjectGra
             state.EntityManager.AddComponentObject(superSingleton, new CameraTargetReference { 
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
                 ghostPlayer = CameraTargetMonoSingleton.instance.transform});
-            state.EntityManager.AddComponent<GameControllNotPaused>(superSingleton);
+            //state.EntityManager.AddComponent<GameControllNotPaused>(superSingleton);
             
             //Initializing Player with config
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
@@ -78,7 +78,7 @@ namespace ProjectGra
                 }
             }
 
-
+            ecb.AddComponent<GameControllInitialized>(superSingleton);
 
             //Init in-game UI
             var playerMaterialsCount = SystemAPI.GetSingleton<PlayerMaterialCount>();

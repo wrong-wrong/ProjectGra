@@ -12,6 +12,7 @@ namespace ProjectGra
         ComponentLookup<SpawneeCurDamage> spawneeCurDamageLookup;
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             entityHealthPointLookup = SystemAPI.GetComponentLookup<EntityHealthPoint>();

@@ -14,6 +14,7 @@ namespace ProjectGra
         float CamXSensitivity;
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<PlayerTag>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<GameControllNotPaused>();

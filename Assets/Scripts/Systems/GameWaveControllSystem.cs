@@ -2,28 +2,35 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
-    public partial struct PauseSystem : ISystem, ISystemStartStop
+    public partial struct GameWaveControllSystem : ISystem, ISystemStartStop
     {
-        //public bool IsPause;
-        //private NativeArray<int> idxList;
+        private float timer;
         public void OnCreate(ref SystemState state)
         {
+            //state.RequireForUpdate<PlayerTag>(); // equal to Initialized , since playerTag is added through baking
+
+            state.RequireForUpdate<GameControllInitialized>();
+
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
             var l = new NativeArray<int>(3, Allocator.Persistent);
             l[0] = 1; l[1] = 2; l[2] = 3;
-            state.EntityManager.AddComponent<PauseSystemData>(state.SystemHandle);
-            state.EntityManager.SetComponentData(state.SystemHandle, new PauseSystemData { IsPause = false , idxList = l});
-            state.RequireForUpdate<PlayerTag>();
-            //IsPause = false;
+            state.EntityManager.AddComponent<WaveControllSystemData>(state.SystemHandle);
+            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData {idxList = l});
+            state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
+            state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
+            timer = 3f;
         }
         public void OnStartRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnContinueButtonClicked += UnpauseOnContinueButtonCallback;
-            var idxList = SystemAPI.GetComponent<PauseSystemData>(state.SystemHandle).idxList;
+
+            //tmp test code
+            var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
             PopulateWeaponStateWithWeaponIdx(ref state, 0, ref idxList);
         }
         public void OnStopRunning(ref SystemState state)
@@ -33,7 +40,7 @@ namespace ProjectGra
         public void UnpauseOnContinueButtonCallback()
         {
             
-            ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<PauseSystem>();
+            ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
             Unpause(ref state);
         }
 
@@ -48,7 +55,7 @@ namespace ProjectGra
             var mainWeaponstate = SystemAPI.GetSingleton<MainWeaponState>();
             var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
             var wpHashMapWrapperCom = SystemAPI.GetSingleton<WeaponIdxToConfigCom>();
-            var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
+            //var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
             var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             //destory model anyway;
             //need to destory earlier model entity if existed and instantiate new one;
@@ -145,74 +152,168 @@ namespace ProjectGra
         }
         private void Unpause(ref SystemState state)
         {
+            //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
+            state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
+            //Update weaponstate
             CanvasMonoSingleton.Instance.GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3);
-            var sysData = SystemAPI.GetComponentRW<PauseSystemData>(state.SystemHandle);
+            var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             sysData.ValueRW.idxList[0] = idx1;
             sysData.ValueRW.idxList[1] = idx2;
             sysData.ValueRW.idxList[2] = idx3;
             PopulateWeaponStateWithWeaponIdx(ref state, idx, ref sysData.ValueRW.idxList);
 
             //flip isPause
-            var com = SystemAPI.GetComponentRW<PauseSystemData>(state.SystemHandle);
-            com.ValueRW.IsPause = !com.ValueRW.IsPause;
+            //var com = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
+            //com.ValueRW.IsPause = !com.ValueRW.IsPause;
 
             //Unpause
-            var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
-            state.EntityManager.AddComponent<GameControllNotPaused>(singleton);
-            var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
-            var playerMaterialsCount = SystemAPI.GetComponent<PlayerMaterialCount>(playerEntity);
-            var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
+
+            //var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
+            //var playerMaterialsCount = SystemAPI.GetComponent<PlayerMaterialCount>(playerEntity);
+            //var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
             CanvasMonoSingleton.Instance.HideShop();
-            //CanvasMonoSingleton.Instance.UpdateInGameUI(playerHp.HealthPoint, 0.5f, playerMaterialsCount.Count);
             CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
+            //set gamestate
+            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            gameState.ValueRW.CurrentState = gameState.ValueRO.PreviousState;
 
         }
         private void Pause(ref SystemState state)
         {
-            var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
-            state.EntityManager.RemoveComponent<GameControllNotPaused>(singleton);
+            //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();  // used to Remove GCNotPaused from super singleton
+            state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
+            //var com = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
+            //com.ValueRW.IsPause = !com.ValueRW.IsPause;
 
             var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var mainWpstate= SystemAPI.GetSingleton<MainWeaponState>();
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
-            CanvasMonoSingleton.Instance.SetSlotWeaponIdx(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
 
+            //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
+            CanvasMonoSingleton.Instance.SetSlotWeaponIdx(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
             CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, mainWpstate);
             CanvasMonoSingleton.Instance.HideInGameUI();
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
+            //set gamestate
+            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
+            gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState; 
+            gameState.ValueRW.CurrentState = GameControllState.Paused;
         }
-        
+
         public void OnUpdate(ref SystemState state)
         {
 
-            if (Input.GetKeyUp(KeyCode.P))
+            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            var deltatime = SystemAPI.Time.DeltaTime;
+            switch (gameState.ValueRO.CurrentState)
             {
-                var com = SystemAPI.GetComponentRW<PauseSystemData>(state.SystemHandle);
-                if (com.ValueRO.IsPause)   //unpausing 
-                {
-                    //com.ValueRW.IsPause = !com.ValueRW.IsPause; //!!!!!!!!   flip in the unpause function
-                    Unpause(ref state);
-                    
-                }
-                else  // pausing 
-                {
-                    com.ValueRW.IsPause = !com.ValueRW.IsPause;
-                    Pause(ref state);
-                    
-                }
+                case GameControllState.BeforeWave:
+                    if (Input.GetKeyUp(KeyCode.P))
+                    {
+                        Pause(ref state);
+                    }
+
+                    if((timer -= deltatime) < 0f)   //state change
+                    {
+                        timer = 10f; // setting in wave time;
+                        gameState.ValueRW.CurrentState = GameControllState.InWave;
+
+                        state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
+                        Debug.Log("BeforeWave to InWave!");
+                    }
+                    break;
+                case GameControllState.InWave:
+                    if (Input.GetKeyUp(KeyCode.P))
+                    {
+                        Pause(ref state);
+                    }
+                    if ((timer -= deltatime) < 0f)
+                    {
+                        timer = 2f; // setting after wave time;
+                        gameState.ValueRW.PreviousState = GameControllState.InWave;  // setting only for InShop state, InShop checks previous state to decide if Pause
+                        gameState.ValueRW.CurrentState = GameControllState.AfterWave;
+
+                        state.EntityManager.RemoveComponent<GameControllInGame>(state.SystemHandle);
+                        state.EntityManager.AddComponent<GameControllWaveCleanup>(state.SystemHandle);
+                        Debug.Log("InWave to AfterWave!");
+
+                    }
+                    break;
+                case GameControllState.AfterWave:
+                    if (Input.GetKeyUp(KeyCode.P))
+                    {
+                        Pause(ref state);
+                    }
+                    if ((timer -= deltatime) < 0f)  // TODO need wave clean up System
+                    {
+                        timer = 2f; // setting begin wave time;!!!!      
+                        gameState.ValueRW.CurrentState = GameControllState.InShop;
+                        state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
+                        state.EntityManager.RemoveComponent<GameControllWaveCleanup>(state.SystemHandle);// TODO maybe handled by clean up system
+                        Debug.Log("AfterWave to InShop!");
+                    }
+                    break;
+                case GameControllState.InShop:
+                    Debug.Log("InShop");
+                    if(gameState.ValueRO.PreviousState != GameControllState.InShop) Pause(ref state);
+                    else
+                    {
+                        gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
+
+                        state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
+                        Debug.Log("InShop to BeforeWave!");
+                    }
+                    break;
+                case GameControllState.Uninitialized:
+                    gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
+                    state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
+                    state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
+                    Debug.Log("Uninitialized to BeforeWave!");
+
+                    break;
+                case GameControllState.Paused:
+                    if (Input.GetKeyUp(KeyCode.P))
+                    {
+                        Unpause(ref state);
+                        Debug.Log("Unpaused");
+                    }
+                    break;
+                case GameControllState.Gameover:
+                    break;
             }
         }
 
     }
-    public struct PauseSystemData : IComponentData
+    public struct WaveControllSystemData : IComponentData
     {
-        public bool IsPause;
+        //public bool IsPause;
         public NativeArray<int> idxList;
     }
     public struct GameControllNotPaused : IComponentData { }
+    public struct GameControllInGame : IComponentData { }
+    public struct GameControllNotInShop : IComponentData { }
+    public struct GameControllWaveCleanup : IComponentData { }
+    public struct GameControllGameOver : IComponentData { }
+    public struct GameControllInitialized : IComponentData { }
+    public struct GameStateCom : IComponentData
+    {
+        public GameControllState CurrentState;
+        public GameControllState PreviousState;
+    }
+    public enum GameControllState
+    {
+        BeforeWave,
+        InWave,
+        AfterWave,
+        InShop,
+        Gameover,
+        Uninitialized,
+        Paused,
+    }
 }
 
 

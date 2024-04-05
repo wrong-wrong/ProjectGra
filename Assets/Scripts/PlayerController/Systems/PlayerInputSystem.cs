@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
-    [UpdateAfter(typeof(PauseSystem))]
+    [UpdateAfter(typeof(GameWaveControllSystem))]
     public partial struct PlayerInputSystem : ISystem
     {
         public class Singleton : IComponentData
@@ -14,12 +14,13 @@ namespace ProjectGra
 
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<GameControllNotInShop>();
+            state.RequireForUpdate<GameControllNotPaused>();
+            state.RequireForUpdate<PlayerTag>();
+            state.RequireForUpdate<TestSceneExecuteTag>();
             var inputActions = new MyInputAction();
             inputActions.Enable();
             state.EntityManager.AddComponentObject(state.SystemHandle, new Singleton { Value = inputActions });
-            state.RequireForUpdate<PlayerTag>();
-            state.RequireForUpdate<TestSceneExecuteTag>();
-            state.RequireForUpdate<GameControllNotPaused>();
         }
 
         public void OnUpdate(ref SystemState state)

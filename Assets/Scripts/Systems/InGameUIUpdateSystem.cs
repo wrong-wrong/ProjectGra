@@ -13,6 +13,7 @@ namespace ProjectGra
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllNotPaused>();
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<TestSceneExecuteTag>();
         }
         public void OnUpdate(ref SystemState state)
