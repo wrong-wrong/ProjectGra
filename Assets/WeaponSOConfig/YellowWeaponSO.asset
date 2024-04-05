@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
   m_Name: YellowWeaponSO
   m_EditorClassIdentifier: 
-  color: {r: 0.86274517, g: 0.48627454, b: 0.03137255, a: 0}
+  WeaponName: Yellow
+  BasePrice: 10
+  color: {r: 0.86274517, g: 0.48627454, b: 0.03137255, a: 1}
   WeaponIndex: 0
   WeaponModel: {fileID: 5069078350183642497, guid: c9d9bb21ae68e76469eeafedbb4142df,
     type: 3}

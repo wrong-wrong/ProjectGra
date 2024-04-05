@@ -10,7 +10,7 @@ namespace ProjectGra
         //public Dictionary<int, Color> WeaponIdxToColor;
 
         public WeaponIdxToConfigCom MapCom;
-        public WeaponManagedConfigCom ManagedConfigCom;
+        public WeaponManagedAndMonoOnlyConfigCom ManagedConfigCom;
         public static WeaponSOConfigSingleton Instance;
         public List<Color> bgColor;
         private int weaponCount;

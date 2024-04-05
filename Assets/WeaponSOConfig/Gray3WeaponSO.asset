@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
   m_Name: Gray3WeaponSO
   m_EditorClassIdentifier: 
-  color: {r: 0.25882354, g: 0.25490198, b: 0.25882354, a: 0}
+  WeaponName: Gray3
+  BasePrice: 3
+  color: {r: 0.25882354, g: 0.25490198, b: 0.25882354, a: 1}
   WeaponIndex: 3
   WeaponModel: {fileID: 5069078350183642497, guid: d280ffcc38825594381c07467a82570b,
     type: 3}

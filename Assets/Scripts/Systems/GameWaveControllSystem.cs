@@ -202,10 +202,10 @@ namespace ProjectGra
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var mainWpstate= SystemAPI.GetSingleton<MainWeaponState>();
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
-
+            var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
             CanvasMonoSingleton.Instance.SetSlotWeaponIdx(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
-            CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, mainWpstate);
+            CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, mainWpstate, materialCount.Count);
             CanvasMonoSingleton.Instance.HideInGameUI();
             //show Cursor
             Cursor.lockState = CursorLockMode.None;

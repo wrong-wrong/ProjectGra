@@ -6,6 +6,8 @@ namespace ProjectGra
     [CreateAssetMenu(menuName = "MyWeaponSO")]
     public class WeaponScriptableObjectConfig : ScriptableObject
     {
+        public string WeaponName;
+        public int BasePrice;
         //TODO : ImageIcon for Shop Display
         public Color color; // to temporarily replace Icon
 

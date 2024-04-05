@@ -14,6 +14,7 @@ namespace ProjectGra
         public Action OnPauseContinueButtonClicked;
         public PlayerAtttributeDamageRelated damagedAttribute;
         public PlayerAttributeMain mainAttribute;
+        private int playerMaterialCount;
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] CanvasGroup PauseCanvasGroup;
@@ -57,7 +58,7 @@ namespace ProjectGra
         [Header("InGameUI")]
         [SerializeField] Image healthBar;
         [SerializeField] Image experienceBar;
-        [SerializeField] TextMeshProUGUI MaterialCount;
+        [SerializeField] TextMeshProUGUI inGameMaterialCountText;
 
         [Header("Pause Canvas")]
         [SerializeField] Button pauseContinueButton;
@@ -67,6 +68,7 @@ namespace ProjectGra
         [SerializeField] ShopItem leftShopItem;
         [SerializeField] ShopItem midShopItem;
         [SerializeField] ShopItem rightShopItem;
+        [SerializeField] TextMeshProUGUI shopMaterialCountText;
         public void Awake()
         {
             if (Instance != null)
@@ -97,15 +99,15 @@ namespace ProjectGra
         {
             if (!leftShopItem.isLock)
             {
-                leftShopItem.Reroll();
+                leftShopItem.Reroll(playerMaterialCount);
             }
             if (!midShopItem.isLock)
             {
-                midShopItem.Reroll();
+                midShopItem.Reroll(playerMaterialCount);
             }
             if (!rightShopItem.isLock)
             {
-                rightShopItem.Reroll();
+                rightShopItem.Reroll(playerMaterialCount);
             }
         }
         private void ShopContinueButtonActionWrapper()
@@ -170,7 +172,7 @@ namespace ProjectGra
                 return;
             }
             var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[mainWeaponSlot.WeaponIdx];
-            var managedConfig = WeaponSOConfigSingleton.Instance.ManagedConfigCom.managedConfigMap[mainWeaponSlot.WeaponIdx];
+            var managedConfig = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponNameMap[mainWeaponSlot.WeaponIdx];
             stringBuilder.Append(managedConfig);
             stringBuilder.AppendLine();
             stringBuilder.Append(config.BasicDamage);
@@ -192,6 +194,12 @@ namespace ProjectGra
             stringBuilder.Append(config.Cooldown);
             stringBuilder.AppendLine();
             MainWeaponInfoText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
+        }
+        private void UpdateMaterialCount(int count)
+        {
+            stringBuilder.Append(count);
+            shopMaterialCountText.text = stringBuilder.ToString();
             stringBuilder.Clear();
         }
 
@@ -223,13 +231,14 @@ namespace ProjectGra
             PauseCanvasGroup.blocksRaycasts = false;
         }
 
-        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState)
+        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState, int MaterialCount)
         {
             ShopCanvasGroup.alpha = 1;
             ShopCanvasGroup.interactable = true;
             ShopCanvasGroup.blocksRaycasts = true;
             UpdatePlayerAttribute(attributeStruct, damageRelatedAttribute);
             UpdateMainWeaponInfo();
+            UpdateMaterialCount(MaterialCount);
         }
         public void HideShop()
         {
@@ -258,7 +267,7 @@ namespace ProjectGra
         {
             healthBar.fillAmount = (float)hp / maxHp;
             experienceBar.fillAmount = exp / maxExp;
-            MaterialCount.text = materialsCount.ToString();
+            inGameMaterialCountText.text = materialsCount.ToString();
         }
         #endregion
     }

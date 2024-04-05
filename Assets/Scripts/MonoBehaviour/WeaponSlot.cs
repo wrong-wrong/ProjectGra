@@ -72,8 +72,8 @@ namespace ProjectGra
             }
             else
             {
-                var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
-                iconImg.color = new Color(config.color.x, config.color.y, config.color.z);
+                //var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
+                iconImg.color = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponColorInsteadOfIconMap[idx];
                 bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[level];
             }
         }

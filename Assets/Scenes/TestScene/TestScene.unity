@@ -1458,7 +1458,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 340684387}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999936
+  m_Size: 0.9999959
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8053,12 +8053,13 @@ MonoBehaviour:
   rightAutoSlot: {fileID: 1036729231}
   healthBar: {fileID: 381666639}
   experienceBar: {fileID: 25075777}
-  MaterialCount: {fileID: 518693705}
+  inGameMaterialCountText: {fileID: 518693705}
   pauseContinueButton: {fileID: 1314423448}
   pauseAttributeInfoText: {fileID: 30561225}
   leftShopItem: {fileID: 2076299193}
   midShopItem: {fileID: 823007794}
   rightShopItem: {fileID: 1421140107}
+  shopMaterialCountText: {fileID: 559129624}
 --- !u!1 &1393519648
 GameObject:
   m_ObjectHideFlags: 0
@@ -8278,7 +8279,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0009448337}
+  m_AnchoredPosition: {x: 0, y: 0.0008703525}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1433332080

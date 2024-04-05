@@ -67,7 +67,7 @@ namespace ProjectGra
                     var mpCom = new WeaponIdxToConfigCom { wpNativeHashMap = wpHashMp };
                     state.EntityManager.SetComponentData(superSingleton, mpCom);
                     WeaponSOConfigSingleton.Instance.MapCom = mpCom;
-                    if(SystemAPI.ManagedAPI.TryGetSingleton<WeaponManagedConfigCom>(out var managedConfig))
+                    if(SystemAPI.ManagedAPI.TryGetSingleton<WeaponManagedAndMonoOnlyConfigCom>(out var managedConfig))
                     {
                         WeaponSOConfigSingleton.Instance.ManagedConfigCom = managedConfig;
                         //Debug.Log("InitializaSystem - managedConfig set success");

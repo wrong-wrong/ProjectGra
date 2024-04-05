@@ -15,6 +15,7 @@ public class ShopItem : MonoBehaviour
     [SerializeField] Button buyButton;
     [SerializeField] Image weaponIcon;
     [SerializeField] Image backgroundImage;
+    private int currentPrice;
     private int weaponIdx;
     private int weaponLevel;
     public bool isLock;
@@ -28,20 +29,32 @@ public class ShopItem : MonoBehaviour
     {
         lockButton.onClick.RemoveAllListeners();
     }
-    private void UpdateWeaponInfoText(WeaponConfigInfoCom config)
-    {
 
-    }
     private void ChangeBackgroundColor()
     {
         backgroundImage.color = WeaponSOConfigSingleton.Instance.bgColor[weaponLevel];
     }
-    public void Reroll()
+    public void UpdateBuyButtonState(int material)
+    {
+        if(material < currentPrice)
+        {
+            priceText.color = Color.red;
+            buyButton.interactable = false;
+        }
+        else
+        {
+            priceText.color = Color.white;
+            buyButton.interactable = true;
+        }
+    }
+    public void Reroll(int playerMaterialCount)
     {
         weaponLevel = WeaponSOConfigSingleton.Instance.GetRandomLevel(2); // should pass in player's level;
         var config = WeaponSOConfigSingleton.Instance.GetRandomWeaponConfig(2); // should pass in player's level;
         weaponIdx = config.WeaponIndex;
-
+        currentPrice = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponBasePriceMap[weaponIdx];
+        priceText.text = currentPrice.ToString();
+        weaponNameText.text = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponNameMap[weaponIdx].ToString();
         //Setting Text
         var mainAttribute = CanvasMonoSingleton.Instance.mainAttribute;
         var damageAttribute = CanvasMonoSingleton.Instance.damagedAttribute;
@@ -78,6 +91,7 @@ public class ShopItem : MonoBehaviour
         weaponInfoText.text = stringBuilder.ToString();
         stringBuilder.Clear();
         ChangeBackgroundColor();
+        UpdateBuyButtonState(playerMaterialCount);
     }
     public void Lock()
     {

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
   m_Name: Blue2WeaponSO
   m_EditorClassIdentifier: 
-  color: {r: 0.015686275, g: 0.427451, b: 0.6039216, a: 0}
+  WeaponName: Blue2
+  BasePrice: 1
+  color: {r: 0.015686275, g: 0.427451, b: 0.6039216, a: 1}
   WeaponIndex: 1
   WeaponModel: {fileID: 5069078350183642497, guid: b5c57f669f99ab24e96c2ad2e032f46a,
     type: 3}

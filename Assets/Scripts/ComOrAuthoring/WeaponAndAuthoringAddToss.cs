@@ -18,14 +18,16 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.None);
                 var normalConfigBuffer = AddBuffer<WeaponConfigInfoCom>(entity);
-                var managedDic = new Dictionary<int, string>();
+                var wpNameMap = new Dictionary<int, string>();
+                var wpBasePriceMap = new Dictionary<int, int>();
+                var wpColorMap = new Dictionary<int, Color>();
                 for (int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
                 {
                     var so = authoring.WeaponSOList[i];
 
                     normalConfigBuffer.Add(new WeaponConfigInfoCom
                     {
-                        color = new float3(so.color.r, so.color.g, so.color.b),
+                        //color = new float3(so.color.r, so.color.g, so.color.b),
                         WeaponIndex = so.WeaponIndex,
                         WeaponPrefab = GetEntity(so.WeaponModel, TransformUsageFlags.Dynamic),
                         SpawneePrefab = GetEntity(so.SpawneePrefabs, TransformUsageFlags.Dynamic),
@@ -43,11 +45,15 @@ namespace ProjectGra
                         Range = so.Range,
                         WeaponPositionOffset = so.WeaponPositionOffsetRelativeToCameraTarget,
                     });
-                    managedDic[so.WeaponIndex] = $"{i + 100}";
+                    wpColorMap[so.WeaponIndex] = so.color;
+                    wpNameMap[so.WeaponIndex] = so.WeaponName;
+                    wpBasePriceMap[so.WeaponIndex] = so.BasePrice;
                 }
-                AddComponentObject<WeaponManagedConfigCom>(entity, new WeaponManagedConfigCom
+                AddComponentObject<WeaponManagedAndMonoOnlyConfigCom>(entity, new WeaponManagedAndMonoOnlyConfigCom
                 {
-                    managedConfigMap = managedDic,
+                    weaponNameMap = wpNameMap,
+                    weaponBasePriceMap = wpBasePriceMap,
+                    weaponColorInsteadOfIconMap = wpColorMap,
                 });
             }
         }
@@ -60,7 +66,6 @@ namespace ProjectGra
     [InternalBufferCapacity(0)]
     public struct WeaponConfigInfoCom : IBufferElementData
     {
-        public float3 color;
         //readonly 
         public int WeaponIndex;
         public Entity WeaponPrefab;  //this is Prefab
@@ -73,9 +78,11 @@ namespace ProjectGra
         public float Cooldown;
         public float Range;
     }
-    public class WeaponManagedConfigCom : IComponentData
+    public class WeaponManagedAndMonoOnlyConfigCom : IComponentData
     {
-        public Dictionary<int, string> managedConfigMap;
+        public Dictionary<int, Color> weaponColorInsteadOfIconMap; 
+        public Dictionary<int, string> weaponNameMap;
+        public Dictionary<int, int> weaponBasePriceMap;
     }
 
 
