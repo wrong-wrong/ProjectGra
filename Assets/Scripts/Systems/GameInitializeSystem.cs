@@ -72,6 +72,7 @@ namespace ProjectGra
                         WeaponSOConfigSingleton.Instance.ManagedConfigCom = managedConfig;
                         //Debug.Log("InitializaSystem - managedConfig set success");
                     }
+                    WeaponSOConfigSingleton.Instance.InitWeaponSOSingleton();
 
                     //Setting Weapon state should be take over by pause system
                     //but can do some initial work here , remove LEG for example

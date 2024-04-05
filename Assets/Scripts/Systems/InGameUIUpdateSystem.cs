@@ -18,12 +18,12 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
-            foreach(var (hp, exp, mat) in SystemAPI.Query<RefRO<EntityHealthPoint>, RefRO<PlayerExperience>, RefRO<PlayerMaterialCount>>())
+            foreach(var (hp, exp, mat) in SystemAPI.Query<RefRO<EntityHealthPoint>, RefRO<PlayerExperienceAndLevel>, RefRO<PlayerMaterialCount>>())
             {
-                if (mat.ValueRO.Count != lastMaterialCount || hp.ValueRO.HealthPoint != lastHealthPoint || exp.ValueRO.Value != lastExperience )
+                if (mat.ValueRO.Count != lastMaterialCount || hp.ValueRO.HealthPoint != lastHealthPoint || exp.ValueRO.Exp != lastExperience )
                 {
                     lastHealthPoint = hp.ValueRO.HealthPoint;
-                    lastExperience = exp.ValueRO.Value;
+                    lastExperience = exp.ValueRO.Exp;
                     lastMaterialCount = mat.ValueRO.Count;
                     CanvasMonoSingleton.Instance.UpdateInGameUI(lastHealthPoint, lastExperience, lastMaterialCount);
                 }

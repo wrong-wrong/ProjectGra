@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,11 +8,11 @@ namespace ProjectGra
     public class WeaponSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public static WeaponSlot CurrentHoveredSlot;
+        public static List<Color> bgColorList;
         public bool isMainSlot;
         [SerializeField] Image bgImg;
         [SerializeField] Image iconImg;
-
-        //TODO a field to store current weapon data
+        public int WeaponLevel; //0 - common, 1 - uncommon, 2 - rare, 3 - legendary
         public int WeaponIdx;
         private Transform iconTransform;
         private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化
@@ -60,24 +61,28 @@ namespace ProjectGra
         {
             iconTransform.localPosition = Vector3.zero;
         }
-        public void InitSlot(int idx)
+        public void InitSlot(int idx,int level)
         {
             WeaponIdx = idx;
+            WeaponLevel = level;
             if (WeaponIdx == -1) 
             { 
                 iconImg.color = Color.black;
+                bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[0];
             }
             else
             {
                 var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
                 iconImg.color = new Color(config.color.x, config.color.y, config.color.z);
+                bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[level];
             }
         }
         public static void SwapWeaponSlot(WeaponSlot dragged, WeaponSlot slot2)
         {
-            var tmp = slot2.WeaponIdx;
-            slot2.InitSlot(dragged.WeaponIdx);
-            dragged.InitSlot(tmp);
+            var tmpIdx = slot2.WeaponIdx;
+            var tmpLevel = slot2.WeaponLevel;
+            slot2.InitSlot(dragged.WeaponIdx,dragged.WeaponLevel);
+            dragged.InitSlot(tmpIdx,tmpLevel);
             if(dragged.isMainSlot || slot2.isMainSlot) { CanvasMonoSingleton.Instance.UpdateMainWeaponInfo(); }
         }
         

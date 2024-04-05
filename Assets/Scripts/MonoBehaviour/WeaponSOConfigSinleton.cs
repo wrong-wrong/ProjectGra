@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-
+using Unity.Mathematics;
+using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     public class WeaponSOConfigSingleton : MonoBehaviour
@@ -11,6 +12,9 @@ namespace ProjectGra
         public WeaponIdxToConfigCom MapCom;
         public WeaponManagedConfigCom ManagedConfigCom;
         public static WeaponSOConfigSingleton Instance;
+        public List<Color> bgColor;
+        private int weaponCount;
+        private Random random;
         public void Awake()
         {
             if(Instance != null) 
@@ -19,18 +23,21 @@ namespace ProjectGra
                 return;
             }
             Instance = this;
-            //for(int i = 0,n = WeaponSOList.Count; i < n; ++i)
-            //{
-            //    WeaponIdxToColor[WeaponSOList[i].WeaponIndex] = WeaponSOList[i].color;
-            //}
         }
-        public void Start()
+        public void InitWeaponSOSingleton()
         {
-            
+            weaponCount = MapCom.wpNativeHashMap.Count;
+            random = Random.CreateFromIndex(0);
         }
-        public void GetColor(int weaponIdx)
+        //TODO : return weapon idx according to player's level
+        public WeaponConfigInfoCom GetRandomWeaponConfig(int playerLevel)
         {
-            //weaponMap.wpNativeHashMap[weaponIdx].
+            return MapCom.wpNativeHashMap[random.NextInt(weaponCount)];
+        }
+        //TODO : return weapon level according to player's level
+        public int GetRandomLevel(int playerLevel)
+        {
+            return random.NextInt(4);
         }
     }
 }

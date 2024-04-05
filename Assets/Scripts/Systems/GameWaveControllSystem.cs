@@ -161,6 +161,7 @@ namespace ProjectGra
         {
             //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
+            state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
             //Update weaponstate
             CanvasMonoSingleton.Instance.GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3);
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
@@ -182,7 +183,6 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
 
-            state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
             //set gamestate
             var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
@@ -193,6 +193,7 @@ namespace ProjectGra
         private void ShopState(ref SystemState state)
         {
             //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();  // used to Remove GCNotPaused from super singleton
+            state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
             //var com = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             //com.ValueRW.IsPause = !com.ValueRW.IsPause;
@@ -209,10 +210,10 @@ namespace ProjectGra
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
             //set gamestate
-            //var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
-            //Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
-            //gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState; 
-            //gameState.ValueRW.CurrentState = GameControllState.InShop;
+            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
+            gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
+            gameState.ValueRW.CurrentState = GameControllState.InShop;
         }
 
         private void PauseReal(ref SystemState state)
@@ -259,6 +260,10 @@ namespace ProjectGra
                     {
                         PauseReal(ref state);
                     }
+                    if (Input.GetKeyUp(KeyCode.T))
+                    {
+                        ShopState(ref state);
+                    }
                     break;
                 case GameControllState.InWave:
                     if ((timer -= deltatime) < 0f)
@@ -275,13 +280,16 @@ namespace ProjectGra
                     {
                         PauseReal(ref state);
                     }
+                    if (Input.GetKeyUp(KeyCode.T))
+                    {
+                        ShopState(ref state);
+                    }
                     break;
                 case GameControllState.AfterWave:
                     if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  // TODO need wave clean up System
                     {
                         timer = 2f; // setting begin wave time;!!!!      
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
-                        state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
                         ShopState(ref state);
                         Debug.Log("AfterWave to InShop!");
                     }
@@ -291,20 +299,10 @@ namespace ProjectGra
                     }
                     break;
                 case GameControllState.InShop:
-                    if (Input.GetKeyUp(KeyCode.P))
+                    if (Input.GetKeyUp(KeyCode.T))
                     {
                         ExitShopState(ref state);
                     }
-                    //Debug.Log("InShop");
-                    //ShopState(ref state);
-                    //if(gameState.ValueRO.PreviousState != GameControllState.InShop) ShopState(ref state);
-                    //else
-                    //{
-                    //    gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
-
-                    //    state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
-                    //    Debug.Log("InShop to BeforeWave!");
-                    //}
                     break;
                 case GameControllState.Uninitialized:
                     gameState.ValueRW.CurrentState = GameControllState.BeforeWave;

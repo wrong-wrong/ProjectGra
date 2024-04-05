@@ -12,11 +12,13 @@ namespace ProjectGra
         public static CanvasMonoSingleton Instance;
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
-
+        public PlayerAtttributeDamageRelated damagedAttribute;
+        public PlayerAttributeMain mainAttribute;
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] CanvasGroup PauseCanvasGroup;
         [SerializeField] Button ShopContinueButton;
+        [SerializeField] Button ShopRerollButton;
         public RectTransform DragLayer;
 
         [Header("Player Attribute")]
@@ -57,9 +59,14 @@ namespace ProjectGra
         [SerializeField] Image experienceBar;
         [SerializeField] TextMeshProUGUI MaterialCount;
 
-        [Header("Pause Canves")]
+        [Header("Pause Canvas")]
         [SerializeField] Button pauseContinueButton;
         [SerializeField] TextMeshProUGUI pauseAttributeInfoText;
+
+        [Header("Shop")]
+        [SerializeField] ShopItem leftShopItem;
+        [SerializeField] ShopItem midShopItem;
+        [SerializeField] ShopItem rightShopItem;
         public void Awake()
         {
             if (Instance != null)
@@ -73,6 +80,7 @@ namespace ProjectGra
             InGameUICanvasGroup.blocksRaycasts = false;
             ShopContinueButton.onClick.AddListener(ShopContinueButtonActionWrapper);
             pauseContinueButton.onClick.AddListener(() => { OnPauseContinueButtonClicked?.Invoke(); }); //tring to use lambda
+            ShopRerollButton.onClick.AddListener(Reroll);
         }
 
         private void Start()
@@ -83,6 +91,22 @@ namespace ProjectGra
         {
             ShopContinueButton.onClick.RemoveListener(ShopContinueButtonActionWrapper);
             pauseContinueButton.onClick.RemoveAllListeners();
+            ShopRerollButton.onClick.RemoveAllListeners();
+        }
+        private void Reroll()
+        {
+            if (!leftShopItem.isLock)
+            {
+                leftShopItem.Reroll();
+            }
+            if (!midShopItem.isLock)
+            {
+                midShopItem.Reroll();
+            }
+            if (!rightShopItem.isLock)
+            {
+                rightShopItem.Reroll();
+            }
         }
         private void ShopContinueButtonActionWrapper()
         {
@@ -96,6 +120,8 @@ namespace ProjectGra
 
         public void UpdatePlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
+            this.mainAttribute = attributeStruct;
+            this.damagedAttribute = damageRelatedAttribute;
             text1.text = attributeStruct.MaxHealthPoint.ToString();
             text2.text = attributeStruct.HealthRegain.ToString();
             text3.text = attributeStruct.Armor.ToString();
@@ -171,10 +197,10 @@ namespace ProjectGra
 
         public void SetSlotWeaponIdx(int idx, int idx1, int idx2, int idx3)
         {
-            mainWeaponSlot.InitSlot(idx);
-            leftAutoSlot.InitSlot(idx1);
-            midAutoSlot.InitSlot(idx2);
-            rightAutoSlot.InitSlot(idx3);
+            mainWeaponSlot.InitSlot(idx,0);
+            leftAutoSlot.InitSlot(idx1, 1);
+            midAutoSlot.InitSlot(idx2, 2);
+            rightAutoSlot.InitSlot(idx3, 3);
         }
         public void GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3)
         {

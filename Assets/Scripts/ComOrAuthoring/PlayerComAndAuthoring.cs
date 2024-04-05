@@ -16,7 +16,7 @@ namespace ProjectGra
                 //AddComponent(entity, new PlayerDamagedRecordCom{damagedThisFrame = 0});
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
-                AddComponent(entity, new PlayerExperience { Value = 0 });
+                AddComponent(entity, new PlayerExperienceAndLevel { Exp = 0 });
                 AddComponent<EntityStateMachine>(entity);
                 //
                 var buffer = AddBuffer<AutoWeaponState>(entity);
@@ -56,9 +56,10 @@ namespace ProjectGra
     {
         public float Value;
     }
-    public struct PlayerExperience : IComponentData
+    public struct PlayerExperienceAndLevel : IComponentData
     {
-        public float Value;
+        public float Exp;
+        public int Level;
     }
     public struct PlayerMaterialCount : IComponentData
     {

@@ -48,7 +48,6 @@ namespace ProjectGra
                 {
                     localTransform.ValueRW.Position = math.lerp(localTransform.ValueRO.Position, playerTransform.Position, 1 - realTimer / cleanupTimer);
                 }
-                
             }
         }
     }
