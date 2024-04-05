@@ -16,10 +16,11 @@ namespace ProjectGra
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = authoring.HealthPoint });
                 //AddComponent(entity, new EnemyFollowState { FollowSpeed = authoring.FollowSpeed , StopDistance = authoring.StopDistance});
                 AddComponent(entity, new EntityStateMachine { CurrentState = EntityState.Follow });
+                AddComponent<EnemyTag>(entity);
             }
         }
     }
-
+    public struct EnemyTag : IComponentData { }
     public struct EntityHealthPoint : IComponentData
     {
         public int HealthPoint;

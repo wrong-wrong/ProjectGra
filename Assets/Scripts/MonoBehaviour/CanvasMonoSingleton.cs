@@ -10,11 +10,13 @@ namespace ProjectGra
     {
         private StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
-        public Action OnContinueButtonClicked;
+        public Action OnShopContinueButtonClicked;
+        public Action OnPauseContinueButtonClicked;
 
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup InGameUICanvasGroup;
-        [SerializeField] Button ContinueButton;
+        [SerializeField] CanvasGroup PauseCanvasGroup;
+        [SerializeField] Button ShopContinueButton;
         public RectTransform DragLayer;
 
         [Header("Player Attribute")]
@@ -54,6 +56,10 @@ namespace ProjectGra
         [SerializeField] Image healthBar;
         [SerializeField] Image experienceBar;
         [SerializeField] TextMeshProUGUI MaterialCount;
+
+        [Header("Pause Canves")]
+        [SerializeField] Button pauseContinueButton;
+        [SerializeField] TextMeshProUGUI pauseAttributeInfoText;
         public void Awake()
         {
             if (Instance != null)
@@ -65,7 +71,8 @@ namespace ProjectGra
             Instance = this;
             InGameUICanvasGroup.interactable = false;
             InGameUICanvasGroup.blocksRaycasts = false;
-            ContinueButton.onClick.AddListener(ActionWrapper);
+            ShopContinueButton.onClick.AddListener(ShopContinueButtonActionWrapper);
+            pauseContinueButton.onClick.AddListener(() => { OnPauseContinueButtonClicked?.Invoke(); }); //tring to use lambda
         }
 
         private void Start()
@@ -74,12 +81,17 @@ namespace ProjectGra
         }
         public void OnDestroy()
         {
-            ContinueButton.onClick.RemoveListener(ActionWrapper);
+            ShopContinueButton.onClick.RemoveListener(ShopContinueButtonActionWrapper);
+            pauseContinueButton.onClick.RemoveAllListeners();
         }
-        private void ActionWrapper()
+        private void ShopContinueButtonActionWrapper()
         {
-            OnContinueButtonClicked?.Invoke();
+            OnShopContinueButtonClicked?.Invoke();
             //Debug.Log("ButtonClicked");
+        }
+        private void PauseContinueButtonActionWrapper()
+        {
+            OnPauseContinueButtonClicked?.Invoke();
         }
 
         public void UpdatePlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
@@ -96,6 +108,33 @@ namespace ProjectGra
             text9.text = damageRelatedAttribute.MeleeRangedElementAttSpd.w.ToString();
             text10.text = damageRelatedAttribute.DamagePercentage.ToString();
             text11.text = attributeStruct.Range.ToString();
+        }
+        private void UpdatePlayerAttribute(TextMeshProUGUI pauseAttributeInfo, PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
+        {
+            stringBuilder.Append(attributeStruct.MaxHealthPoint);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(attributeStruct.HealthRegain);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(attributeStruct.Armor);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(attributeStruct.SpeedPercentage);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(attributeStruct.Range);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(damageRelatedAttribute.MeleeRangedElementAttSpd.x);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(damageRelatedAttribute.MeleeRangedElementAttSpd.y);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(damageRelatedAttribute.MeleeRangedElementAttSpd.z);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(damageRelatedAttribute.MeleeRangedElementAttSpd.w);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(damageRelatedAttribute.DamagePercentage);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(damageRelatedAttribute.CriticalHitChance);
+            stringBuilder.AppendLine();
+            pauseAttributeInfo.text = stringBuilder.ToString();
+            stringBuilder.Clear();
         }
 
         public void UpdateMainWeaponInfo()
@@ -144,6 +183,20 @@ namespace ProjectGra
             idx2 = midAutoSlot.WeaponIdx;
             idx3 = rightAutoSlot.WeaponIdx;
         }
+        public void ShowPause(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
+        {
+            PauseCanvasGroup.alpha = 1;
+            PauseCanvasGroup.interactable = true;
+            PauseCanvasGroup.blocksRaycasts = true;
+            UpdatePlayerAttribute(pauseAttributeInfoText, attributeStruct, damageRelatedAttribute);
+        }
+        public void HidePause()
+        {
+            PauseCanvasGroup.alpha = 0;
+            PauseCanvasGroup.interactable = false;
+            PauseCanvasGroup.blocksRaycasts = false;
+        }
+
         public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState)
         {
             ShopCanvasGroup.alpha = 1;

@@ -27,21 +27,28 @@ namespace ProjectGra
         }
         public void OnStartRunning(ref SystemState state)
         {
-            CanvasMonoSingleton.Instance.OnContinueButtonClicked += UnpauseOnContinueButtonCallback;
-
+            CanvasMonoSingleton.Instance.OnShopContinueButtonClicked += ShopContinueButtonCallback;
+            CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
             //tmp test code
             var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
             PopulateWeaponStateWithWeaponIdx(ref state, 0, ref idxList);
         }
         public void OnStopRunning(ref SystemState state)
         {
-            CanvasMonoSingleton.Instance.OnContinueButtonClicked -= UnpauseOnContinueButtonCallback;
+            CanvasMonoSingleton.Instance.OnShopContinueButtonClicked -= ShopContinueButtonCallback;
+            CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked -= PauseContinueButtonCallback;
         }
-        public void UnpauseOnContinueButtonCallback()
+        public void ShopContinueButtonCallback()
         {
             
             ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
-            Unpause(ref state);
+            ExitShopState(ref state);
+        }
+
+        public void PauseContinueButtonCallback()
+        {
+            ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
+            UnpauseReal(ref state);
         }
 
         private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int mainWeaponIdx,ref NativeArray<int> wpIdxList)
@@ -150,7 +157,7 @@ namespace ProjectGra
                 ecb.SetComponent(playerEntity, new PlayerOverlapRadius { Value = tmpRange + playerRange });
             }
         }
-        private void Unpause(ref SystemState state)
+        private void ExitShopState(ref SystemState state)
         {
             //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
@@ -174,12 +181,16 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.HideShop();
             CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
+
+            state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
             //set gamestate
             var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
-            gameState.ValueRW.CurrentState = gameState.ValueRO.PreviousState;
+            gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
+            Debug.Log("InShop to BeforeWave!");
+
 
         }
-        private void Pause(ref SystemState state)
+        private void ShopState(ref SystemState state)
         {
             //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();  // used to Remove GCNotPaused from super singleton
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
@@ -198,12 +209,36 @@ namespace ProjectGra
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
             //set gamestate
-            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
-            Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
-            gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState; 
-            gameState.ValueRW.CurrentState = GameControllState.Paused;
+            //var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            //Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
+            //gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState; 
+            //gameState.ValueRW.CurrentState = GameControllState.InShop;
         }
 
+        private void PauseReal(ref SystemState state)
+        {
+            state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
+
+            var playerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
+            var playerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
+            CanvasMonoSingleton.Instance.ShowPause(playerAttibuteCom, playerDamagedRelatedAttributeCom);
+            Cursor.lockState = CursorLockMode.None;
+            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
+            gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
+            gameState.ValueRW.CurrentState = GameControllState.Paused;
+        }
+        private void UnpauseReal(ref SystemState state)
+        {
+            
+            state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
+            //Unpause
+            CanvasMonoSingleton.Instance.HidePause();
+            Cursor.lockState = CursorLockMode.Locked;
+            //set gamestate
+            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            gameState.ValueRW.CurrentState = gameState.ValueRO.PreviousState;
+        }
         public void OnUpdate(ref SystemState state)
         {
 
@@ -212,12 +247,7 @@ namespace ProjectGra
             switch (gameState.ValueRO.CurrentState)
             {
                 case GameControllState.BeforeWave:
-                    if (Input.GetKeyUp(KeyCode.P))
-                    {
-                        Pause(ref state);
-                    }
-
-                    if((timer -= deltatime) < 0f)   //state change
+                    if ((timer -= deltatime) < 0f)   //state change
                     {
                         timer = 10f; // setting in wave time;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
@@ -225,15 +255,14 @@ namespace ProjectGra
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
                         Debug.Log("BeforeWave to InWave!");
                     }
-                    break;
-                case GameControllState.InWave:
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        Pause(ref state);
+                        PauseReal(ref state);
                     }
+                    break;
+                case GameControllState.InWave:
                     if ((timer -= deltatime) < 0f)
                     {
-                        timer = 2f; // setting after wave time;
                         gameState.ValueRW.PreviousState = GameControllState.InWave;  // setting only for InShop state, InShop checks previous state to decide if Pause
                         gameState.ValueRW.CurrentState = GameControllState.AfterWave;
 
@@ -242,31 +271,40 @@ namespace ProjectGra
                         Debug.Log("InWave to AfterWave!");
 
                     }
-                    break;
-                case GameControllState.AfterWave:
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        Pause(ref state);
+                        PauseReal(ref state);
                     }
-                    if ((timer -= deltatime) < 0f)  // TODO need wave clean up System
+                    break;
+                case GameControllState.AfterWave:
+                    if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  // TODO need wave clean up System
                     {
                         timer = 2f; // setting begin wave time;!!!!      
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
                         state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
-                        state.EntityManager.RemoveComponent<GameControllWaveCleanup>(state.SystemHandle);// TODO maybe handled by clean up system
+                        ShopState(ref state);
                         Debug.Log("AfterWave to InShop!");
+                    }
+                    if (Input.GetKeyUp(KeyCode.P))
+                    {
+                        PauseReal(ref state);
                     }
                     break;
                 case GameControllState.InShop:
-                    Debug.Log("InShop");
-                    if(gameState.ValueRO.PreviousState != GameControllState.InShop) Pause(ref state);
-                    else
+                    if (Input.GetKeyUp(KeyCode.P))
                     {
-                        gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
-
-                        state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
-                        Debug.Log("InShop to BeforeWave!");
+                        ExitShopState(ref state);
                     }
+                    //Debug.Log("InShop");
+                    //ShopState(ref state);
+                    //if(gameState.ValueRO.PreviousState != GameControllState.InShop) ShopState(ref state);
+                    //else
+                    //{
+                    //    gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
+
+                    //    state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
+                    //    Debug.Log("InShop to BeforeWave!");
+                    //}
                     break;
                 case GameControllState.Uninitialized:
                     gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
@@ -278,7 +316,7 @@ namespace ProjectGra
                 case GameControllState.Paused:
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        Unpause(ref state);
+                        UnpauseReal(ref state);
                         Debug.Log("Unpaused");
                     }
                     break;

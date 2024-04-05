@@ -10,8 +10,7 @@ namespace ProjectGra
     {
         public void OnCreate(ref SystemState state)
         {
-            //state.RequireForUpdate<GameControllInGame>();
-            state.RequireForUpdate<GameControllNotInShop>();
+            state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
         }
