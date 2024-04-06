@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using TMPro;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +16,7 @@ namespace ProjectGra
         public Action OnPauseContinueButtonClicked;
         public PlayerAtttributeDamageRelated damagedAttribute;
         public PlayerAttributeMain mainAttribute;
-        private int playerMaterialCount;
+        public int playerMaterialCount;
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] CanvasGroup PauseCanvasGroup;
@@ -38,22 +40,9 @@ namespace ProjectGra
 
         [Header("MainWeaponInfo")]
         [SerializeField] TextMeshProUGUI MainWeaponInfoText;
-        //[SerializeField] TextMeshProUGUI text13;
-        //[SerializeField] TextMeshProUGUI text14;
-        //[SerializeField] TextMeshProUGUI attackSpeedBonus;
-        //[SerializeField] TextMeshProUGUI critHitChance;
-        //[SerializeField] TextMeshProUGUI critHitRatio;
-        //[SerializeField] TextMeshProUGUI cooldown;
-        //[SerializeField] TextMeshProUGUI range;
-        //[SerializeField] TextMeshProUGUI damagePercentage;
 
         [Header("WeaponSlot")]
-        [SerializeField] WeaponSlot mainWeaponSlot;
-        [SerializeField] WeaponSlot leftAutoSlot;
-        [SerializeField] WeaponSlot midAutoSlot;
-        [SerializeField] WeaponSlot rightAutoSlot;
-
-
+        [SerializeField] List<WeaponSlot> weaponSlotList;
 
         [Header("InGameUI")]
         [SerializeField] Image healthBar;
@@ -65,9 +54,7 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI pauseAttributeInfoText;
 
         [Header("Shop")]
-        [SerializeField] ShopItem leftShopItem;
-        [SerializeField] ShopItem midShopItem;
-        [SerializeField] ShopItem rightShopItem;
+        [SerializeField] List<ShopItem> shopItemList;
         [SerializeField] TextMeshProUGUI shopMaterialCountText;
         public void Awake()
         {
@@ -87,28 +74,13 @@ namespace ProjectGra
 
         private void Start()
         {
-            mainWeaponSlot.isMainSlot = true;
+            weaponSlotList[0].isMainSlot = true;
         }
         public void OnDestroy()
         {
             ShopContinueButton.onClick.RemoveListener(ShopContinueButtonActionWrapper);
             pauseContinueButton.onClick.RemoveAllListeners();
             ShopRerollButton.onClick.RemoveAllListeners();
-        }
-        private void Reroll()
-        {
-            if (!leftShopItem.isLock)
-            {
-                leftShopItem.Reroll(playerMaterialCount);
-            }
-            if (!midShopItem.isLock)
-            {
-                midShopItem.Reroll(playerMaterialCount);
-            }
-            if (!rightShopItem.isLock)
-            {
-                rightShopItem.Reroll(playerMaterialCount);
-            }
         }
         private void ShopContinueButtonActionWrapper()
         {
@@ -120,7 +92,56 @@ namespace ProjectGra
             OnPauseContinueButtonClicked?.Invoke();
         }
 
-        public void UpdatePlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
+        #region Shop UI
+        private void UpdateAllShopItemBuyState(int price)
+        {
+            playerMaterialCount -= price;
+            for(int i = 0, n = shopItemList.Count; i < n; ++i)
+            {
+                shopItemList[i].UpdateBuyButtonState(playerMaterialCount);
+            }
+        }
+        public bool CheckWeaponSlotTryBuyShopItem(int weaponIdx, int weaponLevel, int price)
+        {
+            WeaponSlot tmp = null;
+            for(int i = 0, n = weaponSlotList.Count; i < n; ++i)
+            {
+                if (weaponSlotList[i].WeaponIdx == -1)
+                {
+                    weaponSlotList[i].WeaponIdx = weaponIdx;
+                    weaponSlotList[i].WeaponLevel = weaponLevel;
+                    weaponSlotList[i].InitSlot();
+                    UpdateAllShopItemBuyState(price);
+                    UpdateMaterialCount();
+                    return true;
+                }
+                else if (weaponSlotList[i].WeaponIdx == weaponIdx && weaponSlotList[i].WeaponLevel == weaponLevel)
+                {
+                    tmp = weaponSlotList[i];
+                }
+            }
+            if(tmp == null)
+            {
+                return false;
+            }
+            else
+            {
+                tmp.WeaponLevel++;
+                tmp.InitSlot();
+                UpdateAllShopItemBuyState(price);
+                UpdateMaterialCount();
+                return true;
+            }
+        }
+        private void Reroll()
+        {
+            for(int i = 0,n = shopItemList.Count; i < n; ++i)
+            {
+                if (!shopItemList[i].isLock) { shopItemList[i].Reroll(playerMaterialCount); }
+            }
+        }
+
+        public void UpdateShopPlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
             this.mainAttribute = attributeStruct;
             this.damagedAttribute = damageRelatedAttribute;
@@ -137,7 +158,84 @@ namespace ProjectGra
             text10.text = damageRelatedAttribute.DamagePercentage.ToString();
             text11.text = attributeStruct.Range.ToString();
         }
-        private void UpdatePlayerAttribute(TextMeshProUGUI pauseAttributeInfo, PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
+
+        public void UpdateMainWeaponInfo()
+        {
+            if (weaponSlotList[0].WeaponIdx == -1)
+            {
+                return;
+            }
+            var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[weaponSlotList[0].WeaponIdx];
+            var managedConfig = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponNameMap[weaponSlotList[0].WeaponIdx];
+            stringBuilder.Append(managedConfig);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.BasicDamage);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.DamageBonus.x);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.DamageBonus.y);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.DamageBonus.z);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.DamageBonus.w);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.WeaponCriticalHitChance);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.WeaponCriticalHitRatio);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.Range);
+            stringBuilder.AppendLine();
+            stringBuilder.Append(config.Cooldown);
+            stringBuilder.AppendLine();
+            MainWeaponInfoText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
+        }
+        private void UpdateMaterialCount()
+        {
+            stringBuilder.Append(playerMaterialCount);
+            shopMaterialCountText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
+        }
+        private void UpdateMaterialCount(int count)
+        {
+            playerMaterialCount = count;
+            UpdateMaterialCount();
+        }
+
+        public void SetSlotWeaponIdx(int idx, int idx1, int idx2, int idx3)
+        {
+            weaponSlotList[0].InitSlot(idx, 0);
+            weaponSlotList[1].InitSlot(idx1, 1);
+            weaponSlotList[2].InitSlot(idx2, 2);
+            weaponSlotList[3].InitSlot(idx3, 3);
+        }
+        public void GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3)
+        {
+            idx = weaponSlotList[0].WeaponIdx;
+            idx1 = weaponSlotList[1].WeaponIdx;
+            idx2 = weaponSlotList[2].WeaponIdx;
+            idx3 = weaponSlotList[3].WeaponIdx;
+        }
+        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState, int MaterialCount)
+        {
+            ShopCanvasGroup.alpha = 1;
+            ShopCanvasGroup.interactable = true;
+            ShopCanvasGroup.blocksRaycasts = true;
+            UpdateShopPlayerAttribute(attributeStruct, damageRelatedAttribute);
+            UpdateMainWeaponInfo();
+            UpdateMaterialCount(MaterialCount);
+        }
+        public void HideShop()
+        {
+            ShopCanvasGroup.alpha = 0;
+            ShopCanvasGroup.interactable = false;
+            ShopCanvasGroup.blocksRaycasts = false;
+        }
+        #endregion
+
+
+        #region PauseUI
+        private void UpdatePausePlayerAttribute(TextMeshProUGUI pauseAttributeInfo, PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
             stringBuilder.Append(attributeStruct.MaxHealthPoint);
             stringBuilder.AppendLine();
@@ -165,64 +263,13 @@ namespace ProjectGra
             stringBuilder.Clear();
         }
 
-        public void UpdateMainWeaponInfo()
-        {
-            if(mainWeaponSlot.WeaponIdx == -1)
-            {
-                return;
-            }
-            var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[mainWeaponSlot.WeaponIdx];
-            var managedConfig = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponNameMap[mainWeaponSlot.WeaponIdx];
-            stringBuilder.Append(managedConfig);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.BasicDamage);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.DamageBonus.x);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.DamageBonus.y);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.DamageBonus.z);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.DamageBonus.w);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.WeaponCriticalHitChance);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.WeaponCriticalHitRatio);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.Range);
-            stringBuilder.AppendLine();
-            stringBuilder.Append(config.Cooldown);
-            stringBuilder.AppendLine();
-            MainWeaponInfoText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
-        }
-        private void UpdateMaterialCount(int count)
-        {
-            stringBuilder.Append(count);
-            shopMaterialCountText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
-        }
 
-        public void SetSlotWeaponIdx(int idx, int idx1, int idx2, int idx3)
-        {
-            mainWeaponSlot.InitSlot(idx,0);
-            leftAutoSlot.InitSlot(idx1, 1);
-            midAutoSlot.InitSlot(idx2, 2);
-            rightAutoSlot.InitSlot(idx3, 3);
-        }
-        public void GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3)
-        {
-            idx = mainWeaponSlot.WeaponIdx;
-            idx1 = leftAutoSlot.WeaponIdx;
-            idx2 = midAutoSlot.WeaponIdx;
-            idx3 = rightAutoSlot.WeaponIdx;
-        }
         public void ShowPause(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
             PauseCanvasGroup.alpha = 1;
             PauseCanvasGroup.interactable = true;
             PauseCanvasGroup.blocksRaycasts = true;
-            UpdatePlayerAttribute(pauseAttributeInfoText, attributeStruct, damageRelatedAttribute);
+            UpdatePausePlayerAttribute(pauseAttributeInfoText, attributeStruct, damageRelatedAttribute);
         }
         public void HidePause()
         {
@@ -230,30 +277,11 @@ namespace ProjectGra
             PauseCanvasGroup.interactable = false;
             PauseCanvasGroup.blocksRaycasts = false;
         }
+        #endregion
 
-        public void ShowShop(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, MainWeaponState weaponState, int MaterialCount)
-        {
-            ShopCanvasGroup.alpha = 1;
-            ShopCanvasGroup.interactable = true;
-            ShopCanvasGroup.blocksRaycasts = true;
-            UpdatePlayerAttribute(attributeStruct, damageRelatedAttribute);
-            UpdateMainWeaponInfo();
-            UpdateMaterialCount(MaterialCount);
-        }
-        public void HideShop()
-        {
-            ShopCanvasGroup.alpha = 0;
-            ShopCanvasGroup.interactable = false;
-            ShopCanvasGroup.blocksRaycasts = false;
-        }
-        public void ShowInGameUI()
-        {
-            InGameUICanvasGroup.alpha = 1;
-        }
-        public void HideInGameUI()
-        {
-            InGameUICanvasGroup.alpha = 0;
-        }
+
+
+
 
         #region In-game UI
         private int maxHp;
@@ -269,12 +297,15 @@ namespace ProjectGra
             experienceBar.fillAmount = exp / maxExp;
             inGameMaterialCountText.text = materialsCount.ToString();
         }
+        public void ShowInGameUI()
+        {
+            InGameUICanvasGroup.alpha = 1;
+        }
+        public void HideInGameUI()
+        {
+            InGameUICanvasGroup.alpha = 0;
+        }
         #endregion
     }
 
-    //public class MyCanvasGroupManagedCom : IComponentData
-    //{
-    //    public CanvasGroup canvasGroup;
-    //    public Cursor cursor;
-    //}
 }

@@ -46,8 +46,8 @@ namespace ProjectGra
     }
     public struct PlayerAttributeMain : IComponentData
     {
-        public float MaxHealthPoint;
-        public float HealthRegain;
+        public int MaxHealthPoint;
+        public int HealthRegain;
         public float Armor;
         public float SpeedPercentage;
         public float Range;

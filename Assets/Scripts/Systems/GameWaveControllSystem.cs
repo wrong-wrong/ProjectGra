@@ -159,9 +159,9 @@ namespace ProjectGra
         }
         private void ExitShopState(ref SystemState state)
         {
-            //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
+
             //Update weaponstate
             CanvasMonoSingleton.Instance.GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3);
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
@@ -170,15 +170,15 @@ namespace ProjectGra
             sysData.ValueRW.idxList[2] = idx3;
             PopulateWeaponStateWithWeaponIdx(ref state, idx, ref sysData.ValueRW.idxList);
 
-            //flip isPause
-            //var com = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
-            //com.ValueRW.IsPause = !com.ValueRW.IsPause;
+            //Setting player data in ECS
+            var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
+            var playerMaterialsCount = SystemAPI.GetComponentRW<PlayerMaterialCount>(playerEntity);
+            var playerHp = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
+            playerMaterialsCount.ValueRW.Count = CanvasMonoSingleton.Instance.playerMaterialCount;
+            playerHp.ValueRW.HealthPoint = CanvasMonoSingleton.Instance.mainAttribute.MaxHealthPoint;
+            SystemAPI.SetComponent(playerEntity, CanvasMonoSingleton.Instance.damagedAttribute);
+            SystemAPI.SetComponent(playerEntity, CanvasMonoSingleton.Instance.mainAttribute);
 
-            //Unpause
-
-            //var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
-            //var playerMaterialsCount = SystemAPI.GetComponent<PlayerMaterialCount>(playerEntity);
-            //var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
             CanvasMonoSingleton.Instance.HideShop();
             CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
@@ -187,8 +187,6 @@ namespace ProjectGra
             var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
             Debug.Log("InShop to BeforeWave!");
-
-
         }
         private void ShopState(ref SystemState state)
         {

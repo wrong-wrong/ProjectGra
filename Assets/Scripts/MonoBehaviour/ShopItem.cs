@@ -7,10 +7,13 @@ using Unity.Mathematics;
 public class ShopItem : MonoBehaviour
 {
     static StringBuilder stringBuilder;
-    //[SerializeField]
+    string lockedString = "(OvO)";
+    string unlockString = "Lock";
+    [SerializeField] RectTransform rectTransform;
     [SerializeField] TextMeshProUGUI priceText;
     [SerializeField] TextMeshProUGUI weaponNameText;
     [SerializeField] TextMeshProUGUI weaponInfoText;
+    [SerializeField] TextMeshProUGUI lockButtonText;
     [SerializeField] Button lockButton;
     [SerializeField] Button buyButton;
     [SerializeField] Image weaponIcon;
@@ -22,12 +25,14 @@ public class ShopItem : MonoBehaviour
     public void Start()
     {
         lockButton.onClick.AddListener(Lock);
+        buyButton.onClick.AddListener(Buy);
         stringBuilder = new StringBuilder(50);
         isLock = false;
     }
     public void OnDestroy()
     {
         lockButton.onClick.RemoveAllListeners();
+        buyButton.onClick.RemoveAllListeners();
     }
 
     private void ChangeBackgroundColor()
@@ -49,6 +54,7 @@ public class ShopItem : MonoBehaviour
     }
     public void Reroll(int playerMaterialCount)
     {
+        rectTransform.localScale = Vector3.one;
         weaponLevel = WeaponSOConfigSingleton.Instance.GetRandomLevel(2); // should pass in player's level;
         var config = WeaponSOConfigSingleton.Instance.GetRandomWeaponConfig(2); // should pass in player's level;
         weaponIdx = config.WeaponIndex;
@@ -96,10 +102,26 @@ public class ShopItem : MonoBehaviour
     public void Lock()
     {
         isLock = !isLock;
+        if (!isLock)
+        {
+            lockButtonText.text = unlockString;
+        }
+        else
+        {
+            lockButtonText.text = lockedString;
+        }
     }
     public void Buy()
     {
-
+        if(CanvasMonoSingleton.Instance.CheckWeaponSlotTryBuyShopItem(weaponIdx, weaponLevel, currentPrice))
+        {
+            rectTransform.localScale = Vector3.zero;
+            Debug.Log("Buy succeed- " + weaponNameText.text);
+        }
+        else
+        {
+            Debug.Log("Buy failed - "+weaponNameText.text);
+        }
     }
 
 }

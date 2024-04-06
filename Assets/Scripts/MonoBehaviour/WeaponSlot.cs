@@ -38,7 +38,7 @@ namespace ProjectGra
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            iconTransform.SetParent(bgTransform); 
+            iconTransform.SetParent(bgTransform);
             ResetIcon();
             //Check weapon data , if null ,return;
             if (CurrentHoveredSlot != null && CurrentHoveredSlot != this)
@@ -61,31 +61,35 @@ namespace ProjectGra
         {
             iconTransform.localPosition = Vector3.zero;
         }
-        public void InitSlot(int idx,int level)
+        public void InitSlot()
         {
-            WeaponIdx = idx;
-            WeaponLevel = level;
-            if (WeaponIdx == -1) 
-            { 
+            if (WeaponIdx == -1)
+            {
                 iconImg.color = Color.black;
                 bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[0];
             }
             else
             {
                 //var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
-                iconImg.color = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponColorInsteadOfIconMap[idx];
-                bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[level];
+                iconImg.color = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
+                bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[WeaponLevel];
             }
+        }
+        public void InitSlot(int idx, int level)
+        {
+            WeaponIdx = idx;
+            WeaponLevel = level;
+            InitSlot();
         }
         public static void SwapWeaponSlot(WeaponSlot dragged, WeaponSlot slot2)
         {
             var tmpIdx = slot2.WeaponIdx;
             var tmpLevel = slot2.WeaponLevel;
-            slot2.InitSlot(dragged.WeaponIdx,dragged.WeaponLevel);
-            dragged.InitSlot(tmpIdx,tmpLevel);
-            if(dragged.isMainSlot || slot2.isMainSlot) { CanvasMonoSingleton.Instance.UpdateMainWeaponInfo(); }
+            slot2.InitSlot(dragged.WeaponIdx, dragged.WeaponLevel);
+            dragged.InitSlot(tmpIdx, tmpLevel);
+            if (dragged.isMainSlot || slot2.isMainSlot) { CanvasMonoSingleton.Instance.UpdateMainWeaponInfo(); }
         }
-        
+
     }
 
 }
