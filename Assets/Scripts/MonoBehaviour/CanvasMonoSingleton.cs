@@ -10,7 +10,7 @@ namespace ProjectGra
 {
     public class CanvasMonoSingleton : MonoBehaviour
     {
-        private StringBuilder stringBuilder;
+        public StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
@@ -22,6 +22,7 @@ namespace ProjectGra
         [SerializeField] CanvasGroup PauseCanvasGroup;
         [SerializeField] Button ShopContinueButton;
         [SerializeField] Button ShopRerollButton;
+        [SerializeField] InfoMimiWindow infoMiniWindow;
         public RectTransform DragLayer;
 
         [Header("Player Attribute")]
@@ -56,6 +57,8 @@ namespace ProjectGra
         [Header("Shop")]
         [SerializeField] List<ShopItem> shopItemList;
         [SerializeField] TextMeshProUGUI shopMaterialCountText;
+        private Vector3 tmpShopItemPosition; // for swap;
+        private ShopItem tmpShopItem;
         public void Awake()
         {
             if (Instance != null)
@@ -93,10 +96,50 @@ namespace ProjectGra
         }
 
         #region Shop UI
+        public void RecycleWeaponFromSlot(int slotIdx)
+        {
+            playerMaterialCount += weaponSlotList[slotIdx].CurrentPrice;
+            weaponSlotList[slotIdx].InitSlot(-1, 0);
+            UpdateMaterialCount();
+        }
+        public void CombineWeaponFromTo(int combineSlotIdx, int callSlotIdx)
+        {
+            weaponSlotList[callSlotIdx].WeaponLevel++;
+            weaponSlotList[callSlotIdx].InitSlot();
+            weaponSlotList[combineSlotIdx].InitSlot(-1, 0);
+        }
+        public void HideInfoMiniWindow()
+        {
+            infoMiniWindow.WindowRect.localScale = Vector3.zero;
+        }
+        public void ShowInfoMiniWindow(WeaponSlot slot)
+        {
+            var showCombine = false;
+            var calledSlotIdx = -1;
+            var combineSlotIdx = -1;
+            for(int i = 0, n = weaponSlotList.Count; i < n; ++i)
+            {
+                if (slot == weaponSlotList[i])
+                {
+                    calledSlotIdx = i;
+                }
+                else if(slot.WeaponIdx == weaponSlotList[i].WeaponIdx && slot.WeaponLevel == weaponSlotList[i].WeaponLevel && slot.WeaponLevel != 3)
+                {
+                    combineSlotIdx = i;
+                    showCombine = true;
+                    //break;
+                }
+            }
+            infoMiniWindow.InitInfoMimiWindowAndShotAtPosition(damagedAttribute, mainAttribute.Range, slot.WeaponIdx, slot.WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx,slot.gameObject.transform.position);
+        }
         private void UpdateAllShopItemBuyState(int price)
         {
             playerMaterialCount -= price;
-            for(int i = 0, n = shopItemList.Count; i < n; ++i)
+            UpdateAllShopItemBuyState();
+        }
+        private void UpdateAllShopItemBuyState()
+        {
+            for (int i = 0, n = shopItemList.Count; i < n; ++i)
             {
                 shopItemList[i].UpdateBuyButtonState(playerMaterialCount);
             }
@@ -110,6 +153,7 @@ namespace ProjectGra
                 {
                     weaponSlotList[i].WeaponIdx = weaponIdx;
                     weaponSlotList[i].WeaponLevel = weaponLevel;
+                    weaponSlotList[i].CurrentPrice = price;
                     weaponSlotList[i].InitSlot();
                     UpdateAllShopItemBuyState(price);
                     UpdateMaterialCount();
@@ -133,14 +177,34 @@ namespace ProjectGra
                 return true;
             }
         }
+        private void SwapShopItem(int idx1, int idx2)
+        {
+            tmpShopItem = shopItemList[idx1];
+            shopItemList[idx1] = shopItemList[idx2];
+            shopItemList[idx2] = tmpShopItem;
+            tmpShopItemPosition = shopItemList[idx1].transform.localPosition;
+            shopItemList[idx1].transform.localPosition = shopItemList[idx2].transform.localPosition;
+            shopItemList[idx2].transform.localPosition = tmpShopItemPosition;
+        }
         private void Reroll()
         {
-            for(int i = 0,n = shopItemList.Count; i < n; ++i)
-            {
-                if (!shopItemList[i].isLock) { shopItemList[i].Reroll(playerMaterialCount); }
+            for(int i = 0,n = shopItemList.Count, notlocked = -1; i < n; ++i)
+            {                
+                if (!shopItemList[i].isLock) 
+                {
+                    if(notlocked == -1)notlocked = i;
+                    shopItemList[i].Reroll(playerMaterialCount);
+                }
+                else
+                {
+                    if(notlocked != -1)
+                    {
+                        SwapShopItem(i, notlocked);
+                        notlocked = i;
+                    }
+                }
             }
         }
-
         public void UpdateShopPlayerAttribute(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute)
         {
             this.mainAttribute = attributeStruct;
@@ -224,6 +288,8 @@ namespace ProjectGra
             UpdateShopPlayerAttribute(attributeStruct, damageRelatedAttribute);
             UpdateMainWeaponInfo();
             UpdateMaterialCount(MaterialCount);
+            Reroll();
+            UpdateAllShopItemBuyState();
         }
         public void HideShop()
         {
@@ -278,9 +344,6 @@ namespace ProjectGra
             PauseCanvasGroup.blocksRaycasts = false;
         }
         #endregion
-
-
-
 
 
         #region In-game UI

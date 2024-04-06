@@ -59,20 +59,20 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerAttibute = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var playerRange = SystemAPI.GetSingleton<PlayerAttributeMain>().Range;
-            var mainWeaponstate = SystemAPI.GetSingleton<MainWeaponState>();
+            var mainWeaponstate = SystemAPI.GetSingletonRW<MainWeaponState>();
             var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
             var wpHashMapWrapperCom = SystemAPI.GetSingleton<WeaponIdxToConfigCom>();
             //var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
             var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             //destory model anyway;
             //need to destory earlier model entity if existed and instantiate new one;
-            if (state.EntityManager.Exists(mainWeaponstate.WeaponModel))
+            if (state.EntityManager.Exists(mainWeaponstate.ValueRO.WeaponModel))
             {
-                ecb.DestroyEntity(mainWeaponstate.WeaponModel);
+                ecb.DestroyEntity(mainWeaponstate.ValueRO.WeaponModel);
             }
             if (mainWeaponIdx == -1)
             {
-                mainWeaponstate.WeaponIndex = -1;
+                mainWeaponstate.ValueRW.WeaponIndex = -1;
             }
             else
             {
@@ -168,6 +168,7 @@ namespace ProjectGra
             sysData.ValueRW.idxList[0] = idx1;
             sysData.ValueRW.idxList[1] = idx2;
             sysData.ValueRW.idxList[2] = idx3;
+            Debug.Log(idx+","+ idx1 + "," + idx2 + "," + idx3);
             PopulateWeaponStateWithWeaponIdx(ref state, idx, ref sysData.ValueRW.idxList);
 
             //Setting player data in ECS

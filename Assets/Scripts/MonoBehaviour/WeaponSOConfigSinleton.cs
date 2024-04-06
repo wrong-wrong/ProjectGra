@@ -12,7 +12,8 @@ namespace ProjectGra
         public WeaponIdxToConfigCom MapCom;
         public WeaponManagedAndMonoOnlyConfigCom ManagedConfigCom;
         public static WeaponSOConfigSingleton Instance;
-        public List<Color> bgColor;
+        public List<Color> levelBgColor;
+        public List<Color> levelBgColorLight;
         private int weaponCount;
         private Random random;
         public void Awake()

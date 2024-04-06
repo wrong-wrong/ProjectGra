@@ -37,7 +37,7 @@ public class ShopItem : MonoBehaviour
 
     private void ChangeBackgroundColor()
     {
-        backgroundImage.color = WeaponSOConfigSingleton.Instance.bgColor[weaponLevel];
+        backgroundImage.color = WeaponSOConfigSingleton.Instance.levelBgColor[weaponLevel];
     }
     public void UpdateBuyButtonState(int material)
     {
@@ -105,10 +105,12 @@ public class ShopItem : MonoBehaviour
         if (!isLock)
         {
             lockButtonText.text = unlockString;
+            buyButton.enabled = true;
         }
         else
         {
             lockButtonText.text = lockedString;
+            buyButton.enabled = false;
         }
     }
     public void Buy()
@@ -116,11 +118,6 @@ public class ShopItem : MonoBehaviour
         if(CanvasMonoSingleton.Instance.CheckWeaponSlotTryBuyShopItem(weaponIdx, weaponLevel, currentPrice))
         {
             rectTransform.localScale = Vector3.zero;
-            Debug.Log("Buy succeed- " + weaponNameText.text);
-        }
-        else
-        {
-            Debug.Log("Buy failed - "+weaponNameText.text);
         }
     }
 

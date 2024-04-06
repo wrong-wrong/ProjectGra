@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace ProjectGra
 {
-    public class WeaponSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class WeaponSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler,IPointerClickHandler
     {
         public static WeaponSlot CurrentHoveredSlot;
         public static List<Color> bgColorList;
@@ -14,8 +14,9 @@ namespace ProjectGra
         [SerializeField] Image iconImg;
         public int WeaponLevel; //0 - common, 1 - uncommon, 2 - rare, 3 - legendary
         public int WeaponIdx;
+        public int CurrentPrice;
         private Transform iconTransform;
-        private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化
+        private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化,其实还是为了防止遮挡
 
         #region UnityFunction
         public void Awake()
@@ -66,13 +67,13 @@ namespace ProjectGra
             if (WeaponIdx == -1)
             {
                 iconImg.color = Color.black;
-                bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[0];
+                bgImg.color = WeaponSOConfigSingleton.Instance.levelBgColor[0];
             }
             else
             {
                 //var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
                 iconImg.color = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
-                bgImg.color = WeaponSOConfigSingleton.Instance.bgColor[WeaponLevel];
+                bgImg.color = WeaponSOConfigSingleton.Instance.levelBgColor[WeaponLevel];
             }
         }
         public void InitSlot(int idx, int level)
@@ -90,6 +91,10 @@ namespace ProjectGra
             if (dragged.isMainSlot || slot2.isMainSlot) { CanvasMonoSingleton.Instance.UpdateMainWeaponInfo(); }
         }
 
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if(WeaponIdx != -1) CanvasMonoSingleton.Instance.ShowInfoMiniWindow(this);
+        }
     }
 
 }
