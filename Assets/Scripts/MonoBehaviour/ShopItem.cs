@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using Unity.Mathematics;
 public class ShopItem : MonoBehaviour
 {
-    static StringBuilder stringBuilder;
     string lockedString = "(OvO)";
     string unlockString = "Lock";
     [SerializeField] RectTransform rectTransform;
@@ -22,11 +21,15 @@ public class ShopItem : MonoBehaviour
     private int weaponIdx;
     private int weaponLevel;
     public bool isLock;
+    private ShopUIManager shopUIManager;
+    public void Init(ShopUIManager shopUIManager)
+    {
+        this.shopUIManager = shopUIManager;
+    }
     public void Start()
     {
         lockButton.onClick.AddListener(Lock);
         buyButton.onClick.AddListener(Buy);
-        stringBuilder = new StringBuilder(50);
         isLock = false;
     }
     public void OnDestroy()
@@ -37,7 +40,7 @@ public class ShopItem : MonoBehaviour
 
     private void ChangeBackgroundColor()
     {
-        backgroundImage.color = WeaponSOConfigSingleton.Instance.levelBgColor[weaponLevel];
+        backgroundImage.color = SOConfigSingleton.Instance.levelBgColor[weaponLevel];
     }
     public void UpdateBuyButtonState(int material)
     {
@@ -55,47 +58,46 @@ public class ShopItem : MonoBehaviour
     public void Reroll(int playerMaterialCount)
     {
         rectTransform.localScale = Vector3.one;
-        weaponLevel = WeaponSOConfigSingleton.Instance.GetRandomLevel(2); // should pass in player's level;
-        var config = WeaponSOConfigSingleton.Instance.GetRandomWeaponConfig(2); // should pass in player's level;
+        weaponLevel = SOConfigSingleton.Instance.GetRandomLevel(); // should pass in player's level;
+        var config = SOConfigSingleton.Instance.GetRandomWeaponConfig(); // should pass in player's level;
         weaponIdx = config.WeaponIndex;
-        currentPrice = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponBasePriceMap[weaponIdx];
+        currentPrice = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponBasePriceMap[weaponIdx];
         priceText.text = currentPrice.ToString();
-        weaponNameText.text = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponNameMap[weaponIdx].ToString();
+        weaponNameText.text = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponNameMap[weaponIdx].ToString();
         //Setting Text
-        var mainAttribute = CanvasMonoSingleton.Instance.mainAttribute;
-        var damageAttribute = CanvasMonoSingleton.Instance.damagedAttribute;
-        var calculatedDamageAfterBonus = (int)((1 + damageAttribute.DamagePercentage)
-            * (config.BasicDamage + math.csum(config.DamageBonus * damageAttribute.MeleeRangedElementAttSpd)));
-        var calculatedCritHitChance = damageAttribute.CriticalHitChance + config.WeaponCriticalHitChance;
-        var calculatedCooldown = config.Cooldown * math.clamp(1 - damageAttribute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
-        var calculatedRange = mainAttribute.Range + config.Range;   //used to set spawnee's timer
-        stringBuilder.Append(calculatedDamageAfterBonus);
-        stringBuilder.Append('|');
-        stringBuilder.Append(config.BasicDamage);
-        stringBuilder.AppendLine();
+        var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
+        var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage())
+            * (config.BasicDamage + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
+        var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance;
+        var calculatedCooldown = config.Cooldown * math.clamp(1 -PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);
+        var calculatedRange = PlayerDataModel.Instance.GetRange()+ config.Range;   //used to set spawnee's timer
+        strBuilder.Append(calculatedDamageAfterBonus);
+        strBuilder.Append('|');
+        strBuilder.Append(config.BasicDamage);
+        strBuilder.AppendLine();
 
-        stringBuilder.Append(calculatedCritHitChance);
-        stringBuilder.Append('|');
-        stringBuilder.Append(config.WeaponCriticalHitChance);
-        stringBuilder.AppendLine();
+        strBuilder.Append(calculatedCritHitChance);
+        strBuilder.Append('|');
+        strBuilder.Append(config.WeaponCriticalHitChance);
+        strBuilder.AppendLine();
 
-        stringBuilder.Append(config.WeaponCriticalHitRatio);
-        stringBuilder.AppendLine();
+        strBuilder.Append(config.WeaponCriticalHitRatio);
+        strBuilder.AppendLine();
 
-        stringBuilder.Append(calculatedCooldown);
-        stringBuilder.Append('|');
-        stringBuilder.Append(config.Cooldown);
-        stringBuilder.AppendLine();
+        strBuilder.Append(calculatedCooldown);
+        strBuilder.Append('|');
+        strBuilder.Append(config.Cooldown);
+        strBuilder.AppendLine();
 
-        stringBuilder.Append(calculatedRange);
-        stringBuilder.Append('|');
-        stringBuilder.Append(config.Range);
-        stringBuilder.AppendLine();
+        strBuilder.Append(calculatedRange);
+        strBuilder.Append('|');
+        strBuilder.Append(config.Range);
+        strBuilder.AppendLine();
 
-        stringBuilder.Append(config.DamageBonus);
-        
-        weaponInfoText.text = stringBuilder.ToString();
-        stringBuilder.Clear();
+        strBuilder.Append(config.DamageBonus);
+
+        weaponInfoText.text = strBuilder.ToString();
+        strBuilder.Clear();
         ChangeBackgroundColor();
         UpdateBuyButtonState(playerMaterialCount);
     }
@@ -115,7 +117,7 @@ public class ShopItem : MonoBehaviour
     }
     public void Buy()
     {
-        if(CanvasMonoSingleton.Instance.CheckWeaponSlotTryBuyShopItem(weaponIdx, weaponLevel, currentPrice))
+        if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, weaponLevel, currentPrice))
         {
             rectTransform.localScale = Vector3.zero;
         }

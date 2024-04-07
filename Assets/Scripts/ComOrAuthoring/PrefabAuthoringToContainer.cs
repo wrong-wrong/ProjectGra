@@ -6,22 +6,23 @@ namespace ProjectGra
     public class PrefabAuthoringToContainer : MonoBehaviour
     {
         public GameObject MaterialPrefab;
-
+        public GameObject ItemPrefab;
         public class Baker : Baker<PrefabAuthoringToContainer>
         {
             public override void Bake(PrefabAuthoringToContainer authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity, new MaterialPrefabCom
+                AddComponent(entity, new PrefabContainerCom
                 {
-                    Prefab = GetEntity(authoring.MaterialPrefab, TransformUsageFlags.Renderable)
+                    MaterialPrefab = GetEntity(authoring.MaterialPrefab, TransformUsageFlags.Renderable),
+                    ItemPrefab = GetEntity(authoring.ItemPrefab, TransformUsageFlags.Renderable),
                 });
             }
         }
-
-        public struct MaterialPrefabCom : IComponentData
-        {
-            public Entity Prefab;
-        }
+    }
+    public struct PrefabContainerCom : IComponentData
+    {
+        public Entity MaterialPrefab;
+        public Entity ItemPrefab;
     }
 }

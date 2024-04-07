@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TestButton : MonoBehaviour
 {
+    public ItemFoundUIManager itemFoundUI;
     public Button buttonOne;
     public Button buttonTwo;
     public bool flag;
@@ -12,7 +13,7 @@ public class TestButton : MonoBehaviour
     public List<WeaponSlot> wpSlots;
     public void Awake()
     {
-        buttonOne.onClick.AddListener(FlipActive);   
+        buttonOne.onClick.AddListener(RerollItemFound);   
         buttonTwo.onClick.AddListener(InitAllSlot);
     }
     public void OnDestroy()
@@ -20,18 +21,23 @@ public class TestButton : MonoBehaviour
         buttonOne.onClick.RemoveAllListeners();
         buttonTwo.onClick.RemoveAllListeners();
     }
-    private void FlipActive()
+
+    private void RerollItemFound()
     {
-        if(flag)
-        {
-            rectTransform.localScale = Vector3.one;
-        }
-        else
-        {
-            rectTransform.localScale = Vector3.zero;
-        }
-        flag = !flag;
+        itemFoundUI.Reroll();
     }
+    //private void FlipActive()
+    //{
+    //    if(flag)
+    //    {
+    //        rectTransform.localScale = Vector3.one;
+    //    }
+    //    else
+    //    {
+    //        rectTransform.localScale = Vector3.zero;
+    //    }
+    //    flag = !flag;
+    //}
 
 
     private void InitAllSlot()

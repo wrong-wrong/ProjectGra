@@ -22,6 +22,7 @@ namespace ProjectGra
         float lootChance;
         Random random;
         Entity MaterialPrefab;
+        Entity ItemPrefab;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -41,7 +42,9 @@ namespace ProjectGra
             hitDistanceSq = config.HitDistance * config.HitDistance;
             lootChance = config.LootChance;
             attackVal = config.AttackVal;
-            MaterialPrefab = SystemAPI.GetSingleton<MaterialPrefabCom>().Prefab;
+            var container = SystemAPI.GetSingleton<PrefabContainerCom>();
+            MaterialPrefab = container.MaterialPrefab;
+            ItemPrefab = container.ItemPrefab;
         }
         public void OnStopRunning(ref SystemState state) { }
 

@@ -66,13 +66,13 @@ namespace ProjectGra
                     state.EntityManager.AddComponent<WeaponIdxToConfigCom>(superSingleton);
                     var mpCom = new WeaponIdxToConfigCom { wpNativeHashMap = wpHashMp };
                     state.EntityManager.SetComponentData(superSingleton, mpCom);
-                    WeaponSOConfigSingleton.Instance.MapCom = mpCom;
+                    SOConfigSingleton.Instance.WeaponMapCom = mpCom;
                     if(SystemAPI.ManagedAPI.TryGetSingleton<WeaponManagedAndMonoOnlyConfigCom>(out var managedConfig))
                     {
-                        WeaponSOConfigSingleton.Instance.ManagedConfigCom = managedConfig;
+                        SOConfigSingleton.Instance.WeaponManagedConfigCom = managedConfig;
                         //Debug.Log("InitializaSystem - managedConfig set success");
                     }
-                    WeaponSOConfigSingleton.Instance.InitWeaponSOSingleton();
+                    SOConfigSingleton.Instance.InitWeaponSOSingleton();
 
                     //Setting Weapon state should be take over by pause system
                     //but can do some initial work here , remove LEG for example

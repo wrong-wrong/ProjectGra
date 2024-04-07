@@ -15,9 +15,11 @@ namespace ProjectGra
                 AddComponent<PlayerAtttributeDamageRelated>(entity);
                 //AddComponent(entity, new PlayerDamagedRecordCom{damagedThisFrame = 0});
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
+                AddComponent(entity, new PlayerItemCount { Count = 0 });
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
                 AddComponent(entity, new PlayerExperienceAndLevel { Exp = 0 });
                 AddComponent<EntityStateMachine>(entity);
+                
                 //
                 var buffer = AddBuffer<AutoWeaponState>(entity);
                 AddComponent<MainWeaponState>(entity, new MainWeaponState { WeaponIndex = -1});
@@ -36,19 +38,19 @@ namespace ProjectGra
     }
     public struct PlayerAtttributeDamageRelated : IComponentData
     {
+        public float CriticalHitChance;
+        public float DamagePercentage;
         public float4 MeleeRangedElementAttSpd;
         //Melee damage
         //Ranged damage
         //Element damage
         //Attack speed
-        public float CriticalHitChance;
-        public float DamagePercentage;
     }
     public struct PlayerAttributeMain : IComponentData
     {
         public int MaxHealthPoint;
         public int HealthRegain;
-        public float Armor;
+        public int Armor;
         public float SpeedPercentage;
         public float Range;
     }
@@ -60,8 +62,13 @@ namespace ProjectGra
     {
         public float Exp;
         public int Level;
+        public int LevelUpThisWave;
     }
     public struct PlayerMaterialCount : IComponentData
+    {
+        public int Count;
+    }
+    public struct PlayerItemCount : IComponentData
     {
         public int Count;
     }

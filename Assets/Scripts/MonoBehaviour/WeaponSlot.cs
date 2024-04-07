@@ -8,7 +8,6 @@ namespace ProjectGra
     public class WeaponSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler,IPointerClickHandler
     {
         public static WeaponSlot CurrentHoveredSlot;
-        public static List<Color> bgColorList;
         public bool isMainSlot;
         [SerializeField] Image bgImg;
         [SerializeField] Image iconImg;
@@ -17,6 +16,11 @@ namespace ProjectGra
         public int CurrentPrice;
         private Transform iconTransform;
         private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化,其实还是为了防止遮挡
+        private ShopUIManager shopUIManager;
+        public void Init(ShopUIManager shopUIManager)
+        {
+            this.shopUIManager = shopUIManager;
+        }
 
         #region UnityFunction
         public void Awake()
@@ -44,7 +48,7 @@ namespace ProjectGra
             //Check weapon data , if null ,return;
             if (CurrentHoveredSlot != null && CurrentHoveredSlot != this)
             {
-                SwapWeaponSlot(this, CurrentHoveredSlot);
+                this.SwapWeaponSlot(this, CurrentHoveredSlot);
             }
 
         }
@@ -67,13 +71,12 @@ namespace ProjectGra
             if (WeaponIdx == -1)
             {
                 iconImg.color = Color.black;
-                bgImg.color = WeaponSOConfigSingleton.Instance.levelBgColor[0];
+                bgImg.color = SOConfigSingleton.Instance.levelBgColor[0];
             }
             else
             {
-                //var config = WeaponSOConfigSingleton.Instance.MapCom.wpNativeHashMap[idx];
-                iconImg.color = WeaponSOConfigSingleton.Instance.ManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
-                bgImg.color = WeaponSOConfigSingleton.Instance.levelBgColor[WeaponLevel];
+                iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
+                bgImg.color = SOConfigSingleton.Instance.levelBgColor[WeaponLevel];
             }
         }
         public void InitSlot(int idx, int level)
@@ -82,18 +85,18 @@ namespace ProjectGra
             WeaponLevel = level;
             InitSlot();
         }
-        public static void SwapWeaponSlot(WeaponSlot dragged, WeaponSlot slot2)
+        public void SwapWeaponSlot(WeaponSlot dragged, WeaponSlot slot2)
         {
             var tmpIdx = slot2.WeaponIdx;
             var tmpLevel = slot2.WeaponLevel;
             slot2.InitSlot(dragged.WeaponIdx, dragged.WeaponLevel);
             dragged.InitSlot(tmpIdx, tmpLevel);
-            if (dragged.isMainSlot || slot2.isMainSlot) { CanvasMonoSingleton.Instance.UpdateMainWeaponInfo(); }
+            if (dragged.isMainSlot || slot2.isMainSlot) { shopUIManager.UpdateMainWeaponInfo(); }
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if(WeaponIdx != -1) CanvasMonoSingleton.Instance.ShowInfoMiniWindow(this);
+            if(WeaponIdx != -1) shopUIManager.ShowInfoMiniWindow(this);
         }
     }
 

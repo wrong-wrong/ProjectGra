@@ -18,7 +18,7 @@ namespace ProjectGra
 
         [SerializeField] private int MaxHealthPoint;
         [SerializeField] private int HealthRegain;
-        [SerializeField] private float Armor;
+        [SerializeField] private int Armor;
         [SerializeField] private float SpeedPercentage;
 
 
@@ -97,7 +97,7 @@ namespace ProjectGra
 
         public int MaxHealthPoint;
         public int HealthRegain;
-        public float Armor;
+        public int Armor;
         public float SpeedPercentage;
 
         public float MeleeDamage;

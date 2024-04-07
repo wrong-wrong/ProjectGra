@@ -20,7 +20,7 @@ MonoBehaviour:
   - 
   - PlayerSpawnee
   - EnemySpawnee
-  - Materials
+  - MaterialsAndItem
   - 
   - RagdollLayer
   - 

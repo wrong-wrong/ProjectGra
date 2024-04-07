@@ -163,7 +163,7 @@ namespace ProjectGra
             state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
 
             //Update weaponstate
-            CanvasMonoSingleton.Instance.GetSlowWeaponIdx(out int idx, out int idx1, out int idx2, out int idx3);
+            CanvasMonoSingleton.Instance.GetSlowWeaponIdxInShop(out int idx, out int idx1, out int idx2, out int idx3);
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             sysData.ValueRW.idxList[0] = idx1;
             sysData.ValueRW.idxList[1] = idx2;
@@ -175,10 +175,10 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerMaterialsCount = SystemAPI.GetComponentRW<PlayerMaterialCount>(playerEntity);
             var playerHp = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
-            playerMaterialsCount.ValueRW.Count = CanvasMonoSingleton.Instance.playerMaterialCount;
-            playerHp.ValueRW.HealthPoint = CanvasMonoSingleton.Instance.mainAttribute.MaxHealthPoint;
-            SystemAPI.SetComponent(playerEntity, CanvasMonoSingleton.Instance.damagedAttribute);
-            SystemAPI.SetComponent(playerEntity, CanvasMonoSingleton.Instance.mainAttribute);
+            playerMaterialsCount.ValueRW.Count = PlayerDataModel.Instance.playerMaterialCount;
+            playerHp.ValueRW.HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint();
+            SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
+            SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
 
             CanvasMonoSingleton.Instance.HideShop();
             CanvasMonoSingleton.Instance.ShowInGameUI();
@@ -199,12 +199,17 @@ namespace ProjectGra
 
             var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
+            var playerItemCount = SystemAPI.GetSingleton<PlayerItemCount>();
+            var playerExpCom = SystemAPI.GetSingleton<PlayerExperienceAndLevel>();
             var mainWpstate= SystemAPI.GetSingleton<MainWeaponState>();
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
-            CanvasMonoSingleton.Instance.SetSlotWeaponIdx(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
-            CanvasMonoSingleton.Instance.ShowShop(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, mainWpstate, materialCount.Count);
+            CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
+            //CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, playerItemCount.Count, playerExpCom.LevelUpThisWave, materialCount.Count);
+            CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1 , 1, materialCount.Count);
+            Debug.Log("Using Test Fixed number for itemCount and level up");
+
             CanvasMonoSingleton.Instance.HideInGameUI();
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
@@ -219,9 +224,7 @@ namespace ProjectGra
         {
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
 
-            var playerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
-            var playerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
-            CanvasMonoSingleton.Instance.ShowPause(playerAttibuteCom, playerDamagedRelatedAttributeCom);
+            CanvasMonoSingleton.Instance.ShowPauseCanvasGroup();
             Cursor.lockState = CursorLockMode.None;
             var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
             Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
@@ -233,7 +236,7 @@ namespace ProjectGra
             
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             //Unpause
-            CanvasMonoSingleton.Instance.HidePause();
+            CanvasMonoSingleton.Instance.HidePauseCanvasGroup();
             Cursor.lockState = CursorLockMode.Locked;
             //set gamestate
             var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);

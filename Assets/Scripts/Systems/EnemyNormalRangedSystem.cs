@@ -23,6 +23,7 @@ namespace ProjectGra
         float lootChance;
         Random random;
         Entity MaterialPrefab;
+        Entity ItemPrefab;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -45,7 +46,10 @@ namespace ProjectGra
             attackVal = config.AttackVal;
             state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
             state.EntityManager.SetComponentData(spawneePrefab, new SpawneeCurDamage { damage = attackVal });
-            
+            var container = SystemAPI.GetSingleton<PrefabContainerCom>();
+            MaterialPrefab = container.MaterialPrefab;
+            ItemPrefab = container.ItemPrefab;
+
         }
         public void OnStopRunning(ref SystemState state) { }
         public void OnUpdate(ref SystemState state)

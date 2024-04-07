@@ -94,6 +94,7 @@ MonoBehaviour:
   iconImg: {fileID: 3550906465008454896}
   WeaponLevel: 0
   WeaponIdx: 0
+  CurrentPrice: 0
 --- !u!1 &5378774651945583307
 GameObject:
   m_ObjectHideFlags: 0

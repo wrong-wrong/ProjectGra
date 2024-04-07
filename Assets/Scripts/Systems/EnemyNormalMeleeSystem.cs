@@ -16,6 +16,7 @@ namespace ProjectGra
         float lootChance;
         Random random;
         Entity MaterialPrefab;
+        Entity ItemPrefab;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -34,6 +35,9 @@ namespace ProjectGra
             cooldown = config.AttackCooldown;
             deathCountDown = config.DeathCountdown;
             attackVal = config.AttackVal;
+            var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
+            MaterialPrefab = prefabContainer.MaterialPrefab;
+            ItemPrefab = prefabContainer.ItemPrefab;
         }
         public void OnStopRunning(ref SystemState state)
         {
