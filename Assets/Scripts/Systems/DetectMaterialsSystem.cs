@@ -39,7 +39,7 @@ namespace ProjectGra
                 {
                     if (!itemTagLookup.HasComponent(hit.Entity))
                     {
-                        playerExperience.ValueRW.Exp += 1f;
+                        playerExperience.ValueRW.Exp += 1;
                         playerMaterial.ValueRW.Count += 1;
                     }
                     else

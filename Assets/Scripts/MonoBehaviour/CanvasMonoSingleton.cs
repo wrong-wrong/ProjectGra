@@ -12,6 +12,8 @@ namespace ProjectGra
     {
         public StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
+        public static List<string> IdxToAttributeName;
+
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
 
@@ -51,11 +53,29 @@ namespace ProjectGra
                 Destroy(gameObject);
                 return;
             }
+            IdxToAttributeName = new List<string>(11);
+            for(int i = 0; i < 11; i++)
+            {
+                IdxToAttributeName.Add("");
+            }
+            IdxToAttributeName[0] = "MaxHealthPoint";
+            IdxToAttributeName[1] = "HealthRegain";
+            IdxToAttributeName[2] = "Armor";
+            IdxToAttributeName[3] = "Speed";
+            IdxToAttributeName[4] = "Range";
+            IdxToAttributeName[5] = "CritHitChance";
+            IdxToAttributeName[6] = "Damage";
+            IdxToAttributeName[7] = "MeleeDamage";
+            IdxToAttributeName[8] = "RangeDamage";
+            IdxToAttributeName[9] = "ElementDamage";
+            IdxToAttributeName[10] = "AttackSpeed";
             stringBuilder = new StringBuilder(100);
             Instance = this;
             InGameUICanvasGroup.interactable = false;
             InGameUICanvasGroup.blocksRaycasts = false;
             pauseContinueButton.onClick.AddListener(() => { OnPauseContinueButtonClicked?.Invoke(); }); //tring to use lambda
+            OnShopContinueButtonClicked += BeforeExitShopCallBack;
+            PlayerDataModel.Instance.OnMaterialChanged += SetInGameUIMaterial;
             itemFoundUIRect.localScale = Vector3.zero;
             upgradeUIRect.localScale = Vector3.zero;
         }
@@ -73,10 +93,28 @@ namespace ProjectGra
             OnPauseContinueButtonClicked?.Invoke();
         }
 
-
+        private void BeforeExitShopCallBack()
+        {
+            ingameUIMaxHp = PlayerDataModel.Instance.GetMaxHealthPoint();
+            ingameUIMaxExp = PlayerDataModel.Instance.GetMaxExp();
+            HideShop();
+            ShowInGameUI();
+        }
 
         #region Shop UI
+        internal void CombineWeaponFromTo(int combineSlotIdx, int calledSlotIdx)
+        {
+            shopUIManager.CombineWeaponFromTo(combineSlotIdx, calledSlotIdx);
+        }
 
+        internal void RecycleWeaponFromSlot(int calledSlotIdx)
+        {
+            shopUIManager.RecycleWeaponFromSlot(calledSlotIdx);
+        }
+        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice)
+        {
+            shopUIManager.AddGameItem(itemIdx, itemLevel,currentPrice);
+        }
         public void SetSlotWeaponIdxInShop(int idx, int idx1, int idx2, int idx3)
         {
             shopUIManager.SetSlotWeaponIdx(idx,idx1, idx2, idx3);
@@ -95,6 +133,7 @@ namespace ProjectGra
         }
         public void ShowShopUI()
         {
+            HideInGameUI();
             HideItemFoundAndUpgradeCanvasGroup();
             HideSingleAttributeUI();
             ShopCanvasGroup.alpha = 1;
@@ -140,18 +179,26 @@ namespace ProjectGra
         
 
         #region In-game UI
-        private int maxHp;
-        private float maxExp;
-        public void SetMaxHpExp(int maxHp, float maxExp)
+        private int ingameUIMaxHp;
+        private int ingameUIMaxExp;
+        private void SetInGameUIMaterial(int materialCount)
         {
-            this.maxHp = maxHp;
-            this.maxExp = maxExp;
+            stringBuilder.Append(materialCount);
+            inGameMaterialCountText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
         }
-        public void UpdateInGameUI(int hp, float exp, int materialsCount)
+        public void SetMaxHpExp(int maxHp, int maxExp)
         {
-            healthBar.fillAmount = (float)hp / maxHp;
-            experienceBar.fillAmount = exp / maxExp;
-            inGameMaterialCountText.text = materialsCount.ToString();
+            this.ingameUIMaxHp = maxHp;
+            this.ingameUIMaxExp = maxExp;
+        }
+        public void UpdateInGameUI(int hp, int exp, int materialsCount)
+        {
+            healthBar.fillAmount = (float)hp / ingameUIMaxHp;
+            experienceBar.fillAmount = exp / ingameUIMaxExp;
+            stringBuilder.Append(materialsCount);
+            inGameMaterialCountText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
         }
         public void ShowInGameUI()
         {
@@ -163,11 +210,16 @@ namespace ProjectGra
         }
         #endregion
 
-        #region refactor
-        public void ShowAndInitInfoWindow(int WeaponIdx, int WeaponLevel, bool showCombine, int combineSlotIdx, int calledSlotIdx, Vector3 position)
+        #region InfoMiniWindow
+        public void ShowAndInitInfoWindowWithWeapon(int WeaponIdx, int WeaponLevel, bool showCombine, int combineSlotIdx, int calledSlotIdx, Vector3 position)
         {
             infoMiniWindow.gameObject.SetActive(true);
-            infoMiniWindow.InitInfoMimiWindowAndShowAtPosition(WeaponIdx, WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx, position);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx, position);
+        }
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel,int currentPrice, GameObject itemSlotGO, Vector3 showPos)
+        {
+            infoMiniWindow.gameObject.SetActive(true);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx,itemLevel, currentPrice,itemSlotGO, showPos);
         }
         #endregion
 
@@ -249,6 +301,19 @@ namespace ProjectGra
                 HideUpgradeUI();
             }
         }
+
+        public void RecycleItemWithGO(int itemIdx, int currentPrice,GameObject calledItemSlot)
+        {
+            PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
+            var itemConfig = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            for(int i = 0, n = itemConfig.AffectedAttributeIdx.Count; i < n; i++)
+            {
+                PlayerDataModel.Instance.AddAttributeValWith(itemConfig.AffectedAttributeIdx[i], itemConfig.BonusedValueList[i]);
+            }
+            Destroy(calledItemSlot);
+        }
+
+
         #endregion
 
     }

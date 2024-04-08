@@ -8,6 +8,7 @@ namespace ProjectGra
 {
     public class ShopUIManager : MonoBehaviour
     {
+        [SerializeField] GameObject gameItemPrefab;
         [Header("WeaponSlot")]
         [SerializeField] List<WeaponSlot> weaponSlotList;
         [Header("ShopItem")]
@@ -16,7 +17,8 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI MainWeaponInfoText;
         [SerializeField] Button ShopContinueButton;
         [SerializeField] Button ShopRerollButton;
-
+        [Header("Item Scroll View's Content RectTransform")]
+        [SerializeField] RectTransform content;
         [Header("Player Attribute")]
         [SerializeField] List<TextMeshProUGUI> playerAttributeTextList;
 
@@ -66,11 +68,22 @@ namespace ProjectGra
             idx2 = weaponSlotList[2].WeaponIdx;
             idx3 = weaponSlotList[3].WeaponIdx;
         }
+
+        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice)
+        {
+            var item = GameObject.Instantiate(gameItemPrefab, content);
+            item.gameObject.transform.SetAsFirstSibling();
+            item.GetComponent<SingleGameItem>().InitWithItemIdxAndLevel(itemIdx, itemLevel,currentPrice);
+            //content.SetAsFirstSibling(content)
+            //setParent and then SetAsFirstSibling
+        }
+
+
+
         public void RecycleWeaponFromSlot(int slotIdx)
         {
             PlayerDataModel.Instance.AddMaterialValWith(weaponSlotList[slotIdx].CurrentPrice);
             weaponSlotList[slotIdx].InitSlot(-1, 0);
-            //UpdateMaterialCount();
         }
         public void CombineWeaponFromTo(int combineSlotIdx, int callSlotIdx)
         {
@@ -97,7 +110,7 @@ namespace ProjectGra
                 }
             }
 
-            CanvasMonoSingleton.Instance.ShowAndInitInfoWindow(slot.WeaponIdx, slot.WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx, slot.gameObject.transform.position);
+            CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithWeapon(slot.WeaponIdx, slot.WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx, slot.gameObject.transform.position);
         }
 
         private void UpdateAllShopItemBuyState()
@@ -146,6 +159,7 @@ namespace ProjectGra
         private void UpdateMaterialCount(int count)
         {
             shopMaterialCountText.text = count.ToString();
+            UpdateAllShopItemBuyState();
         }
 
         private void SwapShopItem(int idx1, int idx2)

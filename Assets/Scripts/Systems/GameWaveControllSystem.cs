@@ -180,8 +180,8 @@ namespace ProjectGra
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
 
-            CanvasMonoSingleton.Instance.HideShop();
-            CanvasMonoSingleton.Instance.ShowInGameUI();
+            //CanvasMonoSingleton.Instance.HideShop();
+            //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
 
             //set gamestate
@@ -210,7 +210,7 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1 , 1, materialCount.Count);
             Debug.Log("Using Test Fixed number for itemCount and level up");
 
-            CanvasMonoSingleton.Instance.HideInGameUI();
+            //CanvasMonoSingleton.Instance.HideInGameUI();
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
             //set gamestate
@@ -301,10 +301,10 @@ namespace ProjectGra
                     }
                     break;
                 case GameControllState.InShop:
-                    if (Input.GetKeyUp(KeyCode.T))
-                    {
-                        ExitShopState(ref state);
-                    }
+                    //if (Input.GetKeyUp(KeyCode.T))
+                    //{
+                    //    ExitShopState(ref state);
+                    //}
                     break;
                 case GameControllState.Uninitialized:
                     gameState.ValueRW.CurrentState = GameControllState.BeforeWave;

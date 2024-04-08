@@ -7,7 +7,7 @@ namespace ProjectGra
     public partial struct InGameUIUpdateSystem : ISystem
     {
         int lastHealthPoint;
-        float lastExperience;
+        int lastExperience;
         int lastMaterialCount;
 
         public void OnCreate(ref SystemState state)

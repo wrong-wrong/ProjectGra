@@ -43,6 +43,7 @@ namespace ProjectGra
                 for(int i = 0, n = autoWpBuffer.Length; i < n; ++i)
                 {
                     ref var wp = ref autoWpBuffer.ElementAt(i);
+                    if (wp.WeaponIndex == -1) continue;
                     var rangeSq = wp.Range * wp.Range;
                     float minDistance = 1000f;
                     float preMinDistance = 1000f;

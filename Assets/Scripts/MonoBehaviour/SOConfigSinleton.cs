@@ -18,7 +18,7 @@ namespace ProjectGra
         private int weaponCount;
         private Random random;
 
-        [SerializeField] List<ItemScriptableObjectConfig> ItemSOList;
+        public List<ItemScriptableObjectConfig> ItemSOList;
         public void Awake()
         {
             if(Instance != null) 
@@ -47,9 +47,13 @@ namespace ProjectGra
         {
             return random.NextInt(11);
         }
-        public ItemScriptableObjectConfig GetRandomItemConfig()
+        public int GetRandomItemConfigIdx()
         {
-            return ItemSOList[random.NextInt(ItemSOList.Count)];
+            return random.NextInt(ItemSOList.Count);
+        }
+        public int GetItemCurrentPrice(int ItemIdx)
+        {
+            return ItemSOList[ItemIdx].ItemBasePrice;
         }
     }
 }

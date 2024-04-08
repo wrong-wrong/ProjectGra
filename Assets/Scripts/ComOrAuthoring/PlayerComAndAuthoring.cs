@@ -60,7 +60,7 @@ namespace ProjectGra
     }
     public struct PlayerExperienceAndLevel : IComponentData
     {
-        public float Exp;
+        public int Exp;
         public int Level;
         public int LevelUpThisWave;
     }

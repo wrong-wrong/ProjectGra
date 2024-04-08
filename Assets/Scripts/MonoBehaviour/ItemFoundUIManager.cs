@@ -8,7 +8,7 @@ namespace ProjectGra
     public class ItemFoundUIManager : MonoBehaviour
     {
         public int ItemFoundThisWave;
-        public static Dictionary<int, string> idxToAttributeName;
+        //public static Dictionary<int, string> idxToAttributeName;
         [SerializeField] Image iconBg;
         [SerializeField] Image background;
         [SerializeField] Image icon;
@@ -17,27 +17,27 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI RecycleText;
         [SerializeField] Button TakeButton;
         [SerializeField] Button RecycleButton;
-        [SerializeField] int ItemIdx;
-        [SerializeField] int CurrentPrice;
-        int ItemLevel;
-        private ItemScriptableObjectConfig currrentItem;
+        [SerializeField] int itemIdx;
+        int CurrentPrice;
+        int itemLevel;
+        //private ItemScriptableObjectConfig currrentItem;
 
         public void Awake()
         {
             TakeButton.onClick.AddListener(Take);
             RecycleButton.onClick.AddListener(Recycle);
-            idxToAttributeName = new Dictionary<int, string>();
-            idxToAttributeName[0] = "MaxHealthPoint";
-            idxToAttributeName[1] = "HealthRegain";
-            idxToAttributeName[2] = "Armor";
-            idxToAttributeName[3] = "Speed";
-            idxToAttributeName[4] = "Range";
-            idxToAttributeName[5] = "CritHitChance";
-            idxToAttributeName[6] = "Damage";
-            idxToAttributeName[7] = "MeleeDamage";
-            idxToAttributeName[8] = "RangeDamage";
-            idxToAttributeName[9] = "ElementDamage";
-            idxToAttributeName[10] = "AttackSpeed";
+            //idxToAttributeName = new Dictionary<int, string>();
+            //idxToAttributeName[0] = "MaxHealthPoint";
+            //idxToAttributeName[1] = "HealthRegain";
+            //idxToAttributeName[2] = "Armor";
+            //idxToAttributeName[3] = "Speed";
+            //idxToAttributeName[4] = "Range";
+            //idxToAttributeName[5] = "CritHitChance";
+            //idxToAttributeName[6] = "Damage";
+            //idxToAttributeName[7] = "MeleeDamage";
+            //idxToAttributeName[8] = "RangeDamage";
+            //idxToAttributeName[9] = "ElementDamage";
+            //idxToAttributeName[10] = "AttackSpeed";
 
         }
         public void OnDestroy()
@@ -47,16 +47,19 @@ namespace ProjectGra
         }
         public void Reroll()
         {
-            currrentItem = SOConfigSingleton.Instance.GetRandomItemConfig();
+            //currrentItem = SOConfigSingleton.Instance.GetRandomItemConfig();
+            itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdx();
+            CurrentPrice = SOConfigSingleton.Instance.GetItemCurrentPrice(itemIdx);
             InitAfterSetConfig();
         }
         public void Take()
         {
+            var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
             for(int i = 0, n = currrentItem.AffectedAttributeIdx.Count;  i < n; i++)
             {
                 PlayerDataModel.Instance.SetAttributeValWith(currrentItem.AffectedAttributeIdx[i], currrentItem.BonusedValueList[i]);
             }
-            //CanvasMonoSingleton.Instance.AddingItem(ItemIdx);
+            CanvasMonoSingleton.Instance.AddGameItem(itemIdx, itemLevel,CurrentPrice);
             CanvasMonoSingleton.Instance.ItemFoundUINext();
         }
 
@@ -68,13 +71,14 @@ namespace ProjectGra
         }
         private void InitAfterSetConfig()
         {
-            ItemLevel = currrentItem.ItemLevel;
-            ItemIdx = currrentItem.ItemIdx;
-            CurrentPrice = currrentItem.ItemBasePrice;
-            iconBg.color = SOConfigSingleton.Instance.levelBgColorLight[currrentItem.ItemLevel];
-            background.color = SOConfigSingleton.Instance.levelBgColor[currrentItem.ItemLevel];
-            icon.sprite = currrentItem.ItemSprite;
-            NameText.text = currrentItem.ItemName;
+            var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            itemLevel = currentItem.ItemLevel;
+            itemIdx = currentItem.ItemIdx;
+            CurrentPrice = currentItem.ItemBasePrice;
+            iconBg.color = SOConfigSingleton.Instance.levelBgColorLight[currentItem.ItemLevel];
+            background.color = SOConfigSingleton.Instance.levelBgColor[currentItem.ItemLevel];
+            icon.sprite = currentItem.ItemSprite;
+            NameText.text = currentItem.ItemName;
             RecycleText.text = "Recycle (+" + CurrentPrice + ")";
             SetItemInfoText();
         }
@@ -82,11 +86,12 @@ namespace ProjectGra
         private void SetItemInfoText()
         {
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
-            for(int i = 0,n = currrentItem.AffectedAttributeIdx.Count; i < n; ++i)
+            var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            for(int i = 0,n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
             {
-                if (currrentItem.BonusedValueList[i] > 0)strBuilder.Append("+");
-                strBuilder.Append(currrentItem.BonusedValueList[i]);
-                strBuilder.Append(idxToAttributeName[currrentItem.AffectedAttributeIdx[i]]);
+                if (currentItem.BonusedValueList[i] > 0)strBuilder.Append("+");
+                strBuilder.Append(currentItem.BonusedValueList[i]);
+                strBuilder.Append(CanvasMonoSingleton.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
                 strBuilder.AppendLine();
             }
             InfoText.text = strBuilder.ToString();

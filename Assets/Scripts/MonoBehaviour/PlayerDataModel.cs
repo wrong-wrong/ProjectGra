@@ -127,5 +127,10 @@ namespace ProjectGra
                 Range = attributeValueList[4],
             };
         }
+
+        internal int GetMaxExp()
+        {
+            return 15;
+        }
     }
 }
