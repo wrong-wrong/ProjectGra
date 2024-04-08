@@ -55,5 +55,9 @@ namespace ProjectGra
         {
             return ItemSOList[ItemIdx].ItemBasePrice;
         }
+        public bool ShopItemRerollNextTypeIsWeapon()
+        {
+            return random.NextFloat() > 0.4f;
+        }
     }
 }

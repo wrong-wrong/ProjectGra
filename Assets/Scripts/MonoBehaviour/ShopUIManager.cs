@@ -74,10 +74,26 @@ namespace ProjectGra
             var item = GameObject.Instantiate(gameItemPrefab, content);
             item.gameObject.transform.SetAsFirstSibling();
             item.GetComponent<SingleGameItem>().InitWithItemIdxAndLevel(itemIdx, itemLevel,currentPrice);
+            PlayerDataModel.Instance.AddMaterialValWith(-currentPrice);
+            var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            for (int i = 0, n = currrentItem.AffectedAttributeIdx.Count; i < n; i++)
+            {
+                PlayerDataModel.Instance.AddAttributeValWith(currrentItem.AffectedAttributeIdx[i], currrentItem.BonusedValueList[i]);
+            }
             //content.SetAsFirstSibling(content)
             //setParent and then SetAsFirstSibling
         }
-
+        internal void RecycleGameItemWithGO(int itemIdx, int currentPrice, GameObject calledItemSlot)
+        {
+            PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
+            var itemConfig = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            for (int i = 0, n = itemConfig.AffectedAttributeIdx.Count; i < n; i++)
+            {
+                //When you recycle an item, you modify player's attribute 
+                PlayerDataModel.Instance.AddAttributeValWith(itemConfig.AffectedAttributeIdx[i], -itemConfig.BonusedValueList[i]);
+            }
+            Destroy(calledItemSlot);
+        }
 
 
         public void RecycleWeaponFromSlot(int slotIdx)
@@ -229,9 +245,17 @@ namespace ProjectGra
             {
                 strBuilder.Append(PlayerDataModel.Instance.attributeValueList[i]);
                 playerAttributeTextList[i].text = strBuilder.ToString();
-                if (PlayerDataModel.Instance.attributeValueList[i] < 0) playerAttributeTextList[i].color = Color.red;
+                var val = PlayerDataModel.Instance.attributeValueList[i];
+                if (val < 0) playerAttributeTextList[i].color = Color.red;
+                else if (val > 0) playerAttributeTextList[i].color = Color.green;
+                else
+                {
+                    playerAttributeTextList[i].color = Color.white;
+                }
                 strBuilder.Clear();
             }
         }
+
+
     }
 }

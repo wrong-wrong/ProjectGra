@@ -23,7 +23,6 @@ namespace ProjectGra
             state.EntityManager.AddComponentObject(superSingleton, new CameraTargetReference { 
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
                 ghostPlayer = CameraTargetMonoSingleton.instance.transform});
-            //state.EntityManager.AddComponent<GameControllNotPaused>(superSingleton);
             
             //Initializing Player with config
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();

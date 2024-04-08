@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +10,7 @@ namespace ProjectGra
     {
         [SerializeField] Image Icon;
         [SerializeField] Image background;
-        [SerializeField]List<Image> lightBackgroundList;
+        [SerializeField] List<Image> lightBackgroundList;
         public Button CombineButton;
         public Button RecycleButton;
         public Button CancelButton;
@@ -39,7 +38,7 @@ namespace ProjectGra
             if (Input.GetMouseButtonDown(0))
             {
                 Vector2 mousePosition = Input.mousePosition;
-                
+
                 if (!RectTransformUtility.RectangleContainsScreenPoint(WindowRect, mousePosition))
                 {
 
@@ -50,13 +49,13 @@ namespace ProjectGra
 
         private void OnRecycleButtonClicked()
         {
-            if(lastCalledByWeaponSlot)
+            if (lastCalledByWeaponSlot)
             {
                 CanvasMonoSingleton.Instance.RecycleWeaponFromSlot(calledSlotIdx);
             }
             else
             {
-                CanvasMonoSingleton.Instance.RecycleItemWithGO(itemIdx,itemPrice,calledItemSlot);
+                CanvasMonoSingleton.Instance.RecycleGameItemWithGO(itemIdx, itemPrice, calledItemSlot);
             }
             gameObject.SetActive(false);
             //WindowRect.localScale = Vector3.zero;
@@ -120,7 +119,7 @@ namespace ProjectGra
             * (config.BasicDamage + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
             var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance;
             var calculatedCooldown = config.Cooldown * math.clamp(1 - PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);
-            var calculatedRange = PlayerDataModel.Instance.GetRange() + config.Range;   
+            var calculatedRange = PlayerDataModel.Instance.GetRange() + config.Range;
             strBuilder.Append(calculatedDamageAfterBonus);
             strBuilder.Append('|');
             strBuilder.Append(config.BasicDamage);
@@ -143,7 +142,7 @@ namespace ProjectGra
         private GameObject calledItemSlot;
         private int itemIdx;
         private int itemPrice;
-        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel,int currentPrice,GameObject itemSlot,Vector3 showPos)
+        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlot, Vector3 showPos)
         {
             //Setting info window
             this.itemIdx = itemIdx;

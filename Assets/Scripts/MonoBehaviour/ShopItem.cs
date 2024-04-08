@@ -4,23 +4,30 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Mathematics;
+//using UnityEngine.UIElements;
 public class ShopItem : MonoBehaviour
 {
-    string lockedString = "(OvO)";
-    string unlockString = "Lock";
+    static string lockedString = "(OvO)";
+    static string unlockString = "Lock";
     [SerializeField] RectTransform rectTransform;
     [SerializeField] TextMeshProUGUI priceText;
-    [SerializeField] TextMeshProUGUI weaponNameText;
+    [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TextMeshProUGUI weaponInfoText;
+    [SerializeField] TextMeshProUGUI itemInfoText;
     [SerializeField] TextMeshProUGUI lockButtonText;
+    [SerializeField] RectTransform wpInfoTextRect;
+    [SerializeField] RectTransform wpFixedTextRect;
+    [SerializeField] RectTransform itemInfoTextRect;
     [SerializeField] Button lockButton;
     [SerializeField] Button buyButton;
-    [SerializeField] Image weaponIcon;
+    [SerializeField] Image icon;
+    [SerializeField] Image iconBackground;
     [SerializeField] Image backgroundImage;
     private int currentPrice;
     private int weaponIdx;
-    private int weaponLevel;
+    private int contentLevel;
     public bool isLock;
+    private bool isWeapon;
     private ShopUIManager shopUIManager;
     public void Init(ShopUIManager shopUIManager)
     {
@@ -40,7 +47,8 @@ public class ShopItem : MonoBehaviour
 
     private void ChangeBackgroundColor()
     {
-        backgroundImage.color = SOConfigSingleton.Instance.levelBgColor[weaponLevel];
+        backgroundImage.color = SOConfigSingleton.Instance.levelBgColor[contentLevel];
+        iconBackground.color = SOConfigSingleton.Instance.levelBgColorLight[contentLevel];
     }
     public void UpdateBuyButtonState(int material)
     {
@@ -57,13 +65,64 @@ public class ShopItem : MonoBehaviour
     }
     public void Reroll(int playerMaterialCount)
     {
+        if (SOConfigSingleton.Instance.ShopItemRerollNextTypeIsWeapon()) 
+        {
+            RerollWeapon();
+        }
+        else
+        {
+            RerollItem();
+        }
+        UpdateBuyButtonState(playerMaterialCount);
+
+    }
+
+    int itemIdx;
+    private void RerollItem()
+    {
+        isWeapon = false;
         rectTransform.localScale = Vector3.one;
-        weaponLevel = SOConfigSingleton.Instance.GetRandomLevel(); // should pass in player's level;
+        itemInfoTextRect.localScale = Vector3.one;
+        wpInfoTextRect.localScale = Vector3.zero;
+        wpFixedTextRect.localScale = Vector3.zero;
+        itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdx();
+        currentPrice = SOConfigSingleton.Instance.GetItemCurrentPrice(itemIdx);
+        var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
+
+        priceText.text = strBuilder.Append(currentPrice).ToString();
+        strBuilder.Clear();
+        //Init after set config
+        var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+        contentLevel = currentItem.ItemLevel;
+        itemIdx = currentItem.ItemIdx;
+        icon.sprite = currentItem.ItemSprite;
+        nameText.text = currentItem.ItemName;
+        for (int i = 0, n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
+        {
+            if (currentItem.BonusedValueList[i] > 0) strBuilder.Append("+");
+            strBuilder.Append(currentItem.BonusedValueList[i]);
+            strBuilder.Append(CanvasMonoSingleton.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
+            strBuilder.AppendLine();
+        }
+        itemInfoText.text = strBuilder.ToString();
+        strBuilder.Clear();
+        ChangeBackgroundColor();
+    }
+    private void RerollWeapon()
+    {
+        isWeapon = true;
+        rectTransform.localScale = Vector3.one;
+        wpInfoTextRect.localScale = Vector3.one;
+        wpFixedTextRect.localScale = Vector3.one;
+        itemInfoTextRect.localScale = Vector3.zero;
+
+        contentLevel = SOConfigSingleton.Instance.GetRandomLevel(); // should pass in player's level;
         var config = SOConfigSingleton.Instance.GetRandomWeaponConfig(); // should pass in player's level;
+        icon.sprite = null;
         weaponIdx = config.WeaponIndex;
         currentPrice = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponBasePriceMap[weaponIdx];
         priceText.text = currentPrice.ToString();
-        weaponNameText.text = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponNameMap[weaponIdx].ToString();
+        nameText.text = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponNameMap[weaponIdx].ToString();
         //Setting Text
         var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
         var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage())
@@ -99,7 +158,6 @@ public class ShopItem : MonoBehaviour
         weaponInfoText.text = strBuilder.ToString();
         strBuilder.Clear();
         ChangeBackgroundColor();
-        UpdateBuyButtonState(playerMaterialCount);
     }
     public void Lock()
     {
@@ -117,8 +175,20 @@ public class ShopItem : MonoBehaviour
     }
     public void Buy()
     {
-        if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, weaponLevel, currentPrice))
+        if (isWeapon)
         {
+            if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, contentLevel, currentPrice))
+            {
+                rectTransform.localScale = Vector3.zero;
+            }
+            else
+            {
+                Debug.Log("No empty slot!!!");
+            }
+        }
+        else
+        {
+            shopUIManager.AddGameItem(itemIdx, contentLevel, currentPrice);
             rectTransform.localScale = Vector3.zero;
         }
     }

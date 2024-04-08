@@ -33,6 +33,7 @@ namespace ProjectGra
         [SerializeField] Image healthBar;
         [SerializeField] Image experienceBar;
         [SerializeField] TextMeshProUGUI inGameMaterialCountText;
+        [SerializeField] RectTransform ingameUIBackground;
 
         [Header("Pause Canvas")]
         [SerializeField] Button pauseContinueButton;
@@ -129,10 +130,11 @@ namespace ProjectGra
             PlayerDataModel.Instance.SetMaterialValWith(MaterialCount);
             this.itemCountThisWave = playerItemCountThisWave;
             this.upgradeThisWave = playerLevelupThisWave;
-            ShowItemFoundUI();
+            ShowItemFoundUIandIngameBackground();
         }
         public void ShowShopUI()
         {
+            
             HideInGameUI();
             HideItemFoundAndUpgradeCanvasGroup();
             HideSingleAttributeUI();
@@ -181,6 +183,14 @@ namespace ProjectGra
         #region In-game UI
         private int ingameUIMaxHp;
         private int ingameUIMaxExp;
+        private void ShowIngameUIBackground()
+        {
+            ingameUIBackground.localScale = Vector3.one;
+        }
+        private void HideIngameUIBackground()
+        {
+            ingameUIBackground.localScale = Vector3.zero;
+        }
         private void SetInGameUIMaterial(int materialCount)
         {
             stringBuilder.Append(materialCount);
@@ -202,6 +212,7 @@ namespace ProjectGra
         }
         public void ShowInGameUI()
         {
+            HideIngameUIBackground();
             InGameUICanvasGroup.alpha = 1;
         }
         public void HideInGameUI()
@@ -239,8 +250,9 @@ namespace ProjectGra
             ItemFoundAndUpgradeCanvasGroup.interactable = false;
             ItemFoundAndUpgradeCanvasGroup.blocksRaycasts = false;
         }
-        private void ShowItemFoundUI()
+        private void ShowItemFoundUIandIngameBackground()
         {
+            ShowIngameUIBackground();
             ShowItemFoundAndUpgradeCanvasGroup();
             ShowSingleAttributeUI();
             if (itemCountThisWave > 0)
@@ -250,12 +262,13 @@ namespace ProjectGra
             }
             else
             {
-                ShowUpgradeUI();
+                ShowUpgradeUIandIngameBackground();
             }
         }
 
-        public void ShowUpgradeUI()
+        public void ShowUpgradeUIandIngameBackground()
         {
+            ShowIngameUIBackground();
             ShowItemFoundAndUpgradeCanvasGroup();
             ShowSingleAttributeUI();
             if (upgradeThisWave > 0)
@@ -271,7 +284,7 @@ namespace ProjectGra
         private void HideItemFoundUI()
         {
             itemFoundUIRect.localScale = Vector3.zero;
-            ShowUpgradeUI();
+            ShowUpgradeUIandIngameBackground();
         }
         private void HideUpgradeUI()
         {
@@ -302,15 +315,9 @@ namespace ProjectGra
             }
         }
 
-        public void RecycleItemWithGO(int itemIdx, int currentPrice,GameObject calledItemSlot)
+        public void RecycleGameItemWithGO(int itemIdx, int currentPrice,GameObject calledItemSlot)
         {
-            PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
-            var itemConfig = SOConfigSingleton.Instance.ItemSOList[itemIdx];
-            for(int i = 0, n = itemConfig.AffectedAttributeIdx.Count; i < n; i++)
-            {
-                PlayerDataModel.Instance.AddAttributeValWith(itemConfig.AffectedAttributeIdx[i], itemConfig.BonusedValueList[i]);
-            }
-            Destroy(calledItemSlot);
+            shopUIManager.RecycleGameItemWithGO(itemIdx, currentPrice, calledItemSlot);
         }
 
 

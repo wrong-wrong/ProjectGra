@@ -54,11 +54,6 @@ namespace ProjectGra
         }
         public void Take()
         {
-            var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
-            for(int i = 0, n = currrentItem.AffectedAttributeIdx.Count;  i < n; i++)
-            {
-                PlayerDataModel.Instance.SetAttributeValWith(currrentItem.AffectedAttributeIdx[i], currrentItem.BonusedValueList[i]);
-            }
             CanvasMonoSingleton.Instance.AddGameItem(itemIdx, itemLevel,CurrentPrice);
             CanvasMonoSingleton.Instance.ItemFoundUINext();
         }
@@ -74,7 +69,7 @@ namespace ProjectGra
             var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
             itemLevel = currentItem.ItemLevel;
             itemIdx = currentItem.ItemIdx;
-            CurrentPrice = currentItem.ItemBasePrice;
+            //CurrentPrice = currentItem.ItemBasePrice;
             iconBg.color = SOConfigSingleton.Instance.levelBgColorLight[currentItem.ItemLevel];
             background.color = SOConfigSingleton.Instance.levelBgColor[currentItem.ItemLevel];
             icon.sprite = currentItem.ItemSprite;
