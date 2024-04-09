@@ -48,8 +48,8 @@ namespace ProjectGra.PlayerController
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponentRO<LocalTransform>(playerEntity);
             var moveandlook = SystemAPI.GetComponentRO<MoveAndLookInput>(playerEntity);
-            var mainWpState = SystemAPI.GetComponentRW<MainWeaponState>(playerEntity);
-            var autoWpBuffer = SystemAPI.GetBuffer<AutoWeaponState>(playerEntity);
+            var mainWpState = SystemAPI.GetComponentRW<MainWeapon>(playerEntity);
+            var autoWpBuffer = SystemAPI.GetBuffer<AutoWeaponBuffer>(playerEntity);
 
             _cameraPitch -= moveandlook.ValueRO.lookVal.y * CamYSensitivity;
             _cameraPitch = clampAngle(_cameraPitch);
@@ -62,15 +62,18 @@ namespace ProjectGra.PlayerController
             if(mainWpState.ValueRO.WeaponIndex != -1)
             {
                 var offset = mainWpState.ValueRO.WeaponPositionOffset + mainWpOffset;
-                var mainWeaponTransformRW = SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel);
-                //tmpTransform.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
-                //tmpTransform.Rotation = quaternion.LookRotation(camforward, math.up());
-                //mainWeaponTransformRW.ValueRW = tmpTransform;
-                //mainWpState.ValueRW.mainWeaponLocalTransform = tmpTransform;
 
-                mainWeaponTransformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
-                mainWeaponTransformRW.ValueRW.Rotation = quaternion.LookRotation(camforward, math.up());
-                mainWpState.ValueRW.mainWeaponLocalTransform = mainWeaponTransformRW.ValueRO;
+                //mainWeaponTransformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
+                //mainWeaponTransformRW.ValueRW.Rotation = quaternion.LookRotation(camforward, math.up());
+                //mainWpState.ValueRW.mainWeaponLocalTransform = mainWeaponTransformRW.ValueRO;
+
+                mainWpState.ValueRW.mainWeaponLocalTransform.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
+                mainWpState.ValueRW.mainWeaponLocalTransform.Rotation = quaternion.LookRotation(camforward, math.up());
+                if(!mainWpState.ValueRO.IsMeleeWeapon || (mainWpState.ValueRO.WeaponCurrentState != WeaponState.Thrust && mainWpState.ValueRO.WeaponCurrentState != WeaponState.Retrieve))
+                {
+                    var mainWeaponTransformRW = SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel);
+                    mainWeaponTransformRW.ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform;
+                }
             }
 
             var forward = playerTransform.ValueRO.Forward();
@@ -81,10 +84,13 @@ namespace ProjectGra.PlayerController
                 if (wp.WeaponIndex != -1)
                 {
                     var offset = wp.WeaponPositionOffset + offsetList[i];
-                    var transformRW = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
                     //transformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
-                    transformRW.ValueRW.Position = (forward * offset.z + right * offset.x + playerTransform.ValueRO.Position);
-                    wp.autoWeaponLocalTransform.Position = transformRW.ValueRO.Position;
+                    wp.autoWeaponLocalTransform.Position = (forward * offset.z + right * offset.x + playerTransform.ValueRO.Position);
+                    if (!wp.IsMeleeWeapon || (wp.WeaponCurrentState != WeaponState.Thrust && wp.WeaponCurrentState != WeaponState.Retrieve))
+                    {
+                        var transformRW = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
+                        transformRW.ValueRW.Position = wp.autoWeaponLocalTransform.Position;
+                    }
                 }
             }
 

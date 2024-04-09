@@ -6,11 +6,14 @@ namespace ProjectGra
     [CreateAssetMenu(menuName = "MyWeaponSO")]
     public class WeaponScriptableObjectConfig : ScriptableObject
     {
+        public bool IsMeleeWeapon;
+        [Header("UI only field")]
         public string WeaponName;
         public int BasePrice;
         //TODO : ImageIcon for Shop Display
         public Color color; // to temporarily replace Icon
 
+        [Header("Common field")]
         public int WeaponIndex;
 
         public GameObject WeaponModel;
@@ -28,6 +31,7 @@ namespace ProjectGra
         public float Range;
 
         public float3 WeaponPositionOffsetRelativeToCameraTarget;
+
         
     }
 

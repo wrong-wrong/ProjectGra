@@ -25,6 +25,7 @@ namespace ProjectGra
                 strBuilder.Append(PlayerDataModel.Instance.attributeValueList[i]);
                 playerAttributeTextList[i].text = strBuilder.ToString();
                 if (PlayerDataModel.Instance.attributeValueList[i] < 0) playerAttributeTextList[i].color = Color.red;
+                else playerAttributeTextList[i].color = Color.green;
                 strBuilder.Clear();
             }
         }

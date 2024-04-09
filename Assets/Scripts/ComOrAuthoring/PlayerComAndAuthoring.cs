@@ -19,14 +19,19 @@ namespace ProjectGra
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
                 AddComponent(entity, new PlayerExperienceAndLevel { Exp = 0 });
                 AddComponent<EntityStateMachine>(entity);
-                
+
                 //
-                var buffer = AddBuffer<AutoWeaponState>(entity);
-                AddComponent<MainWeaponState>(entity, new MainWeaponState { WeaponIndex = -1});
+                AddComponent<MainWeapon>(entity, new MainWeapon { WeaponIndex = -1 });
+                var wpBuffer = AddBuffer<AutoWeaponBuffer>(entity);
                 for(int i = 0; i < 3; i++)
                 {
-                    buffer.Add(new AutoWeaponState {  WeaponIndex = -1 });
+                    wpBuffer.Add(new AutoWeaponBuffer {  WeaponIndex = -1 });
                 }
+                //var wpStateMachineBuffer = AddBuffer<AutoWeaponStateMachineBuffer>(entity);
+                //for(int i = 0; i < 3; i++)
+                //{
+                //    wpStateMachineBuffer.Add(new AutoWeaponStateMachineBuffer { CurrentState = AutoWeaponState.None });
+                //}
                 AddComponent(entity, new PlayerOverlapRadius { Value = 0 });
             }
         }

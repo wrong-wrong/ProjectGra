@@ -7485,7 +7485,6 @@ MonoBehaviour:
   ItemFoundAndUpgradeCanvasGroup: {fileID: 418565748}
   ShopCanvasGroup: {fileID: 1900123356}
   infoMiniWindow: {fileID: 2775712493661324883}
-  attributeInfoText: {fileID: 30561225}
   DragLayer: {fileID: 1120018342}
   healthBar: {fileID: 381666639}
   experienceBar: {fileID: 25075777}

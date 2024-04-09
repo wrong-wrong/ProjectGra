@@ -19,7 +19,7 @@ namespace ProjectGra
         {
             var deltatime = SystemAPI.Time.DeltaTime;
             //need cur main weapon position,  cur spawnee prefab, player input, real cooldown, 
-            foreach (var (mainWeaponState, inputState, playerAttribute) in SystemAPI.Query<RefRW<MainWeaponState>, EnabledRefRO<ShootInput>, RefRO<PlayerAtttributeDamageRelated>>()
+            foreach (var (mainWeaponState, inputState, playerAttribute) in SystemAPI.Query<RefRW<MainWeapon>, EnabledRefRO<ShootInput>, RefRO<PlayerAtttributeDamageRelated>>()
                     .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
                 if (mainWeaponState.ValueRO.WeaponIndex == -1) continue;
@@ -32,7 +32,7 @@ namespace ProjectGra
                 state.EntityManager.SetComponentData(spawnee, mainWeaponState.ValueRO.mainWeaponLocalTransform);
                 if (random.NextFloat() < mainWeaponState.ValueRO.WeaponCriticalHitChance + playerAttribute.ValueRO.CriticalHitChance)
                 {
-                    state.EntityManager.SetComponentData(spawnee, new SpawneeCurDamage
+                    state.EntityManager.SetComponentData(spawnee, new AttackCurDamage
                     {
                         damage = (int)(mainWeaponState.ValueRO.DamageAfterBonus * mainWeaponState.ValueRO.WeaponCriticalHitRatio)
                     });

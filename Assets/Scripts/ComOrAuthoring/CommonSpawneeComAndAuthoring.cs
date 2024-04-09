@@ -13,7 +13,7 @@ namespace ProjectGra
                 if (authoring.SpawneeTimer == 0) AddComponent<SpawneeTimer>(entity); // timer would be set , but explosion need to be set manually
                 else AddComponent(entity, new SpawneeTimer { Value = authoring.SpawneeTimer });
                 //AddComponent<SpawneeTimer>(entity);
-                AddComponent<SpawneeCurDamage>(entity);
+                AddComponent<AttackCurDamage>(entity);
             }
         }
     }
@@ -22,7 +22,7 @@ namespace ProjectGra
     {
         public float Value;
     }
-    public struct SpawneeCurDamage : IComponentData
+    public struct AttackCurDamage : IComponentData
     {
         public int damage;
     }

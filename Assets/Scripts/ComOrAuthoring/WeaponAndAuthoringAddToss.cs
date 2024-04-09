@@ -25,27 +25,56 @@ namespace ProjectGra
                 {
                     var so = authoring.WeaponSOList[i];
                     Debug.Log(so.name);
-                    Debug.Log(so.SpawneePrefabs.name);
-                    normalConfigBuffer.Add(new WeaponConfigInfoCom
+                    if (!so.IsMeleeWeapon)
                     {
-                        //color = new float3(so.color.r, so.color.g, so.color.b),
-                        WeaponIndex = so.WeaponIndex,
-                        WeaponPrefab = GetEntity(so.WeaponModel, TransformUsageFlags.Dynamic),
-                        SpawneePrefab = GetEntity(so.SpawneePrefabs, TransformUsageFlags.Dynamic),
-                        DamageBonus = new float4
+                        Debug.Log(so.SpawneePrefabs.name);
+                        normalConfigBuffer.Add(new WeaponConfigInfoCom
                         {
-                            x = so.MeleeBonus,
-                            y = so.RangedBonus,
-                            z = so.ElementBonus,
-                            w = so.AttackSpeedBonus
-                        },
-                        BasicDamage = so.BasicDamage,
-                        WeaponCriticalHitChance = so.WeaponCriticalHitChance,
-                        WeaponCriticalHitRatio = so.WeaponCriticalHitRatio,
-                        Cooldown = so.Cooldown,
-                        Range = so.Range,
-                        WeaponPositionOffset = so.WeaponPositionOffsetRelativeToCameraTarget,
-                    });
+                            //color = new float3(so.color.r, so.color.g, so.color.b),
+                            WeaponIndex = so.WeaponIndex,
+                            WeaponPrefab = GetEntity(so.WeaponModel, TransformUsageFlags.Dynamic),
+                            SpawneePrefab = GetEntity(so.SpawneePrefabs, TransformUsageFlags.Dynamic),
+                            DamageBonus = new float4
+                            {
+                                x = so.MeleeBonus,
+                                y = so.RangedBonus,
+                                z = so.ElementBonus,
+                                w = so.AttackSpeedBonus
+                            },
+                            BasicDamage = so.BasicDamage,
+                            WeaponCriticalHitChance = so.WeaponCriticalHitChance,
+                            WeaponCriticalHitRatio = so.WeaponCriticalHitRatio,
+                            Cooldown = so.Cooldown,
+                            Range = so.Range,
+                            WeaponPositionOffset = so.WeaponPositionOffsetRelativeToCameraTarget,
+                            IsMeleeWeapon = so.IsMeleeWeapon,
+                        });
+                    }
+                    else
+                    {
+                        Debug.Log("This is Melee Weapon");
+                        normalConfigBuffer.Add(new WeaponConfigInfoCom
+                        {
+                            WeaponIndex = so.WeaponIndex,
+                            WeaponPrefab = GetEntity(so.WeaponModel, TransformUsageFlags.Dynamic),
+                            //SpawneePrefab = Entity.Null,
+                            WeaponPositionOffset = so.WeaponPositionOffsetRelativeToCameraTarget,
+                            BasicDamage = so.BasicDamage,
+                            DamageBonus = new float4
+                            {
+                                x = so.MeleeBonus,
+                                y = so.RangedBonus,
+                                z = so.ElementBonus,
+                                w = so.AttackSpeedBonus
+                            },
+                            WeaponCriticalHitChance = so.WeaponCriticalHitChance,
+                            WeaponCriticalHitRatio = so.WeaponCriticalHitRatio,
+                            Cooldown = so.Cooldown,
+                            Range = so.Range,
+                            IsMeleeWeapon = so.IsMeleeWeapon
+                        });
+                    }
+
                     wpColorMap[so.WeaponIndex] = so.color;
                     wpNameMap[so.WeaponIndex] = so.WeaponName;
                     wpBasePriceMap[so.WeaponIndex] = so.BasePrice;
@@ -70,8 +99,6 @@ namespace ProjectGra
     {
         //readonly 
         public int WeaponIndex;
-        public Entity WeaponPrefab;  //this is Prefab
-        public Entity SpawneePrefab;
         public float3 WeaponPositionOffset;
         public int BasicDamage;
         public float4 DamageBonus;
@@ -79,6 +106,9 @@ namespace ProjectGra
         public float WeaponCriticalHitRatio;
         public float Cooldown;
         public float Range;
+        public Entity WeaponPrefab;  //this is Prefab
+        public Entity SpawneePrefab;
+        public bool IsMeleeWeapon;
     }
     public class WeaponManagedAndMonoOnlyConfigCom : IComponentData
     {
@@ -88,60 +118,87 @@ namespace ProjectGra
     }
 
 
-    public struct MainWeaponState : IComponentData
+    public struct MainWeapon : IComponentData
     {
         public int WeaponIndex; // -1 indicating the weapon not set
-
-        //field underneath needs to change and set when drag to another slot;
-        public Entity WeaponModel; // read by follow system  // needs to be the instantiated Entity
         public float3 WeaponPositionOffset; // read by follow system
 
         //InGameState 
         public float RealCooldown;
+        //Melee weapon only
+        public float MeleeShootingTimer;
+        public float3 MeleeTargetPosition;
+        public float MeleeRealShootingTimer;  // used to lerp 
+        public float3 MeleeOriginalPosition;
 
         //Need to be set according to Weapon Config and Player Attribute
         public float Cooldown;                //affected by player's attribute  ,used by spawnee system
         public int DamageAfterBonus;          //affected by player's attribute  ,need to set to spawnee
         public float WeaponCriticalHitChance; //affected by player's attribute  ,used by spawnee system
         public float WeaponCriticalHitRatio;
+        //Used when weapon is melee type
+        public float Range;
 
-        //Need to set spawnee's curDamage & timer
+
+        //Ranged weapon type only
+        // this LocalTransform should also be set using value of model prefab, 
+        // because we are using this transform to spawn spawnee and setting its value in cameraTargetFollow and then using it to set model's transform 
+        public LocalTransform mainWeaponLocalTransform;  // set by follow system , read by other system 
         public Entity SpawneePrefab;
 
-        //dont set at init
-        public LocalTransform mainWeaponLocalTransform;  // set by follow system , read by other system
-
+        public Entity WeaponModel; // read by follow system  // needs to be the instantiated Entity
+        public WeaponState WeaponCurrentState;
+        public bool IsMeleeWeapon;
         //Useless field
-        public float Range;
-        public int BasicDamage;
-        public float4 DamageBonus;
+        //public int BasicDamage;
+        //public float4 DamageBonus;
     }
 
     [InternalBufferCapacity(3)]
-    public struct AutoWeaponState : IBufferElementData
+    public struct AutoWeaponBuffer : IBufferElementData
     {
         public int WeaponIndex; // -1 indicating the weapon not set
-        public LocalTransform autoWeaponLocalTransform;  // set by follow system , read by Spawnee system
-
-        //field underneath needs to change and set when drag to another slot;
-        public Entity WeaponModel; // read by follow system
         public float3 WeaponPositionOffset; // read by follow system
-
         //InGameState 
         public float RealCooldown;  // used by Spawnee system
-
         //Need to be set according to Weapon Config and Player Attribute
         public float WeaponCriticalHitChance; //affected by player's attribute  ,used by spawnee system to generate critHit
         public float WeaponCriticalHitRatio;  //affected by player's attribute  ,used by spawnee system when critHit
         public float Cooldown;                //affected by player's attribute  ,used by spawnee system to set weapon's cd  
         public float Range;                   //affected by player's attribute  ,need to set to spawnee
         public int DamageAfterBonus;          //affected by player's attribute  ,need to set to spawnee
+        
+        //Melee weapon only
+        public float MeleeShootingTimer;
+        public float3 MeleeTargetPosition;
+        public float MeleeRealShootingTimer;  // used to lerp 
+        public float3 MeleeOriginalPosition;
+        //Ranged weapon only 
         //set spawneePrefab 's curDamage & timer
+        // this LocalTransform should also be set using value of model prefab, 
+        // because we are using this transform to spawn spawnee and setting its value in cameraTargetFollow and then using it to set model's transform 
+        public LocalTransform autoWeaponLocalTransform;  // set by follow system , read by Spawnee system
         public Entity SpawneePrefab;          //used by spawnee system to set spawnee's curDamage
 
+        public Entity WeaponModel; // read by follow system
+
+        public WeaponState WeaponCurrentState;
+        public bool IsMeleeWeapon;
         //only used when needs to update attribute 
         //public int BasicDamage;
         //public float4 DamageBonus;
+    }
+    //[InternalBufferCapacity(3)]
+    //public struct AutoWeaponStateMachineBuffer : IBufferElementData
+    //{
+    //    public AutoWeaponState CurrentState;
+    //}
+    public enum WeaponState
+    {
+        None,
+        Thrust,
+        Retrieve,
+        Cooldown,
     }
 
 }

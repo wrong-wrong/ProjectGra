@@ -45,7 +45,7 @@ namespace ProjectGra
             spawneePrefab = config.SpawneePrefab;
             attackVal = config.AttackVal;
             state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
-            state.EntityManager.SetComponentData(spawneePrefab, new SpawneeCurDamage { damage = attackVal });
+            state.EntityManager.SetComponentData(spawneePrefab, new AttackCurDamage { damage = attackVal });
             var container = SystemAPI.GetSingleton<PrefabContainerCom>();
             MaterialPrefab = container.MaterialPrefab;
             ItemPrefab = container.ItemPrefab;

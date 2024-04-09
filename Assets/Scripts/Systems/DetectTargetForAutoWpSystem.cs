@@ -35,7 +35,7 @@ namespace ProjectGra
             var hits = new NativeList<DistanceHit>(state.WorldUpdateAllocator);
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var radius = SystemAPI.GetComponent<PlayerOverlapRadius>(playerEntity);
-            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
+            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
             var playerTransform = SystemAPI.GetComponentRO<LocalTransform>(playerEntity);
             //magic number represent wp's distance to the player position
             //TODO radius almost not zero;

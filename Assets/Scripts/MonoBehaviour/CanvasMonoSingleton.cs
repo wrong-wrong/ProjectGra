@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,8 +25,8 @@ namespace ProjectGra
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [Header("InfoMiniWindow")]
         [SerializeField] InfoMimiWindow infoMiniWindow;
-        [Header("AttributeTextInItsCanvas")]
-        [SerializeField] TextMeshProUGUI attributeInfoText;
+        //[Header("AttributeTextInItsCanvas")]
+        //[SerializeField] TextMeshProUGUI attributeInfoText;
 
         public RectTransform DragLayer;
 
@@ -116,13 +117,17 @@ namespace ProjectGra
         {
             shopUIManager.AddGameItem(itemIdx, itemLevel,currentPrice, costMaterialCount);
         }
-        public void SetSlotWeaponIdxInShop(int idx, int idx1, int idx2, int idx3)
+        public void SetSlotWeaponIdxInShop(int4 wpIdxInt4, bool4 isMeleeWp)
         {
-            shopUIManager.SetSlotWeaponIdx(idx,idx1, idx2, idx3);
+            shopUIManager.SetSlotWeaponIdx(wpIdxInt4,isMeleeWp);
         }
-        public void GetSlowWeaponIdxInShop(out int idx, out int idx1, out int idx2, out int idx3)
+        public int4 GetSlotWeaponIdxInShop()
         {
-            shopUIManager.GetSlowWeaponIdx(out idx, out idx1, out idx2, out idx3);
+            return shopUIManager.GetSlotWeaponIdx();
+        }
+        internal bool4 GetSlowWeaponIsMeleeInShop()
+        {
+            return shopUIManager.GetSlotWeaponIsMelee();
         }
         public void ShowShopAndOtherUI(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, int playerItemCountThisWave, int playerLevelupThisWave, int MaterialCount)
         {
@@ -328,6 +333,8 @@ namespace ProjectGra
         {
             shopUIManager.RecycleGameItemWithGO(itemIdx, currentPrice, calledItemSlot);
         }
+
+        
 
 
         #endregion

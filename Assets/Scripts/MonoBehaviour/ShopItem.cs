@@ -27,6 +27,7 @@ public class ShopItem : MonoBehaviour
     private int weaponIdx;
     private int contentLevel;
     public bool isLock;
+    private bool isMeleeWp;
     private bool isWeapon;
     private ShopUIManager shopUIManager;
     public void Init(ShopUIManager shopUIManager)
@@ -119,6 +120,7 @@ public class ShopItem : MonoBehaviour
         contentLevel = SOConfigSingleton.Instance.GetRandomLevel(); // should pass in player's level;
         var config = SOConfigSingleton.Instance.GetRandomWeaponConfig(); // should pass in player's level;
         icon.sprite = null;
+        isMeleeWp = config.IsMeleeWeapon;
         weaponIdx = config.WeaponIndex;
         currentPrice = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponBasePriceMap[weaponIdx];
         priceText.text = currentPrice.ToString();
@@ -177,7 +179,7 @@ public class ShopItem : MonoBehaviour
     {
         if (isWeapon)
         {
-            if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, contentLevel, currentPrice))
+            if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, isMeleeWp, contentLevel, currentPrice))
             {
                 rectTransform.localScale = Vector3.zero;
             }

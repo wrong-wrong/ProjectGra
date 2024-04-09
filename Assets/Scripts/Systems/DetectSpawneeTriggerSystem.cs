@@ -11,7 +11,7 @@ namespace ProjectGra
     public partial struct DetectSpawneeTriggerSystem : ISystem
     {
         ComponentLookup<EntityHealthPoint> entityHealthPointLookup;
-        ComponentLookup<SpawneeCurDamage> spawneeCurDamageLookup;
+        ComponentLookup<AttackCurDamage> spawneeCurDamageLookup;
         ComponentLookup<EntityStateMachine> entityStateMachineLookup;
         ComponentLookup<LocalTransform> localTransformLookup;
         ComponentLookup<AttackPierceTag> attackPierceTagLookup;
@@ -24,7 +24,7 @@ namespace ProjectGra
             state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
-            spawneeCurDamageLookup = SystemAPI.GetComponentLookup<SpawneeCurDamage>(true);
+            spawneeCurDamageLookup = SystemAPI.GetComponentLookup<AttackCurDamage>(true);
             localTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(true);
             attackPierceTagLookup = SystemAPI.GetComponentLookup<AttackPierceTag>(true);
             attackKnockBackTagLookup = SystemAPI.GetComponentLookup<AttackKnockBackTag>(true);
@@ -83,7 +83,7 @@ namespace ProjectGra
         public ComponentLookup<EntityKnockBackCom> EntityKnockBackLookup;
         public ComponentLookup<EntityStateMachine> EntityStateMachineLookup;
         public ComponentLookup<EntityHealthPoint> EntityHealthPointLookup;
-        [ReadOnly] public ComponentLookup<SpawneeCurDamage> CurDamageLookup;
+        [ReadOnly] public ComponentLookup<AttackCurDamage> CurDamageLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> LocalTransformLookup;
         [ReadOnly] public ComponentLookup<AttackPierceTag> AttackPierceLookup;
         [ReadOnly] public ComponentLookup<AttackKnockBackTag> AttackKnockBackLookup;
@@ -143,7 +143,7 @@ namespace ProjectGra
         public ComponentLookup<EntityStateMachine> EntityStateMachineLookup;
         public ComponentLookup<EntityHealthPoint> EntityHealthPointLookup;
         public BufferLookup<HitBuffer> HitBufferLookup;
-        [ReadOnly] public ComponentLookup<SpawneeCurDamage> CurDamageLookup;
+        [ReadOnly] public ComponentLookup<AttackCurDamage> CurDamageLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> LocalTransformLookup;
         [ReadOnly] public ComponentLookup<AttackPierceTag> AttackPierceLookup;
         [ReadOnly] public ComponentLookup<AttackKnockBackTag> AttackKnockBackLookup;

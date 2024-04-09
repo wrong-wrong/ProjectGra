@@ -18,7 +18,7 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
-            foreach(var (hp, exp, mat,wpState) in SystemAPI.Query<RefRO<EntityHealthPoint>, RefRO<PlayerExperienceAndLevel>, RefRO<PlayerMaterialCount>, RefRO<MainWeaponState>>())
+            foreach(var (hp, exp, mat,wpState) in SystemAPI.Query<RefRO<EntityHealthPoint>, RefRO<PlayerExperienceAndLevel>, RefRO<PlayerMaterialCount>, RefRO<MainWeapon>>())
             {
                 if(wpState.ValueRO.RealCooldown > 0)
                 {

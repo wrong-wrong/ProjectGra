@@ -60,16 +60,18 @@ namespace ProjectGra
                     {
                         wpHashMp[weaponConfigBuffer[i].WeaponIndex] = weaponConfigBuffer[i];
                         ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].WeaponPrefab);
-                        ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].SpawneePrefab);
+                        if (!weaponConfigBuffer[i].IsMeleeWeapon)ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].SpawneePrefab);
                     }
+                    
                     state.EntityManager.AddComponent<WeaponIdxToConfigCom>(superSingleton);
                     var mpCom = new WeaponIdxToConfigCom { wpNativeHashMap = wpHashMp };
                     state.EntityManager.SetComponentData(superSingleton, mpCom);
+
+                    //Set config to mono
                     SOConfigSingleton.Instance.WeaponMapCom = mpCom;
                     if(SystemAPI.ManagedAPI.TryGetSingleton<WeaponManagedAndMonoOnlyConfigCom>(out var managedConfig))
                     {
                         SOConfigSingleton.Instance.WeaponManagedConfigCom = managedConfig;
-                        //Debug.Log("InitializaSystem - managedConfig set success");
                     }
                     SOConfigSingleton.Instance.InitWeaponSOSingleton();
 

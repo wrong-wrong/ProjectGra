@@ -1,6 +1,8 @@
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
 
@@ -10,6 +12,7 @@ namespace ProjectGra
     public partial struct GameWaveControllSystem : ISystem, ISystemStartStop
     {
         private float timer;
+
         public void OnCreate(ref SystemState state)
         {
             //state.RequireForUpdate<PlayerTag>(); // equal to Initialized , since playerTag is added through baking
@@ -17,11 +20,11 @@ namespace ProjectGra
             state.RequireForUpdate<GameControllInitialized>();
 
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
-            var l = new NativeArray<int>(3, Allocator.Persistent);
-            //l[0] = 1; l[1] = 2; l[2] = 3;
-            l[0] = -1; l[1] = -1; l[2] = -1;
+            //var l = new NativeArray<int>(3, Allocator.Persistent);
+            ////l[0] = 1; l[1] = 2; l[2] = 3;
+            //l[0] = -1; l[1] = -1; l[2] = -1;
             state.EntityManager.AddComponent<WaveControllSystemData>(state.SystemHandle);
-            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData {idxList = l});
+            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData {tmpIsMeleeWp = default, tmpWpIdx = default});
             state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
             timer = 3f;
@@ -31,8 +34,9 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.OnShopContinueButtonClicked += ShopContinueButtonCallback;
             CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
             //tmp test code
-            var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
-            PopulateWeaponStateWithWeaponIdx(ref state, 0, ref idxList);
+            //var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
+
+            PopulateWeaponStateWithWeaponIdx(ref state);
         }
         public void OnStopRunning(ref SystemState state)
         {
@@ -52,7 +56,7 @@ namespace ProjectGra
             UnpauseReal(ref state);
         }
 
-        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int mainWeaponIdx,ref NativeArray<int> wpIdxList)
+        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default,bool4 isMeleeWeapon = default)
         {
             //Get configBuffer info from 
             float tmpRange = 0;
@@ -60,8 +64,8 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerAttibute = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var playerRange = SystemAPI.GetSingleton<PlayerAttributeMain>().Range;
-            var mainWeaponstate = SystemAPI.GetSingletonRW<MainWeaponState>();
-            var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
+            var mainWeaponstate = SystemAPI.GetSingletonRW<MainWeapon>();
+            var autoWeaponBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
             var wpHashMapWrapperCom = SystemAPI.GetSingleton<WeaponIdxToConfigCom>();
             //var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
             var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
@@ -71,37 +75,65 @@ namespace ProjectGra
             {
                 ecb.DestroyEntity(mainWeaponstate.ValueRO.WeaponModel);
             }
-            if (mainWeaponIdx == -1)
+            if (weaponIdx[0] == -1)
             {
                 mainWeaponstate.ValueRW.WeaponIndex = -1;
             }
             else
             {
                 //calculate the state info with playerAttribute and config buffer info
-                var config = wpHashMapWrapperCom.wpNativeHashMap[mainWeaponIdx];
+                var config = wpHashMapWrapperCom.wpNativeHashMap[weaponIdx[0]];
 
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
+                var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
                 var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
                     * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
                 var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f,2f);
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
-                //using ecb or set directly
-                ecb.SetComponent(playerEntity, new MainWeaponState
+
+                if (!isMeleeWeapon[0]) // Ranged Weapon
                 {
-                    WeaponIndex = mainWeaponIdx,
-                    WeaponModel = newWpModel,
-                    WeaponPositionOffset = config.WeaponPositionOffset,
-                    RealCooldown = 0f,
-                    Cooldown = calculatedCooldown,
-                    DamageAfterBonus = calculatedDamageAfterBonus,
-                    WeaponCriticalHitChance = calculatedCritHitChance,
-                    WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
-                    SpawneePrefab = config.SpawneePrefab,
-                });
-                ecb.SetComponent(config.SpawneePrefab, new SpawneeCurDamage { damage = calculatedDamageAfterBonus });
-                //todo maybe divide range by config.spawneeSpeed;
-                ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
+                    //using ecb or set directly
+                    ecb.SetComponent(playerEntity, new MainWeapon
+                    {
+                        WeaponIndex = weaponIdx[0],
+                        WeaponModel = newWpModel,
+                        WeaponPositionOffset = config.WeaponPositionOffset,
+                        mainWeaponLocalTransform = ModelTransform,
+                        RealCooldown = 0f,
+                        Cooldown = calculatedCooldown,
+                        DamageAfterBonus = calculatedDamageAfterBonus * -1,
+                        WeaponCriticalHitChance = calculatedCritHitChance,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        SpawneePrefab = config.SpawneePrefab,
+                        IsMeleeWeapon = config.IsMeleeWeapon,
+
+                    });
+                    ecb.SetComponent(config.SpawneePrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
+                    //todo maybe divide range by config.spawneeSpeed;
+                    ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
+                }
+                else // Melee Weapon
+                {
+                    ecb.SetComponent(playerEntity, new MainWeapon
+                    {
+                        WeaponIndex = weaponIdx[0],
+                        WeaponModel = newWpModel,
+                        WeaponPositionOffset = config.WeaponPositionOffset,
+                        mainWeaponLocalTransform = ModelTransform,
+                        RealCooldown = 0f,
+                        Cooldown = calculatedCooldown,
+                        DamageAfterBonus = calculatedDamageAfterBonus * -1, // setting to negtive to indicate its not targeting something
+                        WeaponCriticalHitChance = calculatedCritHitChance,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        MeleeShootingTimer = calculatedRange / 20f,
+                        IsMeleeWeapon = config.IsMeleeWeapon,
+                        //SpawneePrefab = Entity.Null
+                    });
+                    ecb.SetComponent(newWpModel, new AttackCurDamage { damage = calculatedDamageAfterBonus });
+                }
+
             }
             //Destory previous model
             for(int i = 0; i < 3; ++i)
@@ -113,41 +145,70 @@ namespace ProjectGra
                 }
             }
             //record operation on the buffer
-            var autoWpEcb = ecb.SetBuffer<AutoWeaponState>(playerEntity);
+            var autoWpEcb = ecb.SetBuffer<AutoWeaponBuffer>(playerEntity);
             autoWpEcb.Clear();
             for(int i = 0; i < 3; ++i)
             {
-                if (wpIdxList[i] == -1)
+                if (weaponIdx[i+1] == -1)
                 {
-                    autoWpEcb.Add(new AutoWeaponState { WeaponIndex = -1 });
+                    autoWpEcb.Add(new AutoWeaponBuffer { WeaponIndex = -1 });
                     continue;
                 }
 
-                var config = wpHashMapWrapperCom.wpNativeHashMap[wpIdxList[i]];
+                var config = wpHashMapWrapperCom.wpNativeHashMap[weaponIdx[i + 1]];
 
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
+                var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
                 var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
                     * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
                 var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
                 tmpRange = math.max(tmpRange, config.Range);
-                autoWpEcb.Add(new AutoWeaponState
+                if (!isMeleeWeapon[i + 1])
                 {
-                    WeaponIndex = wpIdxList[i],
-                    WeaponModel = newWpModel,
-                    WeaponPositionOffset = config.WeaponPositionOffset,
-                    RealCooldown = 0f,
-                    Cooldown = calculatedCooldown,
-                    DamageAfterBonus = calculatedDamageAfterBonus,
-                    WeaponCriticalHitChance = calculatedCritHitChance,
-                    WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
-                    SpawneePrefab = config.SpawneePrefab,
-                    Range = calculatedRange,
-                }); 
-                ecb.SetComponent(config.SpawneePrefab, new SpawneeCurDamage { damage = calculatedDamageAfterBonus });
-                //todo maybe divide range by config.spawneeSpeed;
-                ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
+                    autoWpEcb.Add(new AutoWeaponBuffer
+                    {
+                        WeaponIndex = weaponIdx[i + 1],
+                        WeaponModel = newWpModel,
+                        WeaponPositionOffset = config.WeaponPositionOffset,
+                        autoWeaponLocalTransform = ModelTransform,
+                        RealCooldown = 0f,
+                        Cooldown = calculatedCooldown,
+                        DamageAfterBonus = calculatedDamageAfterBonus * -1, // setting to negtive to indicate its not targeting something
+                        WeaponCriticalHitChance = calculatedCritHitChance,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        SpawneePrefab = config.SpawneePrefab,
+                        Range = calculatedRange,
+                        IsMeleeWeapon = config.IsMeleeWeapon,
+                    });
+                    ecb.SetComponent(config.SpawneePrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
+                    //todo maybe divide range by config.spawneeSpeed;
+                    ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
+                }
+                else
+                {
+                    autoWpEcb.Add(new AutoWeaponBuffer
+                    {
+                        WeaponIndex = weaponIdx[i + 1],
+                        WeaponModel = newWpModel,
+                        WeaponPositionOffset = config.WeaponPositionOffset,
+                        autoWeaponLocalTransform = ModelTransform,
+                        RealCooldown = 0f,
+                        Cooldown = calculatedCooldown,
+                        DamageAfterBonus = calculatedDamageAfterBonus * -1, // setting to negtive to indicate its not targeting something
+                        WeaponCriticalHitChance = calculatedCritHitChance,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        Range = calculatedRange,
+                        MeleeShootingTimer = calculatedRange / 20f,
+                        IsMeleeWeapon = config.IsMeleeWeapon,
+                        //SpawneePrefab = Entity.Null
+                    });
+                    //SETTING AttackCurDamage TO THE NEWWEAPONMODEL  !!!
+                    ecb.SetComponent(newWpModel, new AttackCurDamage { damage = calculatedDamageAfterBonus });
+                    //todo maybe divide range by config.spawneeSpeed;
+                }
+
             }
             if(tmpRange == 0)
             {
@@ -162,15 +223,15 @@ namespace ProjectGra
         {
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
-
+            
             //Update weaponstate
-            CanvasMonoSingleton.Instance.GetSlowWeaponIdxInShop(out int idx, out int idx1, out int idx2, out int idx3);
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
-            sysData.ValueRW.idxList[0] = idx1;
-            sysData.ValueRW.idxList[1] = idx2;
-            sysData.ValueRW.idxList[2] = idx3;
-            Debug.Log(idx+","+ idx1 + "," + idx2 + "," + idx3);
-            PopulateWeaponStateWithWeaponIdx(ref state, idx, ref sysData.ValueRW.idxList);
+            sysData.ValueRW.tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop();
+            sysData.ValueRW.tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop();
+
+            Debug.Log(sysData.ValueRW.tmpWpIdx);
+            Debug.Log(sysData.ValueRW.tmpIsMeleeWp);
+            PopulateWeaponStateWithWeaponIdx(ref state, sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
 
             //Setting player data in ECS
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
@@ -190,24 +251,22 @@ namespace ProjectGra
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
             Debug.Log("InShop to BeforeWave!");
         }
-        private void ShopState(ref SystemState state)
+        private void EnterShopState(ref SystemState state)
         {
-            //var singleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();  // used to Remove GCNotPaused from super singleton
+            
             state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
-            //var com = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
-            //com.ValueRW.IsPause = !com.ValueRW.IsPause;
 
             var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var playerItemCount = SystemAPI.GetSingleton<PlayerItemCount>();
             var playerExpCom = SystemAPI.GetSingleton<PlayerExperienceAndLevel>();
-            var mainWpstate= SystemAPI.GetSingleton<MainWeaponState>();
-            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
+            var mainWpstate= SystemAPI.GetSingleton<MainWeapon>();
+            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
+            var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
-            CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(mainWpstate.WeaponIndex, autoWpBuffer[0].WeaponIndex, autoWpBuffer[1].WeaponIndex, autoWpBuffer[2].WeaponIndex);
-            //CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, playerItemCount.Count, playerExpCom.LevelUpThisWave, materialCount.Count);
+            CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
             CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1 , 1, materialCount.Count);
             Debug.Log("Using Test Fixed number for itemCount and level up");
 
@@ -265,7 +324,7 @@ namespace ProjectGra
                     }
                     if (Input.GetKeyUp(KeyCode.T))
                     {
-                        ShopState(ref state);
+                        EnterShopState(ref state);
                     }
                     break;
                 case GameControllState.InWave:
@@ -285,7 +344,7 @@ namespace ProjectGra
                     }
                     if (Input.GetKeyUp(KeyCode.T))
                     {
-                        ShopState(ref state);
+                        EnterShopState(ref state);
                     }
                     break;
                 case GameControllState.AfterWave:
@@ -293,7 +352,7 @@ namespace ProjectGra
                     {
                         timer = 2f; // setting begin wave time;!!!!      
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
-                        ShopState(ref state);
+                        EnterShopState(ref state);
                         Debug.Log("AfterWave to InShop!");
                     }
                     if (Input.GetKeyUp(KeyCode.P))
@@ -330,7 +389,9 @@ namespace ProjectGra
     public struct WaveControllSystemData : IComponentData
     {
         //public bool IsPause;
-        public NativeArray<int> idxList;
+        //public NativeArray<int> idxList;
+        public int4 tmpWpIdx;
+        public bool4 tmpIsMeleeWp;
     }
     public struct GameControllNotPaused : IComponentData { }
     public struct GameControllInGame : IComponentData { }
