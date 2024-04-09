@@ -20,7 +20,7 @@ namespace ProjectGra
             { 
                 ref var wp = ref wpBuffer.ElementAt(i);
                 if (wp.WeaponIndex == -1) continue;
-                if((wp.RealCooldown-= deltatime) < 0f)
+                if((wp.RealCooldown-= deltatime) < 0f && wp.DamageAfterBonus > 0)
                 {
                     var spawnee = ecb.Instantiate(wp.SpawneePrefab);
                     ecb.SetComponent(spawnee, wp.autoWeaponLocalTransform);

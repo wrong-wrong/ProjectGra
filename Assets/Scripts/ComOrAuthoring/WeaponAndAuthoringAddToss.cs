@@ -140,8 +140,8 @@ namespace ProjectGra
         public Entity SpawneePrefab;          //used by spawnee system to set spawnee's curDamage
 
         //only used when needs to update attribute 
-        public int BasicDamage;
-        public float4 DamageBonus;
+        //public int BasicDamage;
+        //public float4 DamageBonus;
     }
 
 }

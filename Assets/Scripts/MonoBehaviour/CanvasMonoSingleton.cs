@@ -183,6 +183,10 @@ namespace ProjectGra
         #region In-game UI
         private int ingameUIMaxHp;
         private int ingameUIMaxExp;
+        private void InitIngameUIWeaponCooldown()
+        {
+            weaponCooldownFillingImg.fillAmount = 1f;
+        }
         private void ShowIngameUIBackground()
         {
             ingameUIBackground.localScale = Vector3.one;
@@ -216,6 +220,7 @@ namespace ProjectGra
         }
         public void ShowInGameUI()
         {
+            InitIngameUIWeaponCooldown();
             HideIngameUIBackground();
             InGameUICanvasGroup.alpha = 1;
         }

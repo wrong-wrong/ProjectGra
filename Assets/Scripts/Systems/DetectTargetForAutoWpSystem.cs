@@ -26,7 +26,7 @@ namespace ProjectGra
             detectFrequency = 1 / 30f;
             timer = detectFrequency;
         }
-        public void OnUpdate(ref SystemState state) 
+        public void OnUpdate(ref SystemState state)
         {
             //TODO playerRadius == 0 then return ?
             timer -= SystemAPI.Time.DeltaTime;
@@ -38,36 +38,51 @@ namespace ProjectGra
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponState>();
             var playerTransform = SystemAPI.GetComponentRO<LocalTransform>(playerEntity);
             //magic number represent wp's distance to the player position
-            if(radius.Value != 0 && collisionWorld.OverlapSphere(playerTransform.ValueRO.Position, radius.Value + 2f, ref hits, enemyCollisionFilter))
+            //TODO radius almost not zero;
+            if (radius.Value != 0)
             {
-                for(int i = 0, n = autoWpBuffer.Length; i < n; ++i)
+                if (collisionWorld.OverlapSphere(playerTransform.ValueRO.Position, radius.Value + 2f, ref hits, enemyCollisionFilter))
                 {
-                    ref var wp = ref autoWpBuffer.ElementAt(i);
-                    if (wp.WeaponIndex == -1) continue;
-                    var rangeSq = wp.Range * wp.Range;
-                    float minDistance = 1000f;
-                    float preMinDistance = 1000f;
-                    float3 tarDir = float3.zero;
-                    var wpModel = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
-                    for(int j = 0, m = hits.Length; j < m; ++j)
+                    for (int i = 0, n = autoWpBuffer.Length; i < n; ++i)
                     {
-                        minDistance = math.min(math.lengthsq(hits[j].Position - wpModel.ValueRO.Position), minDistance);
-                        tarDir = (preMinDistance - minDistance) < 0.1f ? tarDir : hits[j].Position - wpModel.ValueRO.Position;
-                        preMinDistance = minDistance;
-                    }
-                    if(minDistance < rangeSq)
-                    {
-                        tarDir.y = 0;
-                        wpModel.ValueRW.Rotation = quaternion.LookRotation(math.normalizesafe(tarDir), math.up());
-                        wp.autoWeaponLocalTransform = wpModel.ValueRO;
-                        Debug.DrawLine(wp.autoWeaponLocalTransform.Position, wp.autoWeaponLocalTransform.Position + tarDir);
-                    }
-                    else if(wp.RealCooldown < 0f)
-                    {
-                        wp.RealCooldown = detectFrequency;
+                        ref var wp = ref autoWpBuffer.ElementAt(i);
+                        if (wp.WeaponIndex == -1) continue;
+                        var rangeSq = wp.Range * wp.Range;
+                        float minDistance = 1000f;
+                        float preMinDistance = 1000f;
+                        float3 tarDir = float3.zero;
+                        var wpModel = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
+                        for (int j = 0, m = hits.Length; j < m; ++j)
+                        {
+                            minDistance = math.min(math.lengthsq(hits[j].Position - wpModel.ValueRO.Position), minDistance);
+                            tarDir = (preMinDistance - minDistance) < 0.1f ? tarDir : hits[j].Position - wpModel.ValueRO.Position;
+                            preMinDistance = minDistance;
+                        }
+                        if (minDistance < rangeSq)
+                        {
+                            tarDir.y = 0;
+                            wpModel.ValueRW.Rotation = quaternion.LookRotation(math.normalizesafe(tarDir), math.up());
+                            wp.autoWeaponLocalTransform = wpModel.ValueRO;
+                            Debug.DrawLine(wp.autoWeaponLocalTransform.Position, wp.autoWeaponLocalTransform.Position + tarDir);
+                            wp.DamageAfterBonus = wp.DamageAfterBonus > 0 ? wp.DamageAfterBonus : -wp.DamageAfterBonus;
+                        }
+                        else
+                        {
+
+                            wp.DamageAfterBonus = wp.DamageAfterBonus > 0 ? -wp.DamageAfterBonus : wp.DamageAfterBonus;
+                        }
                     }
                 }
-                //Debug.Log("Overlaped! : " + hits[0].Entity);
+                else
+                {
+                    for (int i = 0, n = autoWpBuffer.Length; i < n; ++i)
+                    {
+                        ref var wp = ref autoWpBuffer.ElementAt(i);
+                        if (wp.WeaponIndex == -1) continue;
+                        wp.DamageAfterBonus = wp.DamageAfterBonus > 0 ? -wp.DamageAfterBonus : wp.DamageAfterBonus;
+                    }
+                    //Debug.Log("Overlaped! : " + hits[0].Entity);
+                }
             }
         }
 
