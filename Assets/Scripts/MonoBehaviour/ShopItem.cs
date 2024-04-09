@@ -188,7 +188,7 @@ public class ShopItem : MonoBehaviour
         }
         else
         {
-            shopUIManager.AddGameItem(itemIdx, contentLevel, currentPrice);
+            shopUIManager.AddGameItem(itemIdx, contentLevel, currentPrice,currentPrice);
             rectTransform.localScale = Vector3.zero;
         }
     }

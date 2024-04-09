@@ -64,7 +64,7 @@ namespace ProjectGra
                     }
                     else if(wp.RealCooldown < 0f)
                     {
-                        wp.RealCooldown += detectFrequency;
+                        wp.RealCooldown = detectFrequency;
                     }
                 }
                 //Debug.Log("Overlaped! : " + hits[0].Entity);

@@ -18,7 +18,8 @@ namespace ProjectGra
 
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
             var l = new NativeArray<int>(3, Allocator.Persistent);
-            l[0] = 1; l[1] = 2; l[2] = 3;
+            //l[0] = 1; l[1] = 2; l[2] = 3;
+            l[0] = -1; l[1] = -1; l[2] = -1;
             state.EntityManager.AddComponent<WaveControllSystemData>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData {idxList = l});
             state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
@@ -355,29 +356,3 @@ namespace ProjectGra
 }
 
 
-
-
-
-
-//hide UI
-//var canvasGrpCom = SystemAPI.ManagedAPI.GetSingleton<MyCanvasGroupManagedCom>();
-//if (canvasGrpCom != null)
-//{
-//    canvasGrpCom.canvasGroup.alpha = 0f;
-//    canvasGrpCom.canvasGroup.interactable = false;
-//    canvasGrpCom.canvasGroup.blocksRaycasts = false;
-//}
-
-
-//show UI
-//var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
-//var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
-//var canvasGrpCom = SystemAPI.ManagedAPI.GetSingleton<MyCanvasGroupManagedCom>();
-//if (canvasGrpCom != null)
-//{
-//    CanvasMonoSingleton.instance.UpdatePlayerAttribute(PlayerAttibuteCom,PlayerDamagedRelatedAttributeCom);
-
-//    canvasGrpCom.canvasGroup.alpha = 1f;
-//    canvasGrpCom.canvasGroup.interactable = true;
-//    canvasGrpCom.canvasGroup.blocksRaycasts = true;
-//}

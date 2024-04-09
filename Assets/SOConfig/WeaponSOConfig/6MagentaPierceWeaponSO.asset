@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
-  m_Name: Blue2WeaponSO
+  m_Name: 6MagentaPierceWeaponSO
   m_EditorClassIdentifier: 
-  WeaponName: Blue2
-  BasePrice: 1
-  color: {r: 0.015686275, g: 0.427451, b: 0.6039216, a: 1}
-  WeaponIndex: 1
-  WeaponModel: {fileID: 5069078350183642497, guid: b5c57f669f99ab24e96c2ad2e032f46a,
+  WeaponName: Magenta
+  BasePrice: 25
+  color: {r: 0.20000002, g: 0.20000002, b: 0.6, a: 1}
+  WeaponIndex: 6
+  WeaponModel: {fileID: 5069078350183642497, guid: 0d122ff8f90c95843921d54c22090c52,
     type: 3}
-  SpawneePrefabs: {fileID: 1601605760723225021, guid: 50766e66c6f0c584f8715b5c29d5e68d,
+  SpawneePrefabs: {fileID: 7642312741532248169, guid: 132961f23c0698647a6e569277b19860,
     type: 3}
   MeleeBonus: 0
   RangedBonus: 0
@@ -27,8 +27,8 @@ MonoBehaviour:
   BasicDamage: 10
   WeaponCriticalHitChance: 0.6
   WeaponCriticalHitRatio: 2
-  Cooldown: 3
-  Range: 10
+  Cooldown: 0.8
+  Range: 14
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0
     y: 0

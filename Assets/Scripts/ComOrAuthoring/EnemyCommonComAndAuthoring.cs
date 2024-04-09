@@ -14,9 +14,10 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = authoring.HealthPoint });
-                //AddComponent(entity, new EnemyFollowState { FollowSpeed = authoring.FollowSpeed , StopDistance = authoring.StopDistance});
                 AddComponent(entity, new EntityStateMachine { CurrentState = EntityState.Follow });
                 AddComponent<EnemyTag>(entity);
+                AddComponent(entity, new EntityKnockBackCom { Timer = 0.5f});
+                SetComponentEnabled<EntityKnockBackCom>(entity, false); 
             }
         }
     }
@@ -30,6 +31,9 @@ namespace ProjectGra
     {
         public EntityState CurrentState;
     }
-    
+    public struct EntityKnockBackCom : IComponentData, IEnableableComponent 
+    {
+        public float Timer;
+    }
 
 }

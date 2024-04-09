@@ -69,12 +69,13 @@ namespace ProjectGra
             idx3 = weaponSlotList[3].WeaponIdx;
         }
 
-        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice)
+        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice, int costMaterialCount)
         {
-            var item = GameObject.Instantiate(gameItemPrefab, content);
+            //currentPrice to set item info, costMaterialCount to update player's material count;
+            var item = Instantiate(gameItemPrefab, content);
             item.gameObject.transform.SetAsFirstSibling();
             item.GetComponent<SingleGameItem>().InitWithItemIdxAndLevel(itemIdx, itemLevel,currentPrice);
-            PlayerDataModel.Instance.AddMaterialValWith(-currentPrice);
+            PlayerDataModel.Instance.AddMaterialValWith(-costMaterialCount);
             var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
             for (int i = 0, n = currrentItem.AffectedAttributeIdx.Count; i < n; i++)
             {

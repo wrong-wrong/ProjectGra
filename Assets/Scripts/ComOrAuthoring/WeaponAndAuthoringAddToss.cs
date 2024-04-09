@@ -24,7 +24,8 @@ namespace ProjectGra
                 for (int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
                 {
                     var so = authoring.WeaponSOList[i];
-
+                    Debug.Log(so.name);
+                    Debug.Log(so.SpawneePrefabs.name);
                     normalConfigBuffer.Add(new WeaponConfigInfoCom
                     {
                         //color = new float3(so.color.r, so.color.g, so.color.b),
@@ -55,6 +56,7 @@ namespace ProjectGra
                     weaponBasePriceMap = wpBasePriceMap,
                     weaponColorInsteadOfIconMap = wpColorMap,
                 });
+                Debug.Log("Weapon Baking");
             }
         }
     }

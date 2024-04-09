@@ -32,21 +32,21 @@ namespace ProjectGra
             state.Dependency = new SpawneeMoveJob
             {
                 deltatime = deltatime,
-                ecb = ecb.AsParallelWriter()
+                //ecb = ecb.AsParallelWriter()
             }.Schedule(state.Dependency);
         }
     }
 
+    [WithNone(typeof(AttackExplosionTag))]
+    [WithAll(typeof(SpawneeTimer))]
     public partial struct SpawneeMoveJob : IJobEntity
     {
         [ReadOnly]public float deltatime;
-        public EntityCommandBuffer.ParallelWriter ecb;
-        public void Execute(Entity entity,[ChunkIndexInQuery] int index, ref SpawneeTimer timer, ref LocalTransform localTransform)
+        //public EntityCommandBuffer.ParallelWriter ecb;
+        public void Execute(ref LocalTransform localTransform)
         {
             localTransform.Position += localTransform.Forward() * 20f * deltatime;
-            timer.Value -= deltatime;
-            //if(timer.Value < 0 ) { ecb.SetComponentEnabled<SpawneeTimer>(index, entity, false); }
-            if(timer.Value < 0 ) { ecb.DestroyEntity(index, entity); }
+            //if(timer.Value < 0 ) { ecb.DestroyEntity(index, entity); }
         }
     }
 }

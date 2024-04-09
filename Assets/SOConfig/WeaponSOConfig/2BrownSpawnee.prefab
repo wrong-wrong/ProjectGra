@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1018491251365143690}
   - component: {fileID: 7009844861080998287}
   m_Layer: 0
-  m_Name: Blue2Spawnee
+  m_Name: 2BrownSpawnee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e18ded4b611aa8f4a9f0f261d2f29537, type: 2}
+  - {fileID: 2100000, guid: 9f74a13152dad544abedc7538eb3182c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

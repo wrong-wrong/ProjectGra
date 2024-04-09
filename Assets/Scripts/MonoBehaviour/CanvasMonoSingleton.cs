@@ -32,9 +32,9 @@ namespace ProjectGra
         [Header("InGameUI")]
         [SerializeField] Image healthBar;
         [SerializeField] Image experienceBar;
+        [SerializeField] Image weaponCooldownFillingImg;
         [SerializeField] TextMeshProUGUI inGameMaterialCountText;
         [SerializeField] RectTransform ingameUIBackground;
-
         [Header("Pause Canvas")]
         [SerializeField] Button pauseContinueButton;
 
@@ -76,7 +76,7 @@ namespace ProjectGra
             InGameUICanvasGroup.blocksRaycasts = false;
             pauseContinueButton.onClick.AddListener(() => { OnPauseContinueButtonClicked?.Invoke(); }); //tring to use lambda
             OnShopContinueButtonClicked += BeforeExitShopCallBack;
-            PlayerDataModel.Instance.OnMaterialChanged += SetInGameUIMaterial;
+            PlayerDataModel.Instance.OnMaterialChanged += IngameUISetMaterial;
             itemFoundUIRect.localScale = Vector3.zero;
             upgradeUIRect.localScale = Vector3.zero;
         }
@@ -112,9 +112,9 @@ namespace ProjectGra
         {
             shopUIManager.RecycleWeaponFromSlot(calledSlotIdx);
         }
-        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice)
+        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice, int costMaterialCount)
         {
-            shopUIManager.AddGameItem(itemIdx, itemLevel,currentPrice);
+            shopUIManager.AddGameItem(itemIdx, itemLevel,currentPrice, costMaterialCount);
         }
         public void SetSlotWeaponIdxInShop(int idx, int idx1, int idx2, int idx3)
         {
@@ -191,18 +191,22 @@ namespace ProjectGra
         {
             ingameUIBackground.localScale = Vector3.zero;
         }
-        private void SetInGameUIMaterial(int materialCount)
+        public void IngameUIWeaponCooldownFilling(float fillAmount)
+        {
+            weaponCooldownFillingImg.fillAmount = fillAmount;
+        }
+        private void IngameUISetMaterial(int materialCount)
         {
             stringBuilder.Append(materialCount);
             inGameMaterialCountText.text = stringBuilder.ToString();
             stringBuilder.Clear();
         }
-        public void SetMaxHpExp(int maxHp, int maxExp)
+        public void IngameUISetMaxHpExp(int maxHp, int maxExp)
         {
             this.ingameUIMaxHp = maxHp;
             this.ingameUIMaxExp = maxExp;
         }
-        public void UpdateInGameUI(int hp, int exp, int materialsCount)
+        public void IngameUIUpdataPlayerStats(int hp, int exp, int materialsCount)
         {
             healthBar.fillAmount = (float)hp / ingameUIMaxHp;
             experienceBar.fillAmount = exp / ingameUIMaxExp;

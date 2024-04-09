@@ -54,7 +54,7 @@ namespace ProjectGra
         }
         public void Take()
         {
-            CanvasMonoSingleton.Instance.AddGameItem(itemIdx, itemLevel,CurrentPrice);
+            CanvasMonoSingleton.Instance.AddGameItem(itemIdx, itemLevel,CurrentPrice,0);
             CanvasMonoSingleton.Instance.ItemFoundUINext();
         }
 
