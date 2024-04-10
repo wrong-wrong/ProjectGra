@@ -257,6 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SpawneeTimer: 0
+  IsMovedBySpawneeMove: 1
 --- !u!114 &-7829140224612595635
 MonoBehaviour:
   m_ObjectHideFlags: 0

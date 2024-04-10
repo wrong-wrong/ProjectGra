@@ -241,6 +241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb41717341a080745acc896acd8d4e39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpawneeTimer: 0
+  IsMovedBySpawneeMove: 1
 --- !u!114 &7009844861080998287
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,10 +1,7 @@
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
 
 namespace ProjectGra
 {
@@ -12,19 +9,20 @@ namespace ProjectGra
     public partial struct GameWaveControllSystem : ISystem, ISystemStartStop
     {
         private float timer;
-
+        private ComponentLookup<AttackExplosiveCom> explosiveLookup;
         public void OnCreate(ref SystemState state)
         {
             //state.RequireForUpdate<PlayerTag>(); // equal to Initialized , since playerTag is added through baking
 
             state.RequireForUpdate<GameControllInitialized>();
 
+            explosiveLookup = SystemAPI.GetComponentLookup<AttackExplosiveCom>();
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
             //var l = new NativeArray<int>(3, Allocator.Persistent);
             ////l[0] = 1; l[1] = 2; l[2] = 3;
             //l[0] = -1; l[1] = -1; l[2] = -1;
             state.EntityManager.AddComponent<WaveControllSystemData>(state.SystemHandle);
-            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData {tmpIsMeleeWp = default, tmpWpIdx = default});
+            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData { tmpIsMeleeWp = default, tmpWpIdx = default });
             state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
             timer = 3f;
@@ -45,7 +43,7 @@ namespace ProjectGra
         }
         public void ShopContinueButtonCallback()
         {
-            
+
             ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
             ExitShopState(ref state);
         }
@@ -56,7 +54,7 @@ namespace ProjectGra
             UnpauseReal(ref state);
         }
 
-        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default,bool4 isMeleeWeapon = default)
+        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default, bool4 isMeleeWeapon = default)
         {
             //Get configBuffer info from 
             float tmpRange = 0;
@@ -69,6 +67,7 @@ namespace ProjectGra
             var wpHashMapWrapperCom = SystemAPI.GetSingleton<WeaponIdxToConfigCom>();
             //var overlapRadiusCom = SystemAPI.GetSingleton<PlayerOverlapRadius>();
             var ecb = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            explosiveLookup.Update(ref state);
             //destory model anyway;
             //need to destory earlier model entity if existed and instantiate new one;
             if (state.EntityManager.Exists(mainWeaponstate.ValueRO.WeaponModel))
@@ -89,7 +88,7 @@ namespace ProjectGra
                 var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
                     * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
-                var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f,2f);
+                var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
 
                 if (!isMeleeWeapon[0]) // Ranged Weapon
@@ -103,7 +102,7 @@ namespace ProjectGra
                         mainWeaponLocalTransform = ModelTransform,
                         RealCooldown = 0f,
                         Cooldown = calculatedCooldown,
-                        DamageAfterBonus = calculatedDamageAfterBonus * -1,
+                        DamageAfterBonus = calculatedDamageAfterBonus,
                         WeaponCriticalHitChance = calculatedCritHitChance,
                         WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
                         SpawneePrefab = config.SpawneePrefab,
@@ -114,6 +113,11 @@ namespace ProjectGra
                     ecb.SetComponent(config.SpawneePrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
                     //todo maybe divide range by config.spawneeSpeed;
                     ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
+                    if (explosiveLookup.TryGetComponent(config.SpawneePrefab, out AttackExplosiveCom explosive))
+                    {
+                        ecb.SetComponent<AttackCurDamage>(explosive.ExplosionPrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
+                        //sucks
+                    }
                 }
                 else // Melee Weapon
                 {
@@ -125,7 +129,7 @@ namespace ProjectGra
                         mainWeaponLocalTransform = ModelTransform,
                         RealCooldown = 0f,
                         Cooldown = calculatedCooldown,
-                        DamageAfterBonus = calculatedDamageAfterBonus * -1, // setting to negtive to indicate its not targeting something
+                        DamageAfterBonus = calculatedDamageAfterBonus, // setting to negtive to indicate its not targeting something
                         WeaponCriticalHitChance = calculatedCritHitChance,
                         WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
                         MeleeShootingTimer = calculatedRange / 20f,
@@ -138,7 +142,7 @@ namespace ProjectGra
 
             }
             //Destory previous model
-            for(int i = 0; i < 3; ++i)
+            for (int i = 0; i < 3; ++i)
             {
                 ref var autoWp = ref autoWeaponBuffer.ElementAt(i);
                 if (state.EntityManager.Exists(autoWp.WeaponModel))
@@ -149,9 +153,9 @@ namespace ProjectGra
             //record operation on the buffer
             var autoWpEcb = ecb.SetBuffer<AutoWeaponBuffer>(playerEntity);
             autoWpEcb.Clear();
-            for(int i = 0; i < 3; ++i)
+            for (int i = 0; i < 3; ++i)
             {
-                if (weaponIdx[i+1] == -1)
+                if (weaponIdx[i + 1] == -1)
                 {
                     autoWpEcb.Add(new AutoWeaponBuffer { WeaponIndex = -1 });
                     continue;
@@ -167,7 +171,7 @@ namespace ProjectGra
                 var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
                 tmpRange = math.max(tmpRange, config.Range);
-                if (!isMeleeWeapon[i + 1])
+                if (!isMeleeWeapon[i + 1]) // Ranged Weapon
                 {
                     autoWpEcb.Add(new AutoWeaponBuffer
                     {
@@ -187,6 +191,11 @@ namespace ProjectGra
                     ecb.SetComponent(config.SpawneePrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
                     //todo maybe divide range by config.spawneeSpeed;
                     ecb.SetComponent(config.SpawneePrefab, new SpawneeTimer { Value = calculatedRange / 20f });
+                    if (explosiveLookup.TryGetComponent(config.SpawneePrefab, out AttackExplosiveCom explosive))
+                    {
+                        ecb.SetComponent<AttackCurDamage>(explosive.ExplosionPrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
+                        //sucks
+                    }
                 }
                 else
                 {
@@ -212,7 +221,7 @@ namespace ProjectGra
                 }
 
             }
-            if(tmpRange == 0)
+            if (tmpRange == 0)
             {
                 ecb.SetComponent(playerEntity, new PlayerOverlapRadius { Value = 0f });
             }
@@ -225,7 +234,7 @@ namespace ProjectGra
         {
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
-            
+
             //Update weaponstate
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             sysData.ValueRW.tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop();
@@ -255,7 +264,7 @@ namespace ProjectGra
         }
         private void EnterShopState(ref SystemState state)
         {
-            
+
             state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
 
@@ -263,13 +272,13 @@ namespace ProjectGra
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var playerItemCount = SystemAPI.GetSingleton<PlayerItemCount>();
             var playerExpCom = SystemAPI.GetSingleton<PlayerExperienceAndLevel>();
-            var mainWpstate= SystemAPI.GetSingleton<MainWeapon>();
+            var mainWpstate = SystemAPI.GetSingleton<MainWeapon>();
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
             CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
-            CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1 , 1, materialCount.Count);
+            CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, 1, materialCount.Count);
             Debug.Log("Using Test Fixed number for itemCount and level up");
 
             //CanvasMonoSingleton.Instance.HideInGameUI();
@@ -295,7 +304,7 @@ namespace ProjectGra
         }
         private void UnpauseReal(ref SystemState state)
         {
-            
+
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             //Unpause
             CanvasMonoSingleton.Instance.HidePauseCanvasGroup();

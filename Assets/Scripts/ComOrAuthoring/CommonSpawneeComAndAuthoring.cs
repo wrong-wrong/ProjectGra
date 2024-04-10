@@ -5,6 +5,7 @@ namespace ProjectGra
     public class SpawneeComAndAuthoring : MonoBehaviour
     {
         public float SpawneeTimer;
+        public bool IsMovedBySpawneeMove;
         public class Baker : Baker<SpawneeComAndAuthoring>
         {
             public override void Bake(SpawneeComAndAuthoring authoring)
@@ -14,10 +15,11 @@ namespace ProjectGra
                 else AddComponent(entity, new SpawneeTimer { Value = authoring.SpawneeTimer });
                 //AddComponent<SpawneeTimer>(entity);
                 AddComponent<AttackCurDamage>(entity);
+                if(authoring.IsMovedBySpawneeMove)AddComponent<SpawneeMoveTag>(entity);
             }
         }
     }
-
+    public struct SpawneeMoveTag : IComponentData { }
     public struct SpawneeTimer : IComponentData, IEnableableComponent
     {
         public float Value;

@@ -13,6 +13,6 @@ namespace ProjectGra
         RangedAttack,
         Flee,
 
-        
+        EggHatching,
     }
 }

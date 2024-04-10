@@ -63,17 +63,21 @@ namespace ProjectGra
                 var tarDirSq = math.csum(tarDir * tarDir);
                 if (stateMachine.ValueRO.CurrentState == EntityState.Follow)
                 {
-                    attack.ValueRW.AttackCooldown -= deltatime;
-                    if (tarDirSq < 0.001f) continue;
-                    localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
-                    localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
-                    if (tarDirSq < startSprintDistanceSq && attack.ValueRO.AttackCooldown < 0f)
+                    //attack.ValueRW.AttackCooldown -= deltatime;
+
+                    if((attack.ValueRW.AttackCooldown -= deltatime) < 0f && tarDirSq < startSprintDistanceSq)//if (tarDirSq < startSprintDistanceSq && attack.ValueRO.AttackCooldown < 0f)
                     {
                         //Debug.Log("Setting state to Sprint");
                         stateMachine.ValueRW.CurrentState = EntityState.SprintAttack;
                         attack.ValueRW.SprintDirNormalized = math.normalize(tarDir);
                         attack.ValueRW.AttackCooldown = attackCoolDown;
                         attack.ValueRW.SprintTimer = 1.5f * sprintDistance / sprintSpeed; // magic number trying to let the enemy sprint for a longer distance
+                    }
+                    else
+                    {
+                        localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                        if (tarDirSq < 4f) continue;
+                        localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
                     }
 
                 }

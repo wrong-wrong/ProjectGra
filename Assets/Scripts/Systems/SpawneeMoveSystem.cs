@@ -37,8 +37,8 @@ namespace ProjectGra
         }
     }
 
-    [WithNone(typeof(AttackExplosionTag))]
-    [WithAll(typeof(SpawneeTimer))]
+    
+    [WithAll(typeof(SpawneeMoveTag))]
     public partial struct SpawneeMoveJob : IJobEntity
     {
         [ReadOnly]public float deltatime;

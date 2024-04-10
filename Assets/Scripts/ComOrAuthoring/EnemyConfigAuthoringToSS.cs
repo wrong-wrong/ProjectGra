@@ -41,6 +41,8 @@ namespace ProjectGra
         public GameObject NormalRangedSpawneePrefab;
         public float SpawneeSpeed;
         public float SpawneeTimer;
+        [Header("EnemyEggConfig")]
+        public GameObject EggPrefab;
 
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
@@ -91,6 +93,10 @@ namespace ProjectGra
                     SpawneeSpeed = authoring.SpawneeSpeed,
                     SpawneeTimer = authoring.SpawneeTimer,
                 });
+
+                //because no data need to set to the EggSystem, there is no need to creat a component
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
+                Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
             }
         }
     }

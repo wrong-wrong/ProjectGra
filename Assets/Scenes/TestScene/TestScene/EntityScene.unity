@@ -144,7 +144,7 @@ PrefabInstance:
     - target: {fileID: 4617919976387815572, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.35
+      value: -9.56
       objectReference: {fileID: 0}
     - target: {fileID: 4617919976387815572, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
@@ -586,7 +586,7 @@ PrefabInstance:
     - target: {fileID: 4617919976387815572, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.77
+      value: -10.61
       objectReference: {fileID: 0}
     - target: {fileID: 4617919976387815572, guid: 1df3a143e78faa24c8b93a5c449580b0,
         type: 3}
@@ -778,7 +778,7 @@ MonoBehaviour:
     type: 3}
   NormalMeleeAttackVal: 10
   NormalMeleeFollowSpeed: 3
-  NormalMeleeAttackDistance: 3
+  NormalMeleeAttackDistance: 2.5
   NormalMeleeAttackCooldown: 1.5
   NormalMeleeDeathCountdown: 3
   NormalMeleeLootChance: 0.5
@@ -806,6 +806,8 @@ MonoBehaviour:
     type: 3}
   SpawneeSpeed: 10
   SpawneeTimer: 4
+  EggPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
+    type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

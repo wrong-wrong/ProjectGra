@@ -22,10 +22,12 @@ namespace ProjectGra
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             for (int i = 0; i < 11; ++i)
             {
-                strBuilder.Append(PlayerDataModel.Instance.attributeValueList[i]);
+                var tmp = PlayerDataModel.Instance.attributeValueList[i];
+                strBuilder.Append(tmp);
                 playerAttributeTextList[i].text = strBuilder.ToString();
-                if (PlayerDataModel.Instance.attributeValueList[i] < 0) playerAttributeTextList[i].color = Color.red;
-                else playerAttributeTextList[i].color = Color.green;
+                if (tmp < 0) playerAttributeTextList[i].color = Color.red;
+                else if (tmp > 0) playerAttributeTextList[i].color = Color.green;
+                else playerAttributeTextList[i].color = Color.white;
                 strBuilder.Clear();
             }
         }

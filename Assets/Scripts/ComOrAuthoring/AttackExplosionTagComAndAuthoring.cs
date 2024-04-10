@@ -10,9 +10,9 @@ namespace ProjectGra
             public override void Bake(AttackExplosionTagComAndAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent<AttackExplosionTag>(entity);
+                AddComponent<AttackNotMovingStraight>(entity);
             }
         }
     }
-    public struct AttackExplosionTag : IComponentData { }
+    public struct AttackNotMovingStraight : IComponentData { }
 }

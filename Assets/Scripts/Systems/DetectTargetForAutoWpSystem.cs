@@ -15,8 +15,8 @@ namespace ProjectGra
         private float timer;
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<GameControllNotInShop>();
-            //state.RequireForUpdate<GameControllInGame>();
+            //state.RequireForUpdate<GameControllNotInShop>();
+            state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             enemyCollisionFilter = new CollisionFilter

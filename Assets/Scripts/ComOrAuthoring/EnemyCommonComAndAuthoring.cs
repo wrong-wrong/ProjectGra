@@ -6,6 +6,7 @@ namespace ProjectGra
     public class EnemyCommonComAndAuthoring : MonoBehaviour
     {
         public int HealthPoint;
+        public EntityState EntityState;
         //public float FollowSpeed;
         //public float StopDistance;
         public class Baker : Baker<EnemyCommonComAndAuthoring>
@@ -14,7 +15,7 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = authoring.HealthPoint });
-                AddComponent(entity, new EntityStateMachine { CurrentState = EntityState.Follow });
+                AddComponent(entity, new EntityStateMachine { CurrentState = authoring.EntityState});
                 AddComponent<EnemyTag>(entity);
                 AddComponent(entity, new EntityKnockBackCom { Timer = 0.5f});
                 SetComponentEnabled<EntityKnockBackCom>(entity, false); 

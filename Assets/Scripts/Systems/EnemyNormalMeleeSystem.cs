@@ -83,8 +83,9 @@ namespace ProjectGra
                         }
                         else
                         {
-                            localTransform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
                             localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                            if (disSq < 4f) continue;
+                            localTransform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
                         }
                         break;
 

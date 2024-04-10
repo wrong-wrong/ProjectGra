@@ -13,9 +13,9 @@ namespace ProjectGra
         private CollisionFilter playerSpawneeCollidesWithEnemyLayer;
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<GameControllNotInShop>();
+            //state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<GameControllNotPaused>();
-            //state.RequireForUpdate<GameControllInGame>();
+            state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             emptyCollisionFilter = new CollisionFilter();
             playerSpawneeCollidesWithEnemyLayer = new CollisionFilter
