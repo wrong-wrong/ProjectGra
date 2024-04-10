@@ -153,7 +153,7 @@ namespace ProjectGra
             //EntityA tends to be spawnee
             //Entity Spawnee;
             //Entity Enemy;
-            Debug.Log("Pierced Job Execute");
+            //Debug.Log("Pierced Job Execute");
             if (!AttackPierceLookup.HasComponent(triggerEvent.EntityA)) return;
             HitBufferLookup.TryGetBuffer(triggerEvent.EntityA, out var hitBuffer);
             //Debug.Log(hitBuffer.Length);
@@ -185,7 +185,7 @@ namespace ProjectGra
                 //ecb.SetComponent(Enemy, new EntityStateMachine { CurrentState = EntityState.Dead });    
                 EntityStateMachineLookup.GetRefRW(triggerEvent.EntityB).ValueRW.CurrentState = EntityState.Dead;
             }
-            Debug.Log("PierceSpawnee TriggerJob");
+            //Debug.Log("PierceSpawnee TriggerJob");
         }
     }
 }

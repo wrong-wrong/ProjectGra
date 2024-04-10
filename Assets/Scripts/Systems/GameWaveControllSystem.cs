@@ -108,6 +108,7 @@ namespace ProjectGra
                         WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
                         SpawneePrefab = config.SpawneePrefab,
                         IsMeleeWeapon = config.IsMeleeWeapon,
+                        Range = calculatedRange,
 
                     });
                     ecb.SetComponent(config.SpawneePrefab, new AttackCurDamage { damage = calculatedDamageAfterBonus });
@@ -129,6 +130,7 @@ namespace ProjectGra
                         WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
                         MeleeShootingTimer = calculatedRange / 20f,
                         IsMeleeWeapon = config.IsMeleeWeapon,
+                        Range = calculatedRange,
                         //SpawneePrefab = Entity.Null
                     });
                     ecb.SetComponent(newWpModel, new AttackCurDamage { damage = calculatedDamageAfterBonus });
@@ -312,7 +314,7 @@ namespace ProjectGra
                 case GameControllState.BeforeWave:
                     if ((timer -= deltatime) < 0f)   //state change
                     {
-                        timer = 10f; // setting in wave time;
+                        timer = 30f; // setting in wave time;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
 
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);

@@ -3,6 +3,7 @@ using Unity.Transforms;
 using UnityEngine;
 using Unity.Mathematics;
 using Unity.Collections;
+using static UnityEngine.Rendering.DebugUI;
 namespace ProjectGra.PlayerController
 {
     [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
@@ -69,10 +70,11 @@ namespace ProjectGra.PlayerController
 
                 mainWpState.ValueRW.mainWeaponLocalTransform.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
                 mainWpState.ValueRW.mainWeaponLocalTransform.Rotation = quaternion.LookRotation(camforward, math.up());
-                if(!mainWpState.ValueRO.IsMeleeWeapon || (mainWpState.ValueRO.WeaponCurrentState != WeaponState.Thrust && mainWpState.ValueRO.WeaponCurrentState != WeaponState.Retrieve))
+                if(!mainWpState.ValueRO.IsMeleeWeapon || mainWpState.ValueRO.WeaponCurrentState == WeaponState.None)//(mainWpState.ValueRO.WeaponCurrentState != WeaponState.Thrust && mainWpState.ValueRO.WeaponCurrentState != WeaponState.Retrieve))
                 {
-                    var mainWeaponTransformRW = SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel);
-                    mainWeaponTransformRW.ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform;
+                    SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel).ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform; 
+                    //var mainWeaponTransformRW = SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel);
+                    //mainWeaponTransformRW.ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform;
                 }
             }
 
@@ -86,10 +88,12 @@ namespace ProjectGra.PlayerController
                     var offset = wp.WeaponPositionOffset + offsetList[i];
                     //transformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
                     wp.autoWeaponLocalTransform.Position = (forward * offset.z + right * offset.x + playerTransform.ValueRO.Position);
-                    if (!wp.IsMeleeWeapon || (wp.WeaponCurrentState != WeaponState.Thrust && wp.WeaponCurrentState != WeaponState.Retrieve))
+                    if (!wp.IsMeleeWeapon || wp.WeaponCurrentState == WeaponState.None)//(wp.WeaponCurrentState != WeaponState.Thrust && wp.WeaponCurrentState != WeaponState.Retrieve))
                     {
-                        var transformRW = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
-                        transformRW.ValueRW.Position = wp.autoWeaponLocalTransform.Position;
+                        SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel).ValueRW.Position = wp.autoWeaponLocalTransform.Position;
+
+                        //var transformRW = SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel);
+                        //transformRW.ValueRW.Position = wp.autoWeaponLocalTransform.Position;
                     }
                 }
             }

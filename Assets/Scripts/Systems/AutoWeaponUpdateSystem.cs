@@ -53,7 +53,7 @@ namespace ProjectGra
                                 wp.WeaponCurrentState = WeaponState.Thrust;
                                 state.EntityManager.GetComponentData<PhysicsCollider>(wp.WeaponModel).Value.Value.SetCollisionFilter(playerSpawneeCollidesWithEnemyLayer);
                                 //change collisionFilter to begin trigger
-                                Debug.Log("AutoMeleeWeapon start Thrust");
+                                //Debug.Log("AutoMeleeWeapon start Thrust");
                                 break;
                             case WeaponState.Thrust:
                                 var lerpAmount = (wp.MeleeRealShootingTimer += deltatime) / wp.MeleeShootingTimer;
@@ -66,7 +66,7 @@ namespace ProjectGra
                                     wp.MeleeRealShootingTimer = 0f;
                                     var hitBuffer = ecb.SetBuffer<HitBuffer>(wp.WeaponModel);
                                     hitBuffer.Clear();
-                                    Debug.Log("AutoMeleeWeapon start Retrieve");
+                                    //Debug.Log("AutoMeleeWeapon start Retrieve");
                                     // In Retrieve using wp.autoWeaponLocalTransform instead of wp.MeleeTargetPosition = wp.auto
                                 }
                                 else
@@ -81,7 +81,7 @@ namespace ProjectGra
                                 {
                                     wp.WeaponCurrentState = WeaponState.None;
                                     wp.RealCooldown = wp.Cooldown;
-                                    Debug.Log("AutoMeleeWeapon back to None");
+                                    //Debug.Log("AutoMeleeWeapon back to None");
                                 }
                                 else
                                 {
