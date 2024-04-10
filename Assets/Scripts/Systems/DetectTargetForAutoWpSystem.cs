@@ -15,7 +15,8 @@ namespace ProjectGra
         private float timer;
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<GameControllInGame>();
+            state.RequireForUpdate<GameControllNotInShop>();
+            //state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             enemyCollisionFilter = new CollisionFilter
@@ -47,6 +48,7 @@ namespace ProjectGra
                     {
                         ref var wp = ref autoWpBuffer.ElementAt(i);
                         if (wp.WeaponIndex == -1) continue;
+                        if (wp.IsMeleeWeapon && wp.WeaponCurrentState != WeaponState.None) continue;
                         var rangeSq = wp.Range * wp.Range;
                         float minDistance = 1000f;
                         float preMinDistance = 1000f;
@@ -79,6 +81,7 @@ namespace ProjectGra
                     {
                         ref var wp = ref autoWpBuffer.ElementAt(i);
                         if (wp.WeaponIndex == -1) continue;
+                        if (wp.IsMeleeWeapon && wp.WeaponCurrentState != WeaponState.None) continue;
                         wp.DamageAfterBonus = wp.DamageAfterBonus > 0 ? -wp.DamageAfterBonus : wp.DamageAfterBonus;
                     }
                     //Debug.Log("Overlaped! : " + hits[0].Entity);

@@ -725,7 +725,7 @@ MonoBehaviour:
     z: 2.2
   CameraXSensitivity: 2
   CameraYSensitivity: 0.8
-  PlayerBasicMoveSpeed: 3
+  PlayerBasicMoveSpeed: 4
   PlayerSprintMultiplier: 1.5
   MaxHealthPoint: 100
   HealthRegain: 0

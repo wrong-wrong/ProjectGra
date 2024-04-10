@@ -1,13 +1,11 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
-using static ProjectGra.PrefabAuthoringToContainer;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
-    public partial struct EnemyNormalSprintSystem : ISystem,ISystemStartStop
+    public partial struct EnemyNormalSprintSystem : ISystem, ISystemStartStop
     {
         float followSpeed;
         float deathTimer;
@@ -58,7 +56,7 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach (var (localTransform, attack,stateMachine,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>>()
+            foreach (var (localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>>()
                 .WithEntityAccess())
             {
                 var tarDir = playerTransform.Position - localTransform.ValueRO.Position;
@@ -78,7 +76,8 @@ namespace ProjectGra
                         attack.ValueRW.SprintTimer = 1.5f * sprintDistance / sprintSpeed; // magic number trying to let the enemy sprint for a longer distance
                     }
 
-                }else if(stateMachine.ValueRO.CurrentState == EntityState.SprintAttack)
+                }
+                else if (stateMachine.ValueRO.CurrentState == EntityState.SprintAttack)
                 {
                     localTransform.ValueRW.Position += attack.ValueRO.SprintDirNormalized * sprintSpeed * deltatime;
                     if (tarDirSq < hitDistanceSq)
@@ -87,13 +86,14 @@ namespace ProjectGra
                         playerHealthPoint.ValueRW.HealthPoint -= attackVal;
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
-                    if ((attack.ValueRW.SprintTimer -= deltatime)< 0f)
+                    if ((attack.ValueRW.SprintTimer -= deltatime) < 0f)
                     {
                         //Debug.Log("Timer out - Setting state to Sprint");
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                     }
-                    
-                }else if(stateMachine.ValueRO.CurrentState == EntityState.Dead)
+
+                }
+                else if (stateMachine.ValueRO.CurrentState == EntityState.Dead)
                 {
                     if (random.NextFloat() < lootChance)
                     {

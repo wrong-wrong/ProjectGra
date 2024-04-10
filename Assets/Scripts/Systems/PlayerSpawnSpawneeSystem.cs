@@ -9,12 +9,13 @@ namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
     [UpdateAfter(typeof(CameraTargetFollowSystem))]
-    public partial struct PlayerSpawnSpawneeSystem : ISystem
+    public partial struct PlayerAttackSystem : ISystem
     {
         private Random random;
         private CollisionFilter emptyCollisionFilter;
         private CollisionFilter playerSpawneeCollidesWithEnemyLayer;
-
+       
+        //private float magicNum;// = 1.5707963;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -27,6 +28,16 @@ namespace ProjectGra
                 BelongsTo = 1 << 5,// player spawnee
                 CollidesWith = 1 << 3, // enemy layer
             };
+            //magicNum = 1.5707963f;
+            //Debug.Log(math.radians(90));    // 1.570796
+            //Debug.Log(math.degrees(90));    // 5156.62
+            //Debug.Log(math.sin(90));        // 0.89399
+            //Debug.Log(math.sin(math.radians(90)));  // 1
+            //Debug.Log(math.sin(math.degrees(90)));  // -0.954
+            //Debug.Log(math.sin(1.570796325));   // 1
+            //Debug.Log(math.sin(1.57079632));    // 1
+            //Debug.Log(math.sin(1.5707963));     // 1
+            //Debug.Log(math.sin(1.570796));      // 0.....
         }
         public void OnUpdate(ref SystemState state)
         {
@@ -76,12 +87,14 @@ namespace ProjectGra
                             }
                             else
                             {
+                                var val = math.sin(math.radians(lerpAmount *90));
                                 //TODO : Modify lerpAmount with  sine function? to make a uneven movement
-                                SystemAPI.GetComponentRW<LocalTransform>(mainWeaponState.ValueRW.WeaponModel).ValueRW.Position = math.lerp(mainWeaponState.ValueRW.MeleeOriginalPosition, mainWeaponState.ValueRW.MeleeTargetPosition, lerpAmount);
+                                SystemAPI.GetComponentRW<LocalTransform>(mainWeaponState.ValueRW.WeaponModel).ValueRW.Position = 
+                                    math.lerp(mainWeaponState.ValueRW.MeleeOriginalPosition, mainWeaponState.ValueRW.MeleeTargetPosition, math.sin(lerpAmount * 1.5707963f));
                             }
                             break;
                         case WeaponState.Retrieve:
-                            lerpAmount = (mainWeaponState.ValueRW.MeleeRealShootingTimer += deltatime) / mainWeaponState.ValueRW.MeleeShootingTimer;
+                            lerpAmount = 2*(mainWeaponState.ValueRW.MeleeRealShootingTimer += deltatime) / mainWeaponState.ValueRW.MeleeShootingTimer;
                             if (lerpAmount > 1f)
                             {
                                 mainWeaponState.ValueRW.WeaponCurrentState = WeaponState.None;

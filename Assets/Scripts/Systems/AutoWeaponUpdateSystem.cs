@@ -13,8 +13,9 @@ namespace ProjectGra
         private CollisionFilter playerSpawneeCollidesWithEnemyLayer;
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<GameControllNotPaused>();
-            state.RequireForUpdate<GameControllInGame>();
+            //state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             emptyCollisionFilter = new CollisionFilter();
             playerSpawneeCollidesWithEnemyLayer = new CollisionFilter
@@ -22,6 +23,11 @@ namespace ProjectGra
                 BelongsTo = 1 << 5,// player spawnee
                 CollidesWith = 1 << 3, // enemy layer
             };
+            //Debug.Log(math.radians(90));    // 1.570796
+            //Debug.Log(math.degrees(90));    // 5156.62
+            //Debug.Log(math.sin(90));        // 0.89399
+            //Debug.Log(math.sin(math.radians(90)));  // 1
+            //Debug.Log(math.sin(math.degrees(90)));  // -0.954
         }
         public void OnUpdate(ref SystemState state)
         {
