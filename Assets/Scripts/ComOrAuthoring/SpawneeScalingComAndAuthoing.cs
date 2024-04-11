@@ -6,7 +6,8 @@ namespace ProjectGra
     public class SpawneeScalingComAndAuthoing : MonoBehaviour
     {
         public float Timer;
-        public float MaxScale;
+        public float BasicScale;
+        public float OffsetScale;
         public class Baker : Baker<SpawneeScalingComAndAuthoing>
         {
             public override void Bake(SpawneeScalingComAndAuthoing authoring)
@@ -16,16 +17,20 @@ namespace ProjectGra
                 {
                     RealTimer = 0f,
                     Timer = authoring.Timer,
-                    MaxScaleMinusOne = authoring.MaxScale,
+                    OffsetScale = authoring.OffsetScale,
+                    BasicScale = authoring.BasicScale,
                 });
             }
         }
     }
     public struct SpawneeScalingCom : IComponentData
     {
+        public float BasicScale;
         public float RealTimer;
         public float Timer;
-        public float MaxScaleMinusOne;
+        public float OffsetScale;
+        
+        public float Ratio;
     }
 
 }

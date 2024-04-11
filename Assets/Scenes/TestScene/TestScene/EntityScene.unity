@@ -297,6 +297,8 @@ MonoBehaviour:
     type: 3}
   ItemPrefab: {fileID: 8063985965773569175, guid: 502e8bb5a3352d64ba15541b0ab52a45,
     type: 3}
+  SummonExplosionPrefab: {fileID: 3794106059590104958, guid: 2de6500fbc2fb1b49a41ebdb4b397875,
+    type: 3}
 --- !u!4 &695474579
 Transform:
   m_ObjectHideFlags: 0
@@ -645,8 +647,8 @@ GameObject:
   - component: {fileID: 1829473137}
   - component: {fileID: 1829473138}
   - component: {fileID: 1829473139}
-  - component: {fileID: 1829473140}
   - component: {fileID: 1829473141}
+  - component: {fileID: 1829473142}
   m_Layer: 0
   m_Name: SuperSingleton
   m_TagString: Untagged
@@ -738,30 +740,9 @@ MonoBehaviour:
   DamagePercentage: 0
   CriticalHitChance: 0
   Range: 0
-  SpawningCooldown: 2
+  SpawningCooldown: 20
   minRadius: 6
   maxRadius: 13
---- !u!114 &1829473140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1829473135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7d6d23cf7cd70439a2fe44b66978ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WeaponSOList:
-  - {fileID: 11400000, guid: 4b72dadedd9e8b64d97b05408777baf7, type: 2}
-  - {fileID: 11400000, guid: 9e1e5a45c6a31a24e896b055800c202e, type: 2}
-  - {fileID: 11400000, guid: 7acd499c5cd4b0a418640db3eb309644, type: 2}
-  - {fileID: 11400000, guid: 490c5a53843a0f142b1c05a97b02d329, type: 2}
-  - {fileID: 11400000, guid: e0917107ff0d59e4fbec649d6e246d9a, type: 2}
-  - {fileID: 11400000, guid: 1a8f4310021b97d40b41f2f87dea718e, type: 2}
-  - {fileID: 11400000, guid: 49f4a018b75692944a19c816371e4df2, type: 2}
-  - {fileID: 11400000, guid: afa6340da8d0f8241b4799b7c30602c8, type: 2}
 --- !u!114 &1829473141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -808,6 +789,110 @@ MonoBehaviour:
   SpawneeTimer: 4
   EggPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
     type: 3}
+  ElietSpawnee: {fileID: 6855698195050949098, guid: 51cd11a66adf01a4381494a346b1e858,
+    type: 3}
+  ScaleToSetInLaterThreeState:
+    x: 1
+    y: 5
+    z: 0.5
+  TimerToSetInLaterThreeState:
+    x: 1
+    y: 1
+    z: 4
+--- !u!114 &1829473142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829473135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c7d6d23cf7cd70439a2fe44b66978ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WeaponSOList:
+  - {fileID: 11400000, guid: 4b72dadedd9e8b64d97b05408777baf7, type: 2}
+  - {fileID: 11400000, guid: 9e1e5a45c6a31a24e896b055800c202e, type: 2}
+  - {fileID: 11400000, guid: 7acd499c5cd4b0a418640db3eb309644, type: 2}
+  - {fileID: 11400000, guid: 490c5a53843a0f142b1c05a97b02d329, type: 2}
+  - {fileID: 11400000, guid: e0917107ff0d59e4fbec649d6e246d9a, type: 2}
+  - {fileID: 11400000, guid: 1a8f4310021b97d40b41f2f87dea718e, type: 2}
+  - {fileID: 11400000, guid: 49f4a018b75692944a19c816371e4df2, type: 2}
+  - {fileID: 11400000, guid: afa6340da8d0f8241b4799b7c30602c8, type: 2}
+--- !u!1001 &7296339210943075671
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.96
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2870851086444681434, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_Name
+      value: EliteSprintAndBulletModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: Speed
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 704295c3cdfbd064387d459c68c25210, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -818,3 +903,4 @@ SceneRoots:
   - {fileID: 1829473136}
   - {fileID: 695474579}
   - {fileID: 592821912}
+  - {fileID: 7296339210943075671}

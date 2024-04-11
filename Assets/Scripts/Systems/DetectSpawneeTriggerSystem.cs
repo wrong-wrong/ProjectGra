@@ -153,7 +153,7 @@ namespace ProjectGra
             //EntityA tends to be spawnee
             //Entity Spawnee;
             //Entity Enemy;
-            Debug.Log("Pierced Job Execute");
+            //Debug.Log("Pierced Job Execute");
             if (!AttackPierceLookup.HasComponent(triggerEvent.EntityA)) return;
             HitBufferLookup.TryGetBuffer(triggerEvent.EntityA, out var hitBuffer);
             //Debug.Log(hitBuffer.Length);
@@ -178,7 +178,7 @@ namespace ProjectGra
 
             var refHP = EntityHealthPointLookup.GetRefRW(triggerEvent.EntityB);
             //Debug.Log("NormalSpawneeJob");
-            Debug.Log("Pierced Job - Hurting");
+            //Debug.Log("Pierced Job - Hurting");
             if ((refHP.ValueRW.HealthPoint -= CurDamageLookup[triggerEvent.EntityA].damage) <= 0)
             {
                 ecb.RemoveComponent<PhysicsCollider>(triggerEvent.EntityB);

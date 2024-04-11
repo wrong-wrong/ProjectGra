@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace ProjectGra
 {
-    public class WeaponAndAuthoringAddToss : MonoBehaviour
+    public class WeaponConfigAndAuthoringToSS : MonoBehaviour
     {
 
         public List<WeaponScriptableObjectConfig> WeaponSOList;
 
-        public class Baker : Baker<WeaponAndAuthoringAddToss>
+        public class Baker : Baker<WeaponConfigAndAuthoringToSS>
         {
-            public override void Bake(WeaponAndAuthoringAddToss authoring)
+            public override void Bake(WeaponConfigAndAuthoringToSS authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
                 var normalConfigBuffer = AddBuffer<WeaponConfigInfoCom>(entity);

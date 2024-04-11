@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ProjectGra
@@ -43,6 +44,14 @@ namespace ProjectGra
         public float SpawneeTimer;
         [Header("EnemyEggConfig")]
         public GameObject EggPrefab;
+        [Header("EliteSprintAndBulletConfig")]
+        public GameObject ElietSpawnee;
+
+        [Header("Summoned Explosion System Config")]
+
+        //scaling to set in every state,  basic scale should be previous scale,
+        public float3 ScaleToSetInLaterThreeState;
+        public float3 TimerToSetInLaterThreeState;
 
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
@@ -96,7 +105,17 @@ namespace ProjectGra
 
                 //because no data need to set to the EggSystem, there is no need to creat a component
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
+
+                // For Elite Sprint and Bullet
+                AddComponent(entity, new EliteSpringAndBulletConfigCom { EliteSpawnee = GetEntity(authoring.ElietSpawnee, TransformUsageFlags.Dynamic) });
                 Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
+
+                // For summoned explosion
+                AddComponent(entity, new SummonedExplosionSystemConfigCom
+                {
+                    ScaleToSetInLaterThreeState = authoring.ScaleToSetInLaterThreeState,
+                    TimerToSetInLaterThreeState = authoring.TimerToSetInLaterThreeState,
+                });
             }
         }
     }
@@ -152,5 +171,22 @@ namespace ProjectGra
         public float AttackDistance;
         public float SprintSpeed;
 
+    }
+
+    public struct EliteSpringAndBulletConfigCom : IComponentData
+    {
+        public Entity EliteSpawnee;
+    }
+
+    public struct SummonedExplosionSystemConfigCom : IComponentData
+    {
+        //for flying state
+        //public float StartSpeed;
+        //public float SpeedVariation;
+        //public float StopSpeed;
+
+        //scaling to set in every state,  basic scale should be previous scale,
+        public float3 ScaleToSetInLaterThreeState;
+        public float3 TimerToSetInLaterThreeState;
     }
 }

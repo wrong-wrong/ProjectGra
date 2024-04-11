@@ -1,14 +1,12 @@
-using Unity.Entities;
-using Unity.Transforms;
-using UnityEngine;
-using Unity.Mathematics;
 using Unity.Collections;
-using static UnityEngine.Rendering.DebugUI;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
 namespace ProjectGra.PlayerController
 {
     [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
     [UpdateAfter(typeof(PlayerMoveSystem))]
-    public partial struct CameraTargetFollowSystem : ISystem,ISystemStartStop
+    public partial struct CameraTargetFollowSystem : ISystem, ISystemStartStop
     {
         private float _cameraPitch;
         private float _topClamp;
@@ -42,7 +40,7 @@ namespace ProjectGra.PlayerController
         public void OnStopRunning(ref SystemState state) { offsetList.Dispose(); }
         public void OnUpdate(ref SystemState state)
         {
-            var camReference= SystemAPI.ManagedAPI.GetSingleton<CameraTargetReference>();
+            var camReference = SystemAPI.ManagedAPI.GetSingleton<CameraTargetReference>();
             var ghostPlayer = camReference.ghostPlayer;
             var cameraTarget = camReference.cameraTarget;
 
@@ -60,7 +58,7 @@ namespace ProjectGra.PlayerController
             var camforward = cameraTarget.forward;
             var camup = cameraTarget.up;
             var camright = cameraTarget.right;
-            if(mainWpState.ValueRO.WeaponIndex != -1)
+            if (mainWpState.ValueRO.WeaponIndex != -1)
             {
                 var offset = mainWpState.ValueRO.WeaponPositionOffset + mainWpOffset;
 
@@ -70,9 +68,9 @@ namespace ProjectGra.PlayerController
 
                 mainWpState.ValueRW.mainWeaponLocalTransform.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
                 mainWpState.ValueRW.mainWeaponLocalTransform.Rotation = quaternion.LookRotation(camforward, math.up());
-                if(!mainWpState.ValueRO.IsMeleeWeapon || mainWpState.ValueRO.WeaponCurrentState == WeaponState.None)//(mainWpState.ValueRO.WeaponCurrentState != WeaponState.Thrust && mainWpState.ValueRO.WeaponCurrentState != WeaponState.Retrieve))
+                if (!mainWpState.ValueRO.IsMeleeWeapon || mainWpState.ValueRO.WeaponCurrentState == WeaponState.None)//(mainWpState.ValueRO.WeaponCurrentState != WeaponState.Thrust && mainWpState.ValueRO.WeaponCurrentState != WeaponState.Retrieve))
                 {
-                    SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel).ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform; 
+                    SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel).ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform;
                     //var mainWeaponTransformRW = SystemAPI.GetComponentRW<LocalTransform>(mainWpState.ValueRO.WeaponModel);
                     //mainWeaponTransformRW.ValueRW = mainWpState.ValueRW.mainWeaponLocalTransform;
                 }
