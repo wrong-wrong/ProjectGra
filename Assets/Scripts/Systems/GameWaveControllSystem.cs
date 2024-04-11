@@ -257,6 +257,11 @@ namespace ProjectGra
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
 
+
+            //set spawning system
+            var spawningConfig = SystemAPI.GetSingletonRW<EnemySpawningConfig>();
+            spawningConfig.ValueRW.SpawningCooldown = 1f;
+            //Debug.Log("spawningCooldown after set" + spawningConfig.ValueRO.spawningCooldown);
             //set gamestate
             var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;

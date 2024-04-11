@@ -886,7 +886,27 @@ PrefabInstance:
     - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
         type: 3}
       propertyPath: Speed
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: stageOneSkillShootCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: stageTwoSkillShootCount
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: stateOneInSkillShootingInterval
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: stateTwoInSkillShootingInterval
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

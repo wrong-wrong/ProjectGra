@@ -44,7 +44,7 @@ namespace ProjectGra
         public float SpawneeTimer;
         [Header("EnemyEggConfig")]
         public GameObject EggPrefab;
-        [Header("EliteSprintAndBulletConfig")]
+        [Header("EliteShooterConfig")]
         public GameObject ElietSpawnee;
 
         [Header("Summoned Explosion System Config")]
@@ -107,7 +107,7 @@ namespace ProjectGra
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
 
                 // For Elite Sprint and Bullet
-                AddComponent(entity, new EliteSpringAndBulletConfigCom { EliteSpawnee = GetEntity(authoring.ElietSpawnee, TransformUsageFlags.Dynamic) });
+                AddComponent(entity, new EliteShooterConfigCom { EliteSpawnee = GetEntity(authoring.ElietSpawnee, TransformUsageFlags.Dynamic) });
                 Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
 
                 // For summoned explosion
@@ -173,7 +173,7 @@ namespace ProjectGra
 
     }
 
-    public struct EliteSpringAndBulletConfigCom : IComponentData
+    public struct EliteShooterConfigCom : IComponentData
     {
         public Entity EliteSpawnee;
     }
