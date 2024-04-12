@@ -163,11 +163,13 @@ namespace ProjectGra
                 //set info text, need to get bonus value, and bonused attribute name (can get from canvasmonomanager)
                 //use <color="white"> </color> to current activated category count. Use <color=#00D400> </color> to color the value Green // green 00D400
                 var activatedCount = CanvasMonoSingleton.Instance.GetCategoryActivatedCount(categoryIdxList[i]);
-                for(int j = 0; j < 4; ++j)
+                for (int j = 0; j < 4; ++j)
                 {
                     if (j + 1 == activatedCount) strBuilder.Append("<color=\"white\">");
                     //need to get current count;
-                    strBuilder.Append($"({j + 1})");
+                    strBuilder.Append('(');
+                    strBuilder.Append(j + 1);
+                    strBuilder.Append(')');
                     for(int k = 0; k < cateConfig.AffectedAttributeIdxList.Count; ++k)
                     {
                         if(k >0) { strBuilder.Append(',');}

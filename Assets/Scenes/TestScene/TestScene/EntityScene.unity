@@ -299,6 +299,8 @@ MonoBehaviour:
     type: 3}
   SummonExplosionPrefab: {fileID: 3794106059590104958, guid: 2de6500fbc2fb1b49a41ebdb4b397875,
     type: 3}
+  NormalEnemySpawneePrefab: {fileID: 893634235989249865, guid: cb6b63e55936bd345a81ae4f77827c52,
+    type: 3}
 --- !u!4 &695474579
 Transform:
   m_ObjectHideFlags: 0
@@ -783,8 +785,7 @@ MonoBehaviour:
   NormalRangedAttackDistance: 18
   NormalRangedFleeDistance: 10
   NormalRangedFleeSpeed: 5
-  NormalRangedSpawneePrefab: {fileID: 893634235989249865, guid: cb6b63e55936bd345a81ae4f77827c52,
-    type: 3}
+  NormalSpawneePrefab: {fileID: 0}
   SpawneeSpeed: 10
   SpawneeTimer: 4
   EggPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
@@ -820,6 +821,99 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1a8f4310021b97d40b41f2f87dea718e, type: 2}
   - {fileID: 11400000, guid: 49f4a018b75692944a19c816371e4df2, type: 2}
   - {fileID: 11400000, guid: afa6340da8d0f8241b4799b7c30602c8, type: 2}
+--- !u!1001 &1373609433260503925
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.27
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2377108356410160517, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_Name
+      value: EliteEggAndSprintModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: Speed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: spawnEggSkillspawnCount
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: stageOneSkillShootCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: spawnEggSkillSpawningInterval
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: stateOneInSkillShootingInterval
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9c94ef48d6b3c4048a8fcd46172b4930, type: 3}
 --- !u!1001 &7296339210943075671
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -883,6 +977,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EliteSprintAndBulletModel
       objectReference: {fileID: 0}
+    - target: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8104659003667499563, guid: 704295c3cdfbd064387d459c68c25210,
         type: 3}
       propertyPath: Speed
@@ -924,3 +1023,4 @@ SceneRoots:
   - {fileID: 695474579}
   - {fileID: 592821912}
   - {fileID: 7296339210943075671}
+  - {fileID: 1373609433260503925}

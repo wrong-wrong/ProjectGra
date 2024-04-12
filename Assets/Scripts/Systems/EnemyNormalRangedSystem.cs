@@ -35,6 +35,8 @@ namespace ProjectGra
 
         public void OnStartRunning(ref SystemState state) 
         {
+            var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
+            spawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
             var config = SystemAPI.GetSingleton<NormalRangedConfigCom>();
             followSpeed = config.FollowSpeed;
             attackDistanceSq = config.AttackDistance * config.AttackDistance;
@@ -42,7 +44,6 @@ namespace ProjectGra
             deathCountdown = config.DeathCountdown;
             fleeDistanceSq = config.FleeDistance * config.FleeDistance;
             fleeSpeed = config.FleeSpeed;
-            spawneePrefab = config.SpawneePrefab;
             attackVal = config.AttackVal;
             state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
             state.EntityManager.SetComponentData(spawneePrefab, new AttackCurDamage { damage = attackVal });

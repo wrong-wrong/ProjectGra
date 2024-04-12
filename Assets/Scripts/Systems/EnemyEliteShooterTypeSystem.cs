@@ -67,15 +67,20 @@ namespace ProjectGra
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<PlayerTag>());
             if (hp.HealthPoint > 500f)
             {
-                if(!IsResetSpawneePrefab)
+                //state related code
+                eliteCom.ValueRW.previousHp = hp.HealthPoint;
+                if (!IsResetSpawneePrefab)
                 {
                     state.EntityManager.SetComponentData(eliteSpawneePrefab, new SpawneeScalingCom { BasicScale = 1f, OffsetScale = 4f, Timer = 1f });
                     state.EntityManager.SetComponentData(eliteSpawneePrefab, new AttackCurDamage { damage = 15 });
                     IsResetSpawneePrefab = true;
 
                 }
+
+                //move logic
                 eliteTransformRW.ValueRW.Position += eliteCom.ValueRO.TargetDirNormalized * deltatime * eliteCom.ValueRO.Speed;
                 
+                //whether to get a new moving target 
                 if((eliteCom.ValueRW.MovingRandomIntervalTimer -= deltatime) < 0f)
                 {
 
@@ -86,11 +91,14 @@ namespace ProjectGra
                     eliteCom.ValueRW.MovingRandomIntervalTimer = distance / eliteCom.ValueRO.Speed + random.NextFloat(1f,3f);
                 }
 
+                //whether to do skill
                 if ((eliteCom.ValueRW.SkillShootRandomIntervalTimer -= deltatime) < 0f)
                 {
                     //var deltatime = SystemAPI.Time.DeltaTime;
                     isDoingSkill = true;
                 }
+
+                // update skill logic if isDoingSkill is true at this frame
                 if(isDoingSkill)
                 {
                     if ((spawnTimer -= deltatime) < 0f)
@@ -116,10 +124,12 @@ namespace ProjectGra
                         }
                     }
                 }
-                eliteCom.ValueRW.previousHp = hp.HealthPoint;
+
+
             }
             else
             {
+                //state related code
                 if(eliteCom.ValueRO.previousHp > 500f)
                 {
                     //set spawnee
@@ -129,18 +139,23 @@ namespace ProjectGra
                     eliteCom.ValueRW.previousHp = 213;
                     eliteCom.ValueRW.SkillShootRandomIntervalTimer = 0f;
                 }
+
+                // moving logic
                 var tarDir = playerTransform.Position - eliteTransformRW.ValueRO.Position;
-                //math.normalize(tarDir);
                 var disSq = math.csum(tarDir * tarDir);
                 if (disSq > 4f)
                 {
                     eliteTransformRW.ValueRW.Position += eliteCom.ValueRO.Speed * math.normalize(tarDir) * deltatime;
                     eliteTransformRW.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
                 }
+
+                // whether to 
                 if ((eliteCom.ValueRW.SkillShootRandomIntervalTimer -= deltatime) < 0f)
                 {
                     isDoingSkill = true;
                 }
+
+                // update skill logic if isDoingSkill
                 if(isDoingSkill)
                 {
                     if ((spawnTimer -= deltatime) < 0f)
@@ -166,12 +181,14 @@ namespace ProjectGra
                         }
                     }
                 }
+
+                // if set dead by TriggerJob
                 if(SystemAPI.GetComponent<EntityStateMachine>(elite).CurrentState == EntityState.Dead)
                 {
                     state.EntityManager.DestroyEntity(elite);
                 }
             }
-            //foreach(var (hp, eliteCom,transform) )
+
             #region Test code
             ////updates spawnTimer< 0->set to 1, spawn prefab at pos; if PosIdx >= 4,-> set not doing skill, posIdx set to 0, spawnTimer set to 0;
             ////updates scaling timer, if timer > setting, -> look rotation player need to fire, set moveTag to true;

@@ -39,7 +39,7 @@ namespace ProjectGra
         public float NormalRangedFleeDistance;
         public float NormalRangedFleeSpeed;
 
-        public GameObject NormalRangedSpawneePrefab;
+        public GameObject NormalSpawneePrefab;
         public float SpawneeSpeed;
         public float SpawneeTimer;
         [Header("EnemyEggConfig")]
@@ -87,7 +87,7 @@ namespace ProjectGra
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalRangedConfigCom
                 {
-                    EnemyPrefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic),
+                    //EnemyPrefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic),
                     AttackVal = authoring.NormalRangedAttackVal,
                     FollowSpeed = authoring.NormalRangedFollowSpeed,
                     AttackDistance = authoring.NormalRangedAttackDistance,
@@ -98,7 +98,7 @@ namespace ProjectGra
                     FleeDistance = authoring.NormalRangedFleeDistance,
                     FleeSpeed = authoring.NormalRangedFleeSpeed,
 
-                    SpawneePrefab = GetEntity(authoring.NormalRangedSpawneePrefab, TransformUsageFlags.Dynamic),
+                    SpawneePrefab = GetEntity(authoring.NormalSpawneePrefab, TransformUsageFlags.Dynamic),
                     SpawneeSpeed = authoring.SpawneeSpeed,
                     SpawneeTimer = authoring.SpawneeTimer,
                 });
@@ -126,7 +126,7 @@ namespace ProjectGra
     }
     public struct NormalRangedConfigCom : IComponentData
     {
-        public Entity EnemyPrefab;
+        //public Entity EnemyPrefab;
         //NormalCom
         public int AttackVal;
         public float FollowSpeed;
