@@ -13,6 +13,7 @@ public class ShopItem : MonoBehaviour
     [SerializeField] TextMeshProUGUI priceText;
     [SerializeField] TextMeshProUGUI nameText;
     [SerializeField] TextMeshProUGUI weaponInfoText;
+    [SerializeField] TextMeshProUGUI cateforyInfoText;
     [SerializeField] TextMeshProUGUI itemInfoText;
     [SerializeField] TextMeshProUGUI lockButtonText;
     [SerializeField] RectTransform wpInfoTextRect;
@@ -102,7 +103,7 @@ public class ShopItem : MonoBehaviour
         {
             if (currentItem.BonusedValueList[i] > 0) strBuilder.Append("+");
             strBuilder.Append(currentItem.BonusedValueList[i]);
-            strBuilder.Append(CanvasMonoSingleton.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
+            strBuilder.Append(CanvasMonoSingleton.Instance.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
             strBuilder.AppendLine();
         }
         itemInfoText.text = strBuilder.ToString();
@@ -122,9 +123,10 @@ public class ShopItem : MonoBehaviour
         icon.sprite = null;
         isMeleeWp = config.IsMeleeWeapon;
         weaponIdx = config.WeaponIndex;
-        currentPrice = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponBasePriceMap[weaponIdx];
+        var managedConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
+        currentPrice = managedConfig.weaponBasePriceMap[weaponIdx];
         priceText.text = currentPrice.ToString();
-        nameText.text = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponNameMap[weaponIdx].ToString();
+        nameText.text = managedConfig.weaponNameMap[weaponIdx].ToString();
         //Setting Text
         var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
         var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage())
@@ -160,6 +162,18 @@ public class ShopItem : MonoBehaviour
         weaponInfoText.text = strBuilder.ToString();
         strBuilder.Clear();
         ChangeBackgroundColor();
+
+        //Set category text
+        var categoryIdxList = managedConfig.weaponCategoryIdxListMap[weaponIdx];
+        var categorySOList = SOConfigSingleton.Instance.WeaponCategorySOList;
+        for(int i = 0; i < categoryIdxList.Count; i++)
+        {
+            strBuilder.Append(categorySOList[categoryIdxList[i]].CategoryName);
+            strBuilder.AppendLine();
+        }
+        cateforyInfoText.text = strBuilder.ToString();
+        strBuilder.Clear(); 
+
     }
     public void Lock()
     {

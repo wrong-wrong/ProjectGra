@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -31,6 +32,9 @@ namespace ProjectGra
         public float Range;
 
         public float3 WeaponPositionOffsetRelativeToCameraTarget;
+
+        [Header("Weapon Category Config")]
+        public List<int> WeaponCategoryList;
 
         
     }

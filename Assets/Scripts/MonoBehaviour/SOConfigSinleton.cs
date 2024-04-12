@@ -9,7 +9,7 @@ namespace ProjectGra
         //public List<WeaponScriptableObjectConfig> WeaponSOList;
         //public Dictionary<int, Color> WeaponIdxToColor;
 
-        public WeaponIdxToConfigCom WeaponMapCom;
+        public WeaponIdxToWpDataConfigCom WeaponMapCom;
         public WeaponManagedAndMonoOnlyConfigCom WeaponManagedConfigCom;
         public static SOConfigSingleton Instance;
         public List<Color> levelBgColor;
@@ -19,6 +19,13 @@ namespace ProjectGra
         private Random random;
 
         public List<ItemScriptableObjectConfig> ItemSOList;
+
+        public List<WeaponCategoryScriptableObjectConfig> WeaponCategorySOList;
+        //// idx of attribute affected by category 0 would be in the list stored at list[0]; list[categoryIdx] is the list of idx of its affecting attribute
+        //public List<List<int>> CategoryToAffectedAttributeIdxMappingList;
+        //// bonus value of different count in category 0 would be in the list stored at list[0]; list[categoryIdx] is its bonus value Int4
+        //public List<List<int4>> CategoryToAffectedAttributeValueMappingList; 
+
         public void Awake()
         {
             if(Instance != null) 
@@ -27,6 +34,8 @@ namespace ProjectGra
                 return;
             }
             Instance = this;
+            Debug.Log("SOConfigSingleton - Awake - CateSOList Count:" + WeaponCategorySOList.Count);
+
         }
         public void InitWeaponSOSingleton()
         {

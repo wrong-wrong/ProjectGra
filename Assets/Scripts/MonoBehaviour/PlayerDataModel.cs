@@ -15,11 +15,13 @@ namespace ProjectGra
         //4Range 
         //5CriticalHitChance %
         //6Damage %
-        //7Melee %
-        //8Ranged %
-        //9Element %
+        //7Melee 
+        //8Ranged 
+        //9Element 
         //10AttackSpeed %
         //Should not store decimals here
+        //public List<string> AttributeNameList;
+
         public List<int> attributeValueList;
         public int playerMaterialCount;
 
@@ -71,10 +73,10 @@ namespace ProjectGra
 
             attributeValueList[5] = (int)(damageAttribute.CriticalHitChance * 100);
             attributeValueList[6] = (int)(damageAttribute.DamagePercentage * 100);
-            attributeValueList[7] = (int)(damageAttribute.MeleeRangedElementAttSpd.x * 100);
-            attributeValueList[8] = (int)(damageAttribute.MeleeRangedElementAttSpd.y * 100);
-            attributeValueList[9] = (int)(damageAttribute.MeleeRangedElementAttSpd.z * 100);
-            attributeValueList[10] = (int)(damageAttribute.MeleeRangedElementAttSpd.w * 100);
+            attributeValueList[7] = (int)(damageAttribute.MeleeRangedElementAttSpd.x);
+            attributeValueList[8] = (int)(damageAttribute.MeleeRangedElementAttSpd.y);
+            attributeValueList[9] = (int)(damageAttribute.MeleeRangedElementAttSpd.z);
+            attributeValueList[10] = (int)(damageAttribute.MeleeRangedElementAttSpd.w);
             OnPlayerAttributeChanged?.Invoke();
         }
         public void AddAttributeValWith(int attributeIdx, int val)
@@ -110,9 +112,9 @@ namespace ProjectGra
             {
                 CriticalHitChance = attributeValueList[5]/100f,
                 DamagePercentage = attributeValueList[6]/100f,
-                MeleeRangedElementAttSpd = new float4(attributeValueList[7]/100f,
-                attributeValueList[8] / 100f, attributeValueList[9] / 100f,
-                attributeValueList[10] / 100f)
+                MeleeRangedElementAttSpd = new float4(attributeValueList[7],
+                attributeValueList[8], attributeValueList[9],
+                attributeValueList[10])
             };
         }
 

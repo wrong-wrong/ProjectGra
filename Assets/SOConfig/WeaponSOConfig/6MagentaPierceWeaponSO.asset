@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
   m_Name: 6MagentaPierceWeaponSO
   m_EditorClassIdentifier: 
+  IsMeleeWeapon: 0
   WeaponName: Magenta
   BasePrice: 25
   color: {r: 0.20000002, g: 0.20000002, b: 0.6, a: 1}
@@ -33,3 +34,4 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+  WeaponCategoryList: 00000000

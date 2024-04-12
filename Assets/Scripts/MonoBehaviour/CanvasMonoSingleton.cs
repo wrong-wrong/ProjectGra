@@ -13,7 +13,7 @@ namespace ProjectGra
     {
         public StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
-        public static List<string> IdxToAttributeName;
+        public List<string> IdxToAttributeName;
 
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
@@ -41,12 +41,18 @@ namespace ProjectGra
 
         [Header("Shop UI Manger")]
         [SerializeField] ShopUIManager shopUIManager;
+        //For Weapon Category
+        public Action<int, bool> OnWeaponAddOrDeleteAction;
+
         [Header("Item Found UI Manger")]
         [SerializeField] ItemFoundUIManager itemFoundUIManager;
         [SerializeField] RectTransform itemFoundUIRect;
         [Header("Upgrade UI Manger")]
         [SerializeField] UpgradeUIManager upgradeUIManager;
         [SerializeField] RectTransform upgradeUIRect;
+
+        [Header("Category Manager")]
+        [SerializeField] WeaponCategoryManager weaponCategoryManager;
 
         public void Awake()
         {
@@ -55,22 +61,22 @@ namespace ProjectGra
                 Destroy(gameObject);
                 return;
             }
-            IdxToAttributeName = new List<string>(11);
-            for(int i = 0; i < 11; i++)
-            {
-                IdxToAttributeName.Add("");
-            }
-            IdxToAttributeName[0] = "MaxHealthPoint";
-            IdxToAttributeName[1] = "HealthRegain";
-            IdxToAttributeName[2] = "Armor";
-            IdxToAttributeName[3] = "Speed";
-            IdxToAttributeName[4] = "Range";
-            IdxToAttributeName[5] = "CritHitChance";
-            IdxToAttributeName[6] = "Damage";
-            IdxToAttributeName[7] = "MeleeDamage";
-            IdxToAttributeName[8] = "RangeDamage";
-            IdxToAttributeName[9] = "ElementDamage";
-            IdxToAttributeName[10] = "AttackSpeed";
+            //IdxToAttributeName = new List<string>(11);
+            //for(int i = 0; i < 11; i++)
+            //{
+            //    IdxToAttributeName.Add("");
+            //}
+            //IdxToAttributeName[0] = "MaxHealthPoint";
+            //IdxToAttributeName[1] = "HealthRegain";
+            //IdxToAttributeName[2] = "Armor";
+            //IdxToAttributeName[3] = "Speed";
+            //IdxToAttributeName[4] = "Range";
+            //IdxToAttributeName[5] = "CritHitChance";
+            //IdxToAttributeName[6] = "Damage";
+            //IdxToAttributeName[7] = "MeleeDamage";
+            //IdxToAttributeName[8] = "RangeDamage";
+            //IdxToAttributeName[9] = "ElementDamage";
+            //IdxToAttributeName[10] = "AttackSpeed";
             stringBuilder = new StringBuilder(100);
             Instance = this;
             InGameUICanvasGroup.interactable = false;
@@ -103,7 +109,17 @@ namespace ProjectGra
             ShowInGameUI();
         }
 
+        public int GetCategoryActivatedCount(int categoryIdx)
+        {
+            return weaponCategoryManager.GetCategoryActivatedCount(categoryIdx);
+        }
+
         #region Shop UI
+        public void OnWeaponAddOrDelete(int weaponIdx, bool isAddingWeapon)
+        {
+                    //For Weapon
+            if(weaponIdx != -1)OnWeaponAddOrDeleteAction?.Invoke(weaponIdx,isAddingWeapon);
+        }
         internal void CombineWeaponFromTo(int combineSlotIdx, int calledSlotIdx)
         {
             shopUIManager.CombineWeaponFromTo(combineSlotIdx, calledSlotIdx);

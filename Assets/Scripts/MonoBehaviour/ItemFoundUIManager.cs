@@ -86,7 +86,7 @@ namespace ProjectGra
             {
                 if (currentItem.BonusedValueList[i] > 0)strBuilder.Append("+");
                 strBuilder.Append(currentItem.BonusedValueList[i]);
-                strBuilder.Append(CanvasMonoSingleton.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
+                strBuilder.Append(CanvasMonoSingleton.Instance.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
                 strBuilder.AppendLine();
             }
             InfoText.text = strBuilder.ToString();

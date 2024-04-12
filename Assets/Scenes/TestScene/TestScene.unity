@@ -7685,6 +7685,7 @@ GameObject:
   - component: {fileID: 1387865272}
   - component: {fileID: 1387865277}
   - component: {fileID: 1387865278}
+  - component: {fileID: 1387865279}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -7792,6 +7793,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c4da0b205b242a4b98f1920f1e7c4d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IdxToAttributeName:
+  - MaxHp
+  - HpRegain
+  - Armor
+  - '%Speed'
+  - Range
+  - '%CritHitChance'
+  - '%Damage'
+  - Melee
+  - Ranged
+  - Element
+  - AttackSpeed
   InGameUICanvasGroup: {fileID: 254717367}
   PauseCanvasGroup: {fileID: 1253954828}
   SingleAttributeCanvasGroup: {fileID: 536146281}
@@ -7810,6 +7823,7 @@ MonoBehaviour:
   itemFoundUIRect: {fileID: 551966603}
   upgradeUIManager: {fileID: 446600336}
   upgradeUIRect: {fileID: 446600335}
+  weaponCategoryManager: {fileID: 1387865279}
 --- !u!114 &1387865278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7824,6 +7838,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeValueList: 
   playerMaterialCount: 100
+--- !u!114 &1387865279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387865271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e859406e6925c4a899d8523b18bcba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CategoryCount: 
 --- !u!224 &1421140104 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2620145794186587356, guid: 16c8bdf88474d0a48a01af92b5a929d0,
@@ -11712,6 +11739,10 @@ MonoBehaviour:
   ItemSOList:
   - {fileID: 11400000, guid: eba521a11a85924438c1305ecc5c3b70, type: 2}
   - {fileID: 11400000, guid: 6cb94cfc6fe1e0446961009fbce17c4c, type: 2}
+  WeaponCategorySOList:
+  - {fileID: 11400000, guid: 92b7f6d0aeb6ff44b88f5b2a0eaff909, type: 2}
+  - {fileID: 11400000, guid: dcba41d4750f9ea4ba9166aafe362481, type: 2}
+  - {fileID: 11400000, guid: 881204c3833c8fa439bbb3974377b265, type: 2}
 --- !u!1 &2057173815
 GameObject:
   m_ObjectHideFlags: 0

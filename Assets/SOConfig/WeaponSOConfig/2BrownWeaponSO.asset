@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
   m_Name: 2BrownWeaponSO
   m_EditorClassIdentifier: 
+  IsMeleeWeapon: 0
   WeaponName: Brown
   BasePrice: 2
   color: {r: 0.22352943, g: 0.1137255, b: 0.015686275, a: 1}
@@ -33,3 +34,4 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+  WeaponCategoryList: 00000000

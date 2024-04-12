@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
   m_Name: 5RedExplosiveWeaponSO
   m_EditorClassIdentifier: 
+  IsMeleeWeapon: 0
   WeaponName: Red
   BasePrice: 25
   color: {r: 0.98823535, g: 0.1764706, b: 0.25882354, a: 1}
@@ -33,3 +34,4 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+  WeaponCategoryList: 0000000001000000

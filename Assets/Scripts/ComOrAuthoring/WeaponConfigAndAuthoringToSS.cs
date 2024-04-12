@@ -21,6 +21,7 @@ namespace ProjectGra
                 var wpNameMap = new Dictionary<int, string>();
                 var wpBasePriceMap = new Dictionary<int, int>();
                 var wpColorMap = new Dictionary<int, Color>();
+                var wpCategoryMap = new Dictionary<int, List<int>>();
                 for (int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
                 {
                     var so = authoring.WeaponSOList[i];
@@ -78,19 +79,21 @@ namespace ProjectGra
                     wpColorMap[so.WeaponIndex] = so.color;
                     wpNameMap[so.WeaponIndex] = so.WeaponName;
                     wpBasePriceMap[so.WeaponIndex] = so.BasePrice;
+                    wpCategoryMap[so.WeaponIndex] = so.WeaponCategoryList;
                 }
                 AddComponentObject<WeaponManagedAndMonoOnlyConfigCom>(entity, new WeaponManagedAndMonoOnlyConfigCom
                 {
                     weaponNameMap = wpNameMap,
                     weaponBasePriceMap = wpBasePriceMap,
                     weaponColorInsteadOfIconMap = wpColorMap,
+                    weaponCategoryIdxListMap = wpCategoryMap,
                 });
                 Debug.Log("Weapon Baking");
             }
         }
     }
 
-    public struct WeaponIdxToConfigCom : IComponentData
+    public struct WeaponIdxToWpDataConfigCom : IComponentData
     {
         public NativeHashMap<int, WeaponConfigInfoCom> wpNativeHashMap;
     }
@@ -115,6 +118,8 @@ namespace ProjectGra
         public Dictionary<int, Color> weaponColorInsteadOfIconMap; 
         public Dictionary<int, string> weaponNameMap;
         public Dictionary<int, int> weaponBasePriceMap;
+        public Dictionary<int, List<int>> weaponCategoryIdxListMap;
+        //public Dictionary<int, List<int4>> weaponCategoryBonusListMap;
     }
 
 

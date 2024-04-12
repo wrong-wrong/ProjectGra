@@ -63,8 +63,8 @@ namespace ProjectGra
                         if (!weaponConfigBuffer[i].IsMeleeWeapon)ecb.RemoveComponent<LinkedEntityGroup>(weaponConfigBuffer[i].SpawneePrefab);
                     }
                     
-                    state.EntityManager.AddComponent<WeaponIdxToConfigCom>(superSingleton);
-                    var mpCom = new WeaponIdxToConfigCom { wpNativeHashMap = wpHashMp };
+                    state.EntityManager.AddComponent<WeaponIdxToWpDataConfigCom>(superSingleton);
+                    var mpCom = new WeaponIdxToWpDataConfigCom { wpNativeHashMap = wpHashMp };
                     state.EntityManager.SetComponentData(superSingleton, mpCom);
 
                     //Set config to mono

@@ -13,8 +13,9 @@ namespace ProjectGra
         [SerializeField] Image iconImg;
         public int WeaponLevel; //0 - common, 1 - uncommon, 2 - rare, 3 - legendary
         public int WeaponIdx;
-        public bool IsMeleeWeapon;
         public int CurrentPrice;
+
+        public bool IsMeleeWeapon;
         private Transform iconTransform;
         private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化,其实还是为了防止遮挡
         private ShopUIManager shopUIManager;

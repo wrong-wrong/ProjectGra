@@ -23,6 +23,9 @@ namespace ProjectGra
         [Header("Player Attribute")]
         [SerializeField] List<TextMeshProUGUI> playerAttributeTextList;
 
+
+
+
         private Vector3 tmpShopItemPosition; // for swap;
         private ShopItem tmpShopItem;
         private void Start()
@@ -101,11 +104,19 @@ namespace ProjectGra
 
         public void RecycleWeaponFromSlot(int slotIdx)
         {
+            // Weapon Category Bonus Should change
+            CanvasMonoSingleton.Instance.OnWeaponAddOrDelete(weaponSlotList[slotIdx].WeaponIdx, false);
+            //OnWeaponAddOrDelete?.Invoke(weaponSlotList[slotIdx].WeaponIdx, false);
+
             PlayerDataModel.Instance.AddMaterialValWith(weaponSlotList[slotIdx].CurrentPrice);
             weaponSlotList[slotIdx].InitSlot(-1,false,0);
         }
         public void CombineWeaponFromTo(int combineSlotIdx, int callSlotIdx)
         {
+            // Weapon Category Bonus Should change
+            CanvasMonoSingleton.Instance.OnWeaponAddOrDelete(weaponSlotList[combineSlotIdx].WeaponIdx, false);
+            //OnWeaponAddOrDelete?.Invoke(weaponSlotList[combineSlotIdx].WeaponIdx, false);
+
             weaponSlotList[callSlotIdx].WeaponLevel++;
             weaponSlotList[callSlotIdx].InitSlot();
             weaponSlotList[combineSlotIdx].InitSlot(-1, false, 0);
@@ -150,7 +161,9 @@ namespace ProjectGra
                     weaponSlotList[i].InitSlot(weaponIdx,isMeleeWp, weaponLevel);
                     PlayerDataModel.Instance.AddMaterialValWith(-price);
                     UpdateAllShopItemBuyState();
-                    //UpdateMaterialCount();
+                    // Weapon Category Bonus Should change
+                    //OnWeaponAddOrDelete?.Invoke(weaponIdx, true);
+                    CanvasMonoSingleton.Instance.OnWeaponAddOrDelete(weaponIdx, true);
                     return true;
                 }
                 else if (weaponSlotList[i].WeaponIdx == weaponIdx && weaponSlotList[i].WeaponLevel == weaponLevel)
@@ -241,6 +254,7 @@ namespace ProjectGra
         }
         public void UpdateShopPlayerAttribute()
         {
+            Debug.Log("ShopUIManager - UpdateShopPlayerAttribute");
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             for(int i = 0; i < 11; ++i)
             {
