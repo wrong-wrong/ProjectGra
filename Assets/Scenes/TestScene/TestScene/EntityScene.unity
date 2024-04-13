@@ -792,6 +792,15 @@ MonoBehaviour:
     type: 3}
   ElietSpawnee: {fileID: 6855698195050949098, guid: 51cd11a66adf01a4381494a346b1e858,
     type: 3}
+  EnemySummonerSpeed: 3
+  EnemySummonerAttackCooldown: 3
+  EnemySummonerFloatingRange: 3
+  EnemySummonerFloatingCycleSpeed: 3
+  EnemySummonerChasingSpeed: 5
+  EnemySummonerFleeDistance: 12
+  EnemySummonerChasingDistance: 9
+  EnemySummonerExplodeDistance: 4
+  EnemySummonerSummonDistance: 16
   ScaleToSetInLaterThreeState:
     x: 1
     y: 5
@@ -1012,6 +1021,74 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 704295c3cdfbd064387d459c68c25210, type: 3}
+--- !u!1001 &8095085756926205347
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 903128600913612442, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemySummonerModel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a5368a97aba921419cf8891b22bebf8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1024,3 +1101,4 @@ SceneRoots:
   - {fileID: 592821912}
   - {fileID: 7296339210943075671}
   - {fileID: 1373609433260503925}
+  - {fileID: 8095085756926205347}

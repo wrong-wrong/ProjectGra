@@ -3,7 +3,7 @@ using Unity.Transforms;
 
 namespace ProjectGra
 {
-    public partial struct SpawneeScalingSystem : ISystem
+    public partial struct EntityScalingSystem : ISystem
     {
         //private LocalTransform playerTmpTransform;
         //private bool isValidThisUpdate;
@@ -13,12 +13,12 @@ namespace ProjectGra
             state.RequireForUpdate<GameControllInGame>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
-            state.RequireForUpdate<SpawneeScalingCom>();
+            state.RequireForUpdate<EntityScalingCom>();
         }
         public void OnUpdate(ref SystemState state)
         {
             var deltatime = SystemAPI.Time.DeltaTime;
-            foreach(var (scaling,transform) in SystemAPI.Query<RefRW<SpawneeScalingCom>, RefRW<LocalTransform>>())
+            foreach(var (scaling,transform) in SystemAPI.Query<RefRW<EntityScalingCom>, RefRW<LocalTransform>>())
             {
                 var realtimer = scaling.ValueRW.RealTimer += deltatime;
                 scaling.ValueRW.Ratio = realtimer / scaling.ValueRO.Timer;

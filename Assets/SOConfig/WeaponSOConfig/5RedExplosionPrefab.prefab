@@ -274,6 +274,7 @@ MonoBehaviour:
   Timer: 0.8
   BasicScale: 1
   OffsetScale: 4
+  IsEnable: 1
 --- !u!114 &2591295157298337163
 MonoBehaviour:
   m_ObjectHideFlags: 0

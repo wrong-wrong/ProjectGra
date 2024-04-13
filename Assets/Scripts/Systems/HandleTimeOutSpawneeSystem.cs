@@ -4,7 +4,7 @@ using UnityEngine;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
-    [UpdateAfter(typeof(PlayerAttackSystem))]
+    //[UpdateAfter(typeof(PlayerAttackSystem))]
     public partial struct HandleTimeOutSpawneeSystem : ISystem
     {
         public void OnCreate(ref SystemState state)

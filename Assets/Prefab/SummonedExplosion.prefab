@@ -337,3 +337,4 @@ MonoBehaviour:
   Timer: 4
   BasicScale: 0
   OffsetScale: 3
+  IsEnable: 1

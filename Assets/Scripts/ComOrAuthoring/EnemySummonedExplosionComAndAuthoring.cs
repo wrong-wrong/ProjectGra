@@ -18,10 +18,10 @@ namespace ProjectGra
 
     public struct SummonedExplosionCom : IComponentData
     {
-        public float CurrentSpeed;
+        //public float CurrentSpeed;
         public float3 OriginalPosition;
-        public SummonExplosionState CurrentState;
         public Entity FollowingEntity;
+        public SummonExplosionState CurrentState;
     }
 
     public enum SummonExplosionState

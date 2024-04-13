@@ -53,7 +53,7 @@ namespace ProjectGra
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            foreach (var (summon, scaling, transform, entity) in SystemAPI.Query<RefRW<SummonedExplosionCom>, RefRW<SpawneeScalingCom>, RefRW<LocalTransform>>().WithEntityAccess())
+            foreach (var (summon, scaling, transform, entity) in SystemAPI.Query<RefRW<SummonedExplosionCom>, RefRW<EntityScalingCom>, RefRW<LocalTransform>>().WithEntityAccess())
             {
                 switch (summon.ValueRO.CurrentState)
                 {
@@ -71,7 +71,7 @@ namespace ProjectGra
                             scaling.ValueRW.Timer = TimerToSetInLaterThreeState[0];
                             scaling.ValueRW.RealTimer = 0f;
                         }
-                        else
+                        else if(state.EntityManager.Exists(summon.ValueRO.FollowingEntity))
                         {
                             var tarTransform = SystemAPI.GetComponent<LocalTransform>(summon.ValueRO.FollowingEntity);
                             tarTransform.Position.y += 2.5f;

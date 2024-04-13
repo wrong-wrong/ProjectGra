@@ -7,7 +7,7 @@ using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
-    [UpdateBefore(typeof(EnemySummonedExplosionSystem))]
+    //[UpdateBefore(typeof(EnemySummonedExplosionSystem))]
     public partial struct EnemyEliteShooterSystem : ISystem, ISystemStartStop
     {
         private float4 spawneePosOffsetX;
@@ -71,7 +71,7 @@ namespace ProjectGra
                 eliteCom.ValueRW.previousHp = hp.HealthPoint;
                 if (!IsResetSpawneePrefab)
                 {
-                    state.EntityManager.SetComponentData(eliteSpawneePrefab, new SpawneeScalingCom { BasicScale = 1f, OffsetScale = 4f, Timer = 1f });
+                    state.EntityManager.SetComponentData(eliteSpawneePrefab, new EntityScalingCom { BasicScale = 1f, OffsetScale = 4f, Timer = 1f });
                     state.EntityManager.SetComponentData(eliteSpawneePrefab, new AttackCurDamage { damage = 15 });
                     IsResetSpawneePrefab = true;
 
@@ -133,7 +133,7 @@ namespace ProjectGra
                 if(eliteCom.ValueRO.previousHp > 500f)
                 {
                     //set spawnee
-                    state.EntityManager.SetComponentData(eliteSpawneePrefab, new SpawneeScalingCom { BasicScale = 1f, OffsetScale = -0.5f, Timer = 1f });
+                    state.EntityManager.SetComponentData(eliteSpawneePrefab, new EntityScalingCom { BasicScale = 1f, OffsetScale = -0.5f, Timer = 1f });
                     state.EntityManager.SetComponentData(eliteSpawneePrefab, new AttackCurDamage { damage = 5 });
                     IsResetSpawneePrefab = false;
                     eliteCom.ValueRW.previousHp = 213;

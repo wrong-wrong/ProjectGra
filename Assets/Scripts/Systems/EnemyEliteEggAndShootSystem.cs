@@ -87,7 +87,6 @@ namespace ProjectGra
 
                 //move logic
                 eliteTransformRW.ValueRW.Position += eliteCom.ValueRO.TargetDirNormalized * deltatime * eliteCom.ValueRO.Speed;
-                eliteTransformRW.ValueRW.Rotation = quaternion.LookRotation(eliteCom.ValueRO.TargetDirNormalized, math.up());
                 //whether to get a new moving target 
                 if ((eliteCom.ValueRW.MovingRandomIntervalTimer -= deltatime) < 0f)
                 {
@@ -97,6 +96,7 @@ namespace ProjectGra
                     var distance = math.distance(playerTransform.Position, eliteTransformRW.ValueRO.Position);
                     eliteCom.ValueRW.TargetDirNormalized = math.normalize(tardir);
                     eliteCom.ValueRW.MovingRandomIntervalTimer = distance / eliteCom.ValueRO.Speed + random.NextFloat(1f, 3f);
+                    eliteTransformRW.ValueRW.Rotation = quaternion.LookRotation(eliteCom.ValueRO.TargetDirNormalized, math.up());
                 }
 
                 //whether to do skill

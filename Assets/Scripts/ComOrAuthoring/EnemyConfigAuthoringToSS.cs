@@ -34,12 +34,10 @@ namespace ProjectGra
         public float NormalRangedAttackCooldown;
         public float NormalRangedDeathCountdown;
         public float NormalRangedLootChance;
-
         public float NormalRangedAttackDistance;
         public float NormalRangedFleeDistance;
         public float NormalRangedFleeSpeed;
-
-        public GameObject NormalSpawneePrefab;
+        //public GameObject NormalSpawneePrefab;
         public float SpawneeSpeed;
         public float SpawneeTimer;
         [Header("EnemyEggConfig")]
@@ -47,6 +45,17 @@ namespace ProjectGra
         [Header("EliteShooterConfig")]
         public GameObject ElietSpawnee;
 
+        [Header("EnemySummonerConfig")]
+        //public float EnemySummonerDeathCountdown;
+        public float EnemySummonerSpeed;
+        public float EnemySummonerAttackCooldown;
+        public float EnemySummonerFloatingRange;
+        public float EnemySummonerFloatingCycleSpeed;
+        public float EnemySummonerChasingSpeed;
+        public float EnemySummonerFleeDistance;
+        public float EnemySummonerChasingDistance;
+        public float EnemySummonerExplodeDistance;
+        public float EnemySummonerSummonDistance;
         [Header("Summoned Explosion System Config")]
 
         //scaling to set in every state,  basic scale should be previous scale,
@@ -98,7 +107,7 @@ namespace ProjectGra
                     FleeDistance = authoring.NormalRangedFleeDistance,
                     FleeSpeed = authoring.NormalRangedFleeSpeed,
 
-                    SpawneePrefab = GetEntity(authoring.NormalSpawneePrefab, TransformUsageFlags.Dynamic),
+                    //SpawneePrefab = GetEntity(authoring.NormalSpawneePrefab, TransformUsageFlags.Dynamic),
                     SpawneeSpeed = authoring.SpawneeSpeed,
                     SpawneeTimer = authoring.SpawneeTimer,
                 });
@@ -115,6 +124,20 @@ namespace ProjectGra
                 {
                     ScaleToSetInLaterThreeState = authoring.ScaleToSetInLaterThreeState,
                     TimerToSetInLaterThreeState = authoring.TimerToSetInLaterThreeState,
+                });
+
+                // For summoner
+                AddComponent(entity, new EnemySummonerConfigCom
+                {
+                    EnemySummonerAttackCooldown = authoring.EnemySummonerAttackCooldown,
+                    EnemySummonerChasingDistance = authoring.EnemySummonerChasingDistance,
+                    EnemySummonerFleeDistance = authoring.EnemySummonerFleeDistance,
+                    EnemySummonerSummonDistance = authoring.EnemySummonerSummonDistance,
+                    EnemySummonerChasingSpeed = authoring.EnemySummonerChasingSpeed,
+                    EnemySummonerFloatingCycleSpeed = authoring.EnemySummonerFloatingCycleSpeed,
+                    EnemySummonerFloatingRange = authoring.EnemySummonerFloatingRange,
+                    EnemySummonerSpeed = authoring.EnemySummonerSpeed,
+                    EnemySummonerExplodeDistance = authoring.EnemySummonerExplodeDistance,
                 });
             }
         }
@@ -139,7 +162,7 @@ namespace ProjectGra
         public float FleeDistance;
         public float FleeSpeed;
 
-        public Entity SpawneePrefab;
+        //public Entity SpawneePrefab;
         public float SpawneeSpeed;
         public float SpawneeTimer;
 
@@ -157,6 +180,19 @@ namespace ProjectGra
         public float AttackDistance;
         public float SprintSpeed;
         public float HitDistance;
+    }
+
+    public struct EnemySummonerConfigCom : IComponentData
+    {
+        public float EnemySummonerSpeed;
+        public float EnemySummonerAttackCooldown;
+        public float EnemySummonerFloatingRange;
+        public float EnemySummonerFloatingCycleSpeed;
+        public float EnemySummonerChasingSpeed;
+        public float EnemySummonerFleeDistance;
+        public float EnemySummonerChasingDistance;
+        public float EnemySummonerExplodeDistance;
+        public float EnemySummonerSummonDistance;
     }
 
     public struct NormalMeleeConfigCom : IComponentData
