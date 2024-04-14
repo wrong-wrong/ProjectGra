@@ -25,6 +25,8 @@ namespace ProjectGra
         Explode,
 
         // Elite
-        DoingSkill
+        DoingSkill,
+        StageOne,
+        StageTwo,
     }
 }

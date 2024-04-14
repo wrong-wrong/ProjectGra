@@ -241,6 +241,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e61141f9f5b3b74bb75d235f24b81fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 3
+  stateOneInSkillShootingInterval: 1
+  spawnEggSkillSpawningInterval: 0.5
+  stageOneSkillShootCount: 4
+  spawnEggSkillspawnCount: 12
 --- !u!114 &8282559911092308827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,4 +259,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthPoint: 1000
-  EntityState: 0
+  EntityState: 12

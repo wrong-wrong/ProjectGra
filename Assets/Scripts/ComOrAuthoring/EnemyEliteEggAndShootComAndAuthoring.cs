@@ -17,36 +17,21 @@ namespace ProjectGra
             public override void Bake(EnemyEliteEggAndShootComAndAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent(entity, new EnemyEliteEggAndShootCom
-                {
-                    Speed = authoring.Speed
-                ,
-                    stageOneSkillShootCount = authoring.stageOneSkillShootCount
-                ,
-                    spawnEggSkillspawnCount = authoring.spawnEggSkillspawnCount
-                ,
-                    stateOneInSkillShootingInterval = authoring.stateOneInSkillShootingInterval
-                ,
-                    spawnEggSkillSpawningInterval = authoring.spawnEggSkillSpawningInterval
-                });
+                AddComponent(entity, new EnemyEliteEggAndShootCom{});
                 AddBuffer<EnemyEliteFlyingEggBuffer>(entity);
             }
         }
     }
     public struct EnemyEliteEggAndShootCom : IComponentData
     {
-        public float Speed;
-        public float3 TargetDirNormalized;
-        public float MovingTimer;
-        public float MovingRandomIntervalTimer;
-        public float SkillShootRandomIntervalTimer;
-
-        public float previousHp;
-        public float stateOneInSkillShootingInterval;
-        public float spawnEggSkillSpawningInterval;
-
-        public int stageOneSkillShootCount;
-        public int spawnEggSkillspawnCount;
+        //public float Speed;
+        public float3 TargetDirNormalizedMulSpeed;
+        public float MovingRandomIntervalCooldown;
+        public float SkillCooldownRealTimer;
+        public float InSkillIntervalRealTimer;
+        public int SkillCountLeft;
+        public int CurrentSpawnPosIdx;
+        public bool IsDoingSkill;
     }
     [InternalBufferCapacity(0)]
     public struct EnemyEliteFlyingEggBuffer : IBufferElementData

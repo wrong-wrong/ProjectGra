@@ -767,6 +767,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b2d4aeac3e59a4f915fd7c4def009a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EliteEggAndShootSpeed: 3
+  EliteEggAndShootStageOneInSkillShootingInterval: 1
+  EliteEggAndShootSpawnEggSkillSpawningInterval: 0.5
+  EliteEggAndShootStageOneSkillShootCount: 4
+  EliteEggAndShootSpawnEggSkillspawnCount: 7
   NormalMeleePrefab: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
     type: 3}
   NormalMeleeAttackVal: 10
@@ -868,6 +873,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EliteSprintAndShootModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 516433283474445698, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
         type: 3}
@@ -1006,36 +1016,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EliteEggAndShootModel
-      objectReference: {fileID: 0}
-    - target: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: Speed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: spawnEggSkillspawnCount
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: stageOneSkillShootCount
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: spawnEggSkillSpawningInterval
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: stateOneInSkillShootingInterval
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -242,6 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthPoint: 60
+  EntityState: 1
 --- !u!114 &1048006675933654597
 MonoBehaviour:
   m_ObjectHideFlags: 0

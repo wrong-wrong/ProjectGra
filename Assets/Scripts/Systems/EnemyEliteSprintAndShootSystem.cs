@@ -33,10 +33,10 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<EnemyEliteSprintAndShootCom>();
             random = Random.CreateFromIndex(0);
-            unsafe
-            {
-                Debug.Log(sizeof(quaternion));
-            }
+            //unsafe
+            //{
+            //    Debug.Log(sizeof(quaternion));
+            //}
         }
         public void OnStartRunning(ref SystemState state)
         {

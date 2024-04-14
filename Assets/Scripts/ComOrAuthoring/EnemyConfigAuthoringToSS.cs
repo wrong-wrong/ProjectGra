@@ -6,6 +6,13 @@ namespace ProjectGra
 {
     public class EnemyConfigAuthoringToSS : MonoBehaviour
     {
+        [Header("EliteEggAndShootConfig")]
+        public float EliteEggAndShootSpeed;
+        public float EliteEggAndShootStageOneInSkillShootingInterval;
+        public float EliteEggAndShootSpawnEggSkillSpawningInterval;
+        public int EliteEggAndShootStageOneSkillShootCount;
+        public int EliteEggAndShootSpawnEggSkillspawnCount;
+
         [Header("NormalMeleeConfig")]
         public GameObject NormalMeleePrefab;
         public int NormalMeleeAttackVal;
@@ -169,8 +176,26 @@ namespace ProjectGra
                     EliteSprintAndShootSprintDamage = authoring.EliteSprintAndShootSprintDamage,
 
                 });
+
+                // For EliteEggAndShoot
+                AddComponent(entity, new EliteEggAndShootConfig
+                {
+                    SpawnEggSkillspawnCount = authoring.EliteEggAndShootSpawnEggSkillspawnCount,
+                    SpawnEggSkillSpawningInterval = authoring.EliteEggAndShootSpawnEggSkillSpawningInterval,
+                    Speed = authoring.EliteEggAndShootSpeed,
+                    StageOneInSkillShootingInterval = authoring.EliteEggAndShootStageOneInSkillShootingInterval,
+                    StageOneSkillShootCount = authoring.EliteEggAndShootStageOneSkillShootCount
+                });
             }
         }
+    }
+    public struct EliteEggAndShootConfig : IComponentData
+    {
+        public float Speed;
+        public float StageOneInSkillShootingInterval;
+        public float SpawnEggSkillSpawningInterval;
+        public int StageOneSkillShootCount;
+        public int SpawnEggSkillspawnCount;
     }
     [InternalBufferCapacity(0)]
     public struct AllEnemyPrefabBuffer : IBufferElementData

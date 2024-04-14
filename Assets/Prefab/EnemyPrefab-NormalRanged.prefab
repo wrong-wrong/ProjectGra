@@ -339,3 +339,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthPoint: 30
+  EntityState: 1
