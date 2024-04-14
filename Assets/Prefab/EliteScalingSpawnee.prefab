@@ -312,3 +312,4 @@ MonoBehaviour:
   SpawneeTimer: 8
   IsMovedBySpawneeMove: 1
   IsControlledBySpawneeTimer: 1
+  BasicDamage: 12

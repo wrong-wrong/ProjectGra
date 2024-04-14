@@ -6,6 +6,15 @@ namespace ProjectGra
 {
     public class EnemyConfigAuthoringToSS : MonoBehaviour
     {
+        [Header("EliteShooterConfig")]
+        public float EliteShooterStageOneSpeed;
+        public float EliteShooterStageTwoSpeed;
+        public float EliteShooterStageOneInSkillShootingInterval;
+        public float EliteShooterStageTwoInSkillShootingInterval;
+        public int EliteShooterStageOneSkillShootCount;
+        public int EliteShooterStageTwoSkillShootCount;
+        //public GameObject ElietShooterScalingSpawnee;
+
         [Header("EliteEggAndShootConfig")]
         public float EliteEggAndShootSpeed;
         public float EliteEggAndShootStageOneInSkillShootingInterval;
@@ -49,8 +58,6 @@ namespace ProjectGra
         public float SpawneeTimer;
         [Header("EnemyEggConfig")]
         public GameObject EggPrefab;
-        [Header("EliteShooterConfig")]
-        public GameObject ElietSpawnee;
 
         [Header("EnemySummonerConfig")]
         //public float EnemySummonerDeathCountdown;
@@ -135,8 +142,6 @@ namespace ProjectGra
                 //because no data need to set to the EggSystem, there is no need to creat a component
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
 
-                // For Elite Sprint and Bullet
-                AddComponent(entity, new EliteShooterConfigCom { EliteSpawnee = GetEntity(authoring.ElietSpawnee, TransformUsageFlags.Dynamic) });
                 Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
 
                 // For summoned explosion
@@ -185,6 +190,18 @@ namespace ProjectGra
                     Speed = authoring.EliteEggAndShootSpeed,
                     StageOneInSkillShootingInterval = authoring.EliteEggAndShootStageOneInSkillShootingInterval,
                     StageOneSkillShootCount = authoring.EliteEggAndShootStageOneSkillShootCount
+                });
+
+                // For EliteShooter
+                AddComponent(entity, new EliteShooterConfigCom
+                {
+                    //EliteSpawnee = GetEntity(authoring.get)
+                    StageOneSpeed = authoring.EliteShooterStageOneSpeed,
+                    StageTwoSpeed = authoring.EliteShooterStageTwoSpeed,
+                    StageOneInSkillShootingInterval = authoring.EliteShooterStageOneInSkillShootingInterval,
+                    StageOneSkillShootCount = authoring.EliteEggAndShootStageOneSkillShootCount,
+                    StageTwoInSkillShootingInterval = authoring.EliteShooterStageTwoInSkillShootingInterval,
+                    StageTwoSkillShootCount = authoring.EliteShooterStageTwoSkillShootCount,
                 });
             }
         }
@@ -266,7 +283,13 @@ namespace ProjectGra
 
     public struct EliteShooterConfigCom : IComponentData
     {
-        public Entity EliteSpawnee;
+        //public Entity EliteSpawnee;
+        public float StageOneSpeed;
+        public float StageTwoSpeed;
+        public float StageOneInSkillShootingInterval;
+        public float StageTwoInSkillShootingInterval;
+        public int StageOneSkillShootCount;
+        public int StageTwoSkillShootCount;
     }
 
     public struct SummonedExplosionSystemConfigCom : IComponentData

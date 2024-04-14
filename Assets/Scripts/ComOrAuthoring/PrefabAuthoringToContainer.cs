@@ -9,6 +9,7 @@ namespace ProjectGra
         public GameObject ItemPrefab;
         public GameObject SummonExplosionPrefab;
         public GameObject NormalEnemySpawneePrefab;
+        public GameObject ScalingSpawneePrefab;
         public class Baker : Baker<PrefabAuthoringToContainer>
         {
             public override void Bake(PrefabAuthoringToContainer authoring)
@@ -20,6 +21,7 @@ namespace ProjectGra
                     ItemPrefab = GetEntity(authoring.ItemPrefab, TransformUsageFlags.Renderable),
                     SummonExplosionPrefab = GetEntity(authoring.SummonExplosionPrefab, TransformUsageFlags.Dynamic),
                     NormalEnemySpawneePrefab = GetEntity(authoring.NormalEnemySpawneePrefab, TransformUsageFlags.Dynamic),
+                    ScalingSpawneePrefab = GetEntity(authoring.ScalingSpawneePrefab, TransformUsageFlags.Dynamic)
                 });
             }
         }
@@ -30,5 +32,6 @@ namespace ProjectGra
         public Entity ItemPrefab;
         public Entity SummonExplosionPrefab;
         public Entity NormalEnemySpawneePrefab;
+        public Entity ScalingSpawneePrefab;
     }
 }
