@@ -308,6 +308,18 @@ MonoBehaviour:
     type: 3}
   ScalingSpawneePrefab: {fileID: 6855698195050949098, guid: 51cd11a66adf01a4381494a346b1e858,
     type: 3}
+  EnemyEggMesh: {fileID: 4300000, guid: 66755b5184028fe42a3c26f5f81f584a, type: 2}
+  EnemyEliteEggAndShootMesh: {fileID: 4300000, guid: 2bf4702b8e1cc9141b4a50e74f5d558f,
+    type: 2}
+  EnemyEliteShootMesh: {fileID: 4300000, guid: 6bfc74374bf6a5f449d91e726fe2f1d8, type: 2}
+  EnemyEliteSprintAndShootMesh: {fileID: 4300000, guid: 4c4043a138db5cc449ba69899ddece23,
+    type: 2}
+  EnemyNormalMeleeMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  EnemyNormalRangedMesh: {fileID: 4300000, guid: 2d3284a0f6714614eb4ab2a658ca91c5,
+    type: 2}
+  EnemyNormalSprintMesh: {fileID: 4300000, guid: 72909d938aebdcf4e9c7034e8ef3e96b,
+    type: 2}
+  EnemySummonerMesh: {fileID: 4300000, guid: c0bb55a433fb676448bb7cd760e3b479, type: 2}
 --- !u!4 &695474579
 Transform:
   m_ObjectHideFlags: 0
@@ -754,7 +766,7 @@ MonoBehaviour:
   DamagePercentage: 0
   CriticalHitChance: 0
   Range: 0
-  SpawningCooldown: 20
+  SpawningCooldown: 1
   minRadius: 6
   maxRadius: 13
 --- !u!114 &1829473141
@@ -1095,6 +1107,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EliteShooterModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

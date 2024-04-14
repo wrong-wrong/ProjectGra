@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5522383359257495687}
   - component: {fileID: 8497083611644056969}
   - component: {fileID: 1048006675933654597}
+  - component: {fileID: 735025690589423971}
   m_Layer: 0
   m_Name: EnemyPrefab-NormalMelee
   m_TagString: Untagged
@@ -43,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7888725254493739217}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: 6c8c69b8491dd8d4187d7d6c9df8c0ac, type: 2}
 --- !u!23 &2799897256447030783
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -152,7 +153,7 @@ MonoBehaviour:
         Category00: 0
         Category01: 0
         Category02: 0
-        Category03: 1
+        Category03: 0
         Category04: 0
         Category05: 0
         Category06: 0
@@ -185,11 +186,11 @@ MonoBehaviour:
       m_Override: 0
       m_Value:
         Category00: 0
-        Category01: 1
+        Category01: 0
         Category02: 0
         Category03: 0
         Category04: 0
-        Category05: 1
+        Category05: 0
         Category06: 0
         Category07: 0
         Category08: 0
@@ -242,7 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HealthPoint: 60
-  EntityState: 1
+  EntityState: 0
 --- !u!114 &1048006675933654597
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,3 +258,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MeleeAttackCooldown: 1
   deathTimer: 1
+--- !u!114 &735025690589423971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7888725254493739217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b1ddeb0b92012344bcf837d56ea29c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Duration: 1
+  CycleTime: 0.5

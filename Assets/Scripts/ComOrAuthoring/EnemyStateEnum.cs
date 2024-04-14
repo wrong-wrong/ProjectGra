@@ -2,6 +2,7 @@ namespace ProjectGra
 {
     public enum EntityState
     {
+        SpawnEffect,
         Init,
         Follow,
         Dead,

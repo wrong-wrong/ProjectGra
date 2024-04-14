@@ -1,13 +1,18 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemyNormalRangedSystem : ISystem, ISystemStartStop
     {
+        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
+        private BatchMeshID RealMeshId;
         float followSpeed;
         float attackDistanceSq;
         float attackCooldown;
@@ -30,7 +35,11 @@ namespace ProjectGra
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             random = Random.CreateFromIndex(0);
-
+            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
+            {
+                BelongsTo = 1 << 3, // enemy layer
+                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
+            };
         }
 
         public void OnStartRunning(ref SystemState state) 
@@ -50,6 +59,8 @@ namespace ProjectGra
             var container = SystemAPI.GetSingleton<PrefabContainerCom>();
             MaterialPrefab = container.MaterialPrefab;
             ItemPrefab = container.ItemPrefab;
+            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+            RealMeshId = batchMeshIDContainer.EnemyNormalRangedMeshID;
 
         }
         public void OnStopRunning(ref SystemState state) { }
@@ -61,62 +72,71 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-
+            foreach (var (flashbit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<EnabledRefRO<FlashingCom>
+                , RefRW<MaterialMeshInfo>
+                , RefRW<PhysicsCollider>
+                , RefRW<EntityStateMachine>>()
+                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState)
+                .WithAll<NormalRangedAttack>())
+            {
+                if (flashbit.ValueRO) continue;
+                materialAndMesh.ValueRW.MeshID = RealMeshId;
+                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                stateMachine.ValueRW.CurrentState = EntityState.Follow;
+            }
             foreach (var(localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>>()
                 .WithEntityAccess())
             {
-                var curstate = stateMachine.ValueRO.CurrentState;
                 var tarDir = playerLocalTransform.Position - localTransform.ValueRO.Position;
                 var disSq = math.csum(tarDir * tarDir);
                 if(disSq == 0)
                 {
                     continue;
                 }
-                if (curstate == EntityState.Follow)
+                switch (stateMachine.ValueRO.CurrentState)
                 {
-                    localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
-                    localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
-                    if(disSq < attackDistanceSq)
-                    {
-                        stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
-                    }
-                }else if(curstate == EntityState.RangedAttack)
-                {
-                    if (disSq < fleeDistanceSq)
-                    {
-                        stateMachine.ValueRW.CurrentState = EntityState.Flee;
-                    }
-                    else if (disSq > attackDistanceSq)
-                    {
-                        stateMachine.ValueRW.CurrentState = EntityState.Follow;
-                    }
-                    if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
-                    {
-
+                    case EntityState.Follow:
+                        localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
                         localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
-                        attack.ValueRW.AttackCooldown = attackCooldown;
-                        var spawnee = ecb.Instantiate(spawneePrefab);
-                        ecb.SetComponent(spawnee, localTransform.ValueRO);
-                    }
+                        if (disSq < attackDistanceSq)
+                        {
+                            stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
+                        }
+                        break;
+                    case EntityState.Flee:
+                        localTransform.ValueRW.Position -= math.normalize(tarDir) * fleeSpeed * deltatime;
+                        if (disSq > fleeDistanceSq * 1.6)
+                        {
+                            stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
+                        }
+                        break;
+                    case EntityState.RangedAttack:
+                        if (disSq < fleeDistanceSq)
+                        {
+                            stateMachine.ValueRW.CurrentState = EntityState.Flee;
+                        }
+                        else if (disSq > attackDistanceSq)
+                        {
+                            stateMachine.ValueRW.CurrentState = EntityState.Follow;
+                        }
+                        if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
+                        {
 
-                }
-                else if(curstate == EntityState.Flee)
-                {
-                    localTransform.ValueRW.Position -= math.normalize(tarDir) * fleeSpeed * deltatime;
-                    if(disSq > fleeDistanceSq * 1.6)
-                    {
-                        stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
-                    }
-                }
-                else if(curstate == EntityState.Dead)
-                {
-                    if (random.NextFloat() < lootChance)
-                    {
-                        var material = ecb.Instantiate(MaterialPrefab);
-                        ecb.SetComponent<LocalTransform>(material
-                            , localTransform.ValueRO);
-                    }
-                    ecb.DestroyEntity(entity);
+                            localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                            attack.ValueRW.AttackCooldown = attackCooldown;
+                            var spawnee = ecb.Instantiate(spawneePrefab);
+                            ecb.SetComponent(spawnee, localTransform.ValueRO);
+                        }
+                        break;
+                    case EntityState.Dead:
+                        if (random.NextFloat() < lootChance)
+                        {
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent<LocalTransform>(material
+                                , localTransform.ValueRO);
+                        }
+                        ecb.DestroyEntity(entity);
+                        break;
                 }
             }
 

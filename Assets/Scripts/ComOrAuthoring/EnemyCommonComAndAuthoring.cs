@@ -1,4 +1,6 @@
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Rendering;
 using UnityEngine;
 
 namespace ProjectGra
@@ -17,6 +19,7 @@ namespace ProjectGra
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = authoring.HealthPoint });
                 AddComponent(entity, new EntityStateMachine { CurrentState = authoring.EntityState});
                 AddComponent<EnemyTag>(entity);
+                AddComponent(entity, new URPMaterialPropertyBaseColor { Value = new float4(1, 1, 1, 1) });
                 AddComponent(entity, new EntityKnockBackCom { Timer = 0.5f});
                 SetComponentEnabled<EntityKnockBackCom>(entity, false); 
             }

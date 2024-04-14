@@ -1,7 +1,10 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
@@ -24,6 +27,8 @@ namespace ProjectGra
         private float2 postiveOne;
         private float3 offsetMin;
         private float3 offsetMax;
+        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
+        private BatchMeshID RealMeshId;
 
         public void OnCreate(ref SystemState state)
         {
@@ -38,6 +43,11 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
+            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
+            {
+                BelongsTo = 1 << 3, // enemy layer
+                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
+            };
         }
 
         public void OnStartRunning(ref SystemState state)
@@ -54,6 +64,8 @@ namespace ProjectGra
             SpawnEggSkillSpawnCount = config.SpawnEggSkillspawnCount;
             StageOneSkillShootCount = config.StageOneSkillShootCount;
             SpawnEggSkillSpawningInterval = config.SpawnEggSkillSpawningInterval;
+            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+            RealMeshId = batchMeshIDContainer.EnemyEliteEggAndShootMeshID;
         }
 
         public void OnStopRunning(ref SystemState state)
@@ -67,10 +79,23 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            foreach(var(flashbit, materialAndMesh, collider, stateMachine) in SystemAPI.Query <EnabledRefRO<FlashingCom>
+                , RefRW<MaterialMeshInfo>
+                , RefRW<PhysicsCollider>
+                , RefRW<EntityStateMachine>>()
+                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState)
+                .WithAll<EnemyEliteEggAndShootCom>())
+            {
+                if (flashbit.ValueRO) continue;
+                materialAndMesh.ValueRW.MeshID = RealMeshId;
+                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                stateMachine.ValueRW.CurrentState = EntityState.StageOne;
+            }
             foreach (var (eliteCom, transform, stateMachine, hp, buffer,entity) in SystemAPI.Query<RefRW<EnemyEliteEggAndShootCom>, RefRW<LocalTransform>, RefRW<EntityStateMachine>
                 ,RefRO<EntityHealthPoint>
                 ,DynamicBuffer<EnemyEliteFlyingEggBuffer>>()
-                .WithEntityAccess())
+                .WithEntityAccess()
+                .WithNone<FlashingCom>())
             {
                 var tardir = playerTransform.Position - transform.ValueRO.Position;
                 switch (stateMachine.ValueRO.CurrentState)

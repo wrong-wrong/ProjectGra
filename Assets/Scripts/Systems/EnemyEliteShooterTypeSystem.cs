@@ -1,7 +1,9 @@
-using System.Runtime.CompilerServices;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Rendering;
 using Unity.Transforms;
+using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
@@ -9,6 +11,8 @@ namespace ProjectGra
     //[UpdateBefore(typeof(EnemySummonedExplosionSystem))]
     public partial struct EnemyEliteShooterSystem : ISystem, ISystemStartStop
     {
+        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
+        private BatchMeshID RealMeshId;
         private float4 spawneePosOffsetX;
         private float4 spawneePosOffsetY;
         public float StageOneSpeed;
@@ -42,6 +46,11 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
+            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
+            {
+                BelongsTo = 1 << 3, // enemy layer
+                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
+            };
         }
 
         public void OnStartRunning(ref SystemState state)
@@ -57,6 +66,8 @@ namespace ProjectGra
             var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
             eliteScalingSpawneePrefab = prefabContainer.ScalingSpawneePrefab;
             random = Random.CreateFromIndex(0);
+            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+            RealMeshId = batchMeshIDContainer.EnemyEliteShootMeshID;
 
         }
 
@@ -68,136 +79,22 @@ namespace ProjectGra
         public void OnUpdate(ref SystemState state)
         {
 
-
-            //if (hp.HealthPoint > 500f)
-            //{
-            //    //state related code
-            //    eliteCom.ValueRW.previousHp = hp.HealthPoint;
-            //    if (!IsResetSpawneePrefab)
-            //    {
-            //        state.EntityManager.SetComponentData(eliteScalingSpawneePrefab, new EntityScalingCom { BasicScale = 1f, OffsetScale = 4f, Timer = 1f });
-            //        state.EntityManager.SetComponentData(eliteScalingSpawneePrefab, new AttackCurDamage { damage = 15 });
-            //        IsResetSpawneePrefab = true;
-
-            //    }
-
-            //    //move logic
-            //    eliteTransformRW.ValueRW.Position += eliteCom.ValueRO.TargetDirNormalized * deltatime * eliteCom.ValueRO.Speed;
-
-            //    //whether to get a new moving target 
-            //    if ((eliteCom.ValueRW.MovingRandomIntervalTimer -= deltatime) < 0f)
-            //    {
-
-            //        var tardir = playerTransform.Position - eliteTransformRW.ValueRO.Position;
-            //        tardir.xz += random.NextFloat2(negtiveOne, postiveOne) * 5;
-            //        var distance = math.distance(playerTransform.Position, eliteTransformRW.ValueRO.Position);
-            //        eliteCom.ValueRW.TargetDirNormalized = math.normalize(tardir);
-            //        eliteCom.ValueRW.MovingRandomIntervalTimer = distance / eliteCom.ValueRO.Speed + random.NextFloat(1f, 3f);
-            //    }
-
-            //    //whether to do skill
-            //    if ((eliteCom.ValueRW.SkillShootRandomIntervalTimer -= deltatime) < 0f)
-            //    {
-            //        //var deltatime = SystemAPI.Time.DeltaTime;
-            //        isDoingSkill = true;
-            //    }
-
-            //    // update skill logic if isDoingSkill is true at this frame
-            //    if (isDoingSkill)
-            //    {
-            //        if ((spawnTimer -= deltatime) < 0f)
-            //        {
-            //            spawnTimer = eliteCom.ValueRO.stateOneInSkillShootingInterval;
-            //            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-            //            var spawnee = ecb.Instantiate(eliteScalingSpawneePrefab);
-            //            //var elite = SystemAPI.GetSingletonEntity<EnemyEliteShooterCom>();
-            //            //var eliteTransform = SystemAPI.GetComponent<LocalTransform>(elite);
-            //            var spawnPos = eliteTransformRW.ValueRO.Position + eliteTransformRW.ValueRO.Up() * spawneePosOffsetY[CurrentSpawnPosIdx] + eliteTransformRW.ValueRO.Forward() * spawneePosOffsetX[CurrentSpawnPosIdx];
-            //            var tarDir = playerTransform.Position - spawnPos;
-            //            tarDir.y += 1f;
-            //            //tarDir += random.NextFloat3(offsetMin, offsetMax);
-            //            ecb.SetComponent(spawnee, new LocalTransform { Position = spawnPos, Scale = 1f, Rotation = quaternion.LookRotation(tarDir, math.up()) });
-            //            CurrentSpawnPosIdx = (CurrentSpawnPosIdx + 1) % 4;
-            //            if (++spawneeShootOutCount > eliteCom.ValueRO.stageOneSkillShootCount)
-            //            {
-            //                spawneeShootOutCount = 0;
-            //                CurrentSpawnPosIdx = 0;
-            //                isDoingSkill = false;
-            //                spawnTimer = 0f;
-            //                eliteCom.ValueRW.SkillShootRandomIntervalTimer = eliteCom.ValueRO.stateOneInSkillShootingInterval * eliteCom.ValueRO.stageOneSkillShootCount + random.NextFloat(2f, 3f);
-            //            }
-            //        }
-            //    }
-
-
-            //}
-            //else
-            //{
-            //    //state related code
-            //    if (eliteCom.ValueRO.previousHp > 500f)
-            //    {
-            //        //set spawnee
-            //        state.EntityManager.SetComponentData(eliteScalingSpawneePrefab, new EntityScalingCom { BasicScale = 1f, OffsetScale = -0.5f, Timer = 1f });
-            //        state.EntityManager.SetComponentData(eliteScalingSpawneePrefab, new AttackCurDamage { damage = 5 });
-            //        IsResetSpawneePrefab = false;
-            //        eliteCom.ValueRW.previousHp = 213;
-            //        eliteCom.ValueRW.SkillShootRandomIntervalTimer = 0f;
-            //    }
-
-            //    // moving logic
-            //    var tarDir = playerTransform.Position - eliteTransformRW.ValueRO.Position;
-            //    var disSq = math.csum(tarDir * tarDir);
-            //    if (disSq > 4f)
-            //    {
-            //        eliteTransformRW.ValueRW.Position += eliteCom.ValueRO.Speed * math.normalize(tarDir) * deltatime;
-            //        eliteTransformRW.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
-            //    }
-
-            //    // whether to 
-            //    if ((eliteCom.ValueRW.SkillShootRandomIntervalTimer -= deltatime) < 0f)
-            //    {
-            //        isDoingSkill = true;
-            //    }
-
-            //    // update skill logic if isDoingSkill
-            //    if (isDoingSkill)
-            //    {
-            //        if ((spawnTimer -= deltatime) < 0f)
-            //        {
-            //            spawnTimer = eliteCom.ValueRO.stateTwoInSkillShootingInterval;
-            //            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-            //            var spawnee = ecb.Instantiate(eliteScalingSpawneePrefab);
-            //            //var elite = SystemAPI.GetSingletonEntity<EnemyEliteShooterCom>();
-            //            //var eliteTransform = SystemAPI.GetComponent<LocalTransform>(elite);
-            //            var spawnPos = eliteTransformRW.ValueRO.Position + eliteTransformRW.ValueRO.Up() * spawneePosOffsetY[CurrentSpawnPosIdx] + eliteTransformRW.ValueRO.Forward() * spawneePosOffsetX[CurrentSpawnPosIdx];
-            //            var spawneeTarDir = playerTransform.Position - spawnPos;
-            //            spawneeTarDir.y += 1f;
-            //            spawneeTarDir += random.NextFloat3(offsetMin, offsetMax);
-            //            ecb.SetComponent(spawnee, new LocalTransform { Position = spawnPos, Scale = 1f, Rotation = quaternion.LookRotation(spawneeTarDir, math.up()) });
-            //            CurrentSpawnPosIdx = (CurrentSpawnPosIdx + 1) % 4;
-            //            if (++spawneeShootOutCount > eliteCom.ValueRO.stageTwoSkillShootCount)
-            //            {
-            //                spawneeShootOutCount = 0;
-            //                CurrentSpawnPosIdx = 0;
-            //                isDoingSkill = false;
-            //                spawnTimer = 0f;
-            //                eliteCom.ValueRW.SkillShootRandomIntervalTimer = eliteCom.ValueRO.stageTwoSkillShootCount * eliteCom.ValueRO.stateTwoInSkillShootingInterval + random.NextFloat(2f, 3f);
-            //            }
-            //        }
-            //    }
-
-            //    //// if set dead by TriggerJob
-            //    //if (SystemAPI.GetComponent<EntityStateMachine>(elite).CurrentState == EntityState.Dead)
-            //    //{
-            //    //    state.EntityManager.DestroyEntity(elite);
-            //    //}
-            //}
-
-
             var deltatime = SystemAPI.Time.DeltaTime;
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            foreach (var (flashbit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<EnabledRefRO<FlashingCom>
+                , RefRW<MaterialMeshInfo>
+                , RefRW<PhysicsCollider>
+                , RefRW<EntityStateMachine>>()
+                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState)
+                .WithAll<EnemyEliteShooterCom>())
+            {
+                if (flashbit.ValueRO) continue;
+                materialAndMesh.ValueRW.MeshID = RealMeshId;
+                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                stateMachine.ValueRW.CurrentState = EntityState.StageOne;
+            }
             foreach (var (eliteCom, transform, stateMachine, hp, entity) in SystemAPI.Query<RefRW<EnemyEliteShooterCom>, RefRW<LocalTransform>, RefRW<EntityStateMachine>
                 , RefRO<EntityHealthPoint>>()
                 .WithEntityAccess())
@@ -275,7 +172,7 @@ namespace ProjectGra
                             eliteCom.ValueRW.IsDoingSkill = true;
                             eliteCom.ValueRW.ShootLeftCount = StageTwoSkillShootCount;
                             eliteCom.ValueRW.InSkillIntervalRealTimer = 0f;
-                            eliteCom.ValueRW.SkillCooldownRealTimer = StageTwoSkillShootCount * StageTwoInSkillShootingInterval+ random.NextFloat(3f, 5f);
+                            eliteCom.ValueRW.SkillCooldownRealTimer = StageTwoSkillShootCount * StageTwoInSkillShootingInterval + random.NextFloat(3f, 5f);
                         }
 
                         // update skill logic if isDoingSkill

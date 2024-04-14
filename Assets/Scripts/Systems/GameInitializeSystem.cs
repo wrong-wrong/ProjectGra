@@ -2,6 +2,7 @@ using ProjectGra.PlayerController;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using UnityEngine;
 
 namespace ProjectGra
@@ -92,6 +93,21 @@ namespace ProjectGra
 
             ecb.Playback(state.EntityManager);
             ecb.Dispose();
+
+            // Register meshes
+            var entitesGraphicsSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<EntitiesGraphicsSystem>();
+            var MeshContainer = SystemAPI.ManagedAPI.GetSingleton<MeshContainerCom>();
+            state.EntityManager.AddComponentData(superSingleton, new BatchMeshIDContainer
+            {
+                EnemyEggMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyEggMesh),
+                EnemyEliteEggAndShootMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyEliteEggAndShootMesh),
+                EnemyEliteShootMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyEliteShootMesh),
+                EnemyEliteSprintAndShootMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyEliteSprintAndShootMesh),
+                EnemyNormalMeleeMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyNormalMeleeMesh),
+                EnemyNormalRangedMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyNormalRangedMesh),
+                EnemyNormalSprintMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyNormalSprintMesh),
+                EnemySummonerMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemySummonerMesh),
+            });
         }
 
 

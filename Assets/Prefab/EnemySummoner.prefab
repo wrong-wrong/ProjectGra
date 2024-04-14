@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6137897146074687371
+--- !u!1 &5459702177960271996
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,51 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2377108356410160517}
-  - component: {fileID: 935975958757505287}
-  - component: {fileID: 2685532399092476109}
-  - component: {fileID: 7937450130542130132}
-  - component: {fileID: 6357093947444921006}
-  - component: {fileID: 8282559911092308827}
+  - component: {fileID: 903128600913612442}
+  - component: {fileID: 2182899684774430791}
+  - component: {fileID: 7782157917802136542}
+  - component: {fileID: 4838645394929590922}
+  - component: {fileID: 2525006304565522839}
+  - component: {fileID: 8546173032575166076}
+  - component: {fileID: 5627373939720350530}
+  - component: {fileID: -8256880247186758851}
   m_Layer: 0
-  m_Name: EliteEggAndSprintModel
+  m_Name: EnemySummoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2377108356410160517
+--- !u!4 &903128600913612442
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6137897146074687371}
+  m_GameObject: {fileID: 5459702177960271996}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3.57, y: 0, z: 6.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &935975958757505287
+--- !u!33 &2182899684774430791
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6137897146074687371}
-  m_Mesh: {fileID: 4300000, guid: 2bf4702b8e1cc9141b4a50e74f5d558f, type: 2}
---- !u!23 &2685532399092476109
+  m_GameObject: {fileID: 5459702177960271996}
+  m_Mesh: {fileID: 4300000, guid: 6c8c69b8491dd8d4187d7d6c9df8c0ac, type: 2}
+--- !u!23 &7782157917802136542
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6137897146074687371}
+  m_GameObject: {fileID: 5459702177960271996}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -86,13 +88,69 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7937450130542130132
+--- !u!114 &4838645394929590922
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6137897146074687371}
+  m_GameObject: {fileID: 5459702177960271996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1af8616d8551d2b4fa26c7506b5205d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2525006304565522839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459702177960271996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e0fa8ed16bb234fb3fcf0a368e8681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthPoint: 100
+  EntityState: 0
+--- !u!114 &8546173032575166076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459702177960271996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbee71ce709b4f4ca46c0f64fa1b550, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Timer: 2
+  BasicScale: 1
+  OffsetScale: 3
+  IsEnable: 0
+--- !u!114 &5627373939720350530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459702177960271996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b1ddeb0b92012344bcf837d56ea29c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Duration: 1
+  CycleTime: 0.5
+--- !u!114 &-8256880247186758851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459702177960271996}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b275e5f92732148048d7b77e264ac30e, type: 3}
@@ -100,13 +158,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShapeType: 0
   m_PrimitiveCenter:
-    x: 0
-    y: 0.35472226
-    z: 0.2
+    x: -0.012938976
+    y: 0.8520653
+    z: 0.22728229
   m_PrimitiveSize:
-    x: 1.1033221
-    y: 2.6673837
-    z: 1.74
+    x: 1.857244
+    y: 3.5519152
+    z: 1.4545646
   m_PrimitiveOrientation:
     Value:
       x: -0
@@ -114,18 +172,18 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 2.6673837
-    Radius: 0.87
+    Height: 3.5519152
+    Radius: 0.928622
     Axis: 1
   m_Cylinder:
-    Height: 2.6673837
-    Radius: 0.87
+    Height: 3.5519152
+    Radius: 0.928622
     Axis: 1
   m_CylinderSideCount: 20
-  m_SphereRadius: 1.3336918
+  m_SphereRadius: 1.7759576
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
-    m_SimplificationTolerance: 0.040010754
+    m_SimplificationTolerance: 0.053278726
     m_BevelRadius: 0.05
     m_MinimumAngle: 2.5000002
   m_CustomMesh: {fileID: 0}
@@ -152,7 +210,7 @@ MonoBehaviour:
         Category00: 0
         Category01: 0
         Category02: 0
-        Category03: 1
+        Category03: 0
         Category04: 0
         Category05: 0
         Category06: 0
@@ -185,11 +243,11 @@ MonoBehaviour:
       m_Override: 0
       m_Value:
         Category00: 0
-        Category01: 1
+        Category01: 0
         Category02: 0
         Category03: 0
         Category04: 0
-        Category05: 1
+        Category05: 0
         Category06: 0
         Category07: 0
         Category08: 0
@@ -229,34 +287,3 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
---- !u!114 &6357093947444921006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6137897146074687371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e61141f9f5b3b74bb75d235f24b81fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 3
-  stateOneInSkillShootingInterval: 1
-  spawnEggSkillSpawningInterval: 0.5
-  stageOneSkillShootCount: 4
-  spawnEggSkillspawnCount: 12
---- !u!114 &8282559911092308827
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6137897146074687371}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34e0fa8ed16bb234fb3fcf0a368e8681, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HealthPoint: 1000
-  EntityState: 12

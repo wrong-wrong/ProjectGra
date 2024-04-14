@@ -1,13 +1,18 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemyNormalMeleeSystem : ISystem, ISystemStartStop
     {
+        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
+        private BatchMeshID RealMeshId;
         float followSpeed;
         float attackDistanceSq;
         float cooldown;
@@ -25,6 +30,11 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<NormalMeleeConfigCom>();
             random = Random.CreateFromIndex(0);
+            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
+            {
+                BelongsTo = 1 << 3, // enemy layer
+                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
+            };
 
         }
         public void OnStartRunning(ref SystemState state)
@@ -39,6 +49,8 @@ namespace ProjectGra
             var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
             MaterialPrefab = prefabContainer.MaterialPrefab;
             ItemPrefab = prefabContainer.ItemPrefab;
+            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+            RealMeshId = batchMeshIDContainer.EnemyNormalMeleeMeshID;
         }
         public void OnStopRunning(ref SystemState state)
         {
@@ -54,7 +66,19 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
-            foreach (var (localTransform, stateMachine, attack, death, knockbackBit,knockbackCom,entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
+            foreach (var (flashbit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<EnabledRefRO<FlashingCom>
+                , RefRW<MaterialMeshInfo>
+                , RefRW<PhysicsCollider>
+                , RefRW<EntityStateMachine>>()
+                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState)
+                .WithAll<NormalMeleeAttack>())
+            {
+                if (flashbit.ValueRO) continue;
+                materialAndMesh.ValueRW.MeshID = RealMeshId;
+                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                stateMachine.ValueRW.CurrentState = EntityState.Follow;
+            }
+            foreach (var (localTransform, stateMachine, attack, death, knockbackBit,knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
                 , RefRW<NormalMeleeDeath>
                 , EnabledRefRW<EntityKnockBackCom>
                 , RefRW<EntityKnockBackCom>>()

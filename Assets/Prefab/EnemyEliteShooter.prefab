@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4558332914012663045
+--- !u!1 &6706160365292713119
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7854184295829290718}
-  - component: {fileID: 6172356136507299969}
-  - component: {fileID: 1012843573684679948}
-  - component: {fileID: 631869840570895572}
-  - component: {fileID: -4282391613714548732}
-  - component: {fileID: -261238050905400600}
-  - component: {fileID: -1860760778526581432}
+  - component: {fileID: 2870851086444681434}
+  - component: {fileID: 2295229815532970931}
+  - component: {fileID: 6128938267517946898}
+  - component: {fileID: 8104659003667499563}
+  - component: {fileID: 5275451595791506276}
+  - component: {fileID: 231328198188995260}
+  - component: {fileID: -7673909342872033889}
   m_Layer: 0
-  m_Name: EnemyPrefab-NormalRanged
+  m_Name: EnemyEliteShooter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7854184295829290718
+--- !u!4 &2870851086444681434
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
+  m_GameObject: {fileID: 6706160365292713119}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 7.96, y: 0, z: 21.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6172356136507299969
+--- !u!33 &2295229815532970931
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
+  m_GameObject: {fileID: 6706160365292713119}
   m_Mesh: {fileID: 4300000, guid: 6c8c69b8491dd8d4187d7d6c9df8c0ac, type: 2}
---- !u!23 &1012843573684679948
+--- !u!23 &6128938267517946898
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
+  m_GameObject: {fileID: 6706160365292713119}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -87,13 +87,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &631869840570895572
+--- !u!114 &8104659003667499563
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
+  m_GameObject: {fileID: 6706160365292713119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4b7562b70991a4588a625d199d6715, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5275451595791506276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6706160365292713119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e0fa8ed16bb234fb3fcf0a368e8681, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthPoint: 1000
+  EntityState: 0
+--- !u!114 &231328198188995260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6706160365292713119}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b275e5f92732148048d7b77e264ac30e, type: 3}
@@ -102,12 +128,12 @@ MonoBehaviour:
   m_ShapeType: 0
   m_PrimitiveCenter:
     x: 0
-    y: 0.5500001
-    z: 0
+    y: 0.52636206
+    z: -0.15866262
   m_PrimitiveSize:
-    x: 1.07
-    y: 3.1000001
-    z: 1
+    x: 1.1383157
+    y: 3.0701387
+    z: 1.1117965
   m_PrimitiveOrientation:
     Value:
       x: -0
@@ -115,18 +141,18 @@ MonoBehaviour:
       z: 0
     RotationOrder: 4
   m_Capsule:
-    Height: 3.1000001
-    Radius: 0.535
+    Height: 3.0701387
+    Radius: 0.56915784
     Axis: 1
   m_Cylinder:
-    Height: 3.1000001
-    Radius: 0.535
+    Height: 3.0701387
+    Radius: 0.56915784
     Axis: 1
   m_CylinderSideCount: 20
-  m_SphereRadius: 1.5500001
+  m_SphereRadius: 1.5350693
   m_MinimumSkinnedVertexWeight: 0.1
   m_ConvexHullGenerationParameters:
-    m_SimplificationTolerance: 0.0465
+    m_SimplificationTolerance: 0.04605208
     m_BevelRadius: 0.05
     m_MinimumAngle: 2.5000002
   m_CustomMesh: {fileID: 0}
@@ -136,7 +162,7 @@ MonoBehaviour:
     m_Template: {fileID: 0}
     m_CollisionResponse:
       m_Override: 0
-      m_Value: 0
+      m_Value: 3
     m_Friction:
       m_Override: 0
       m_Value:
@@ -230,44 +256,17 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
---- !u!114 &-4282391613714548732
+--- !u!114 &-7673909342872033889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e6c2ad1b762d54438531584f3385967, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AttackCooldown: 2
---- !u!114 &-261238050905400600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34e0fa8ed16bb234fb3fcf0a368e8681, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HealthPoint: 30
-  EntityState: 0
---- !u!114 &-1860760778526581432
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4558332914012663045}
+  m_GameObject: {fileID: 6706160365292713119}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b1ddeb0b92012344bcf837d56ea29c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 1
-  CycleTime: 0.5
+  Duration: 3
+  CycleTime: 0.8
