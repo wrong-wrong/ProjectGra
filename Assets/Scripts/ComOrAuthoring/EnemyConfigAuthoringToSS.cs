@@ -62,6 +62,19 @@ namespace ProjectGra
         public float3 ScaleToSetInLaterThreeState;
         public float3 TimerToSetInLaterThreeState;
 
+        [Header("EliteSprintAndShootConfig")]
+        public float3 EliteSprintAndShootRightSpawnPosOffset;
+        public float3 EliteSprintAndShootLeftSpawnPosOffset;
+        public float EliteSprintAndShootSpawnYAxisRotation;
+        public float EliteSprintAndShootSkillCooldown;
+        public int EliteSprintAndShootSpawnCount;
+        public float EliteSprintAndShootSpawnInterval;
+        public float EliteSprintAndShootSpeed;
+        public float EliteSprintAndShootSprintSpeed;
+        public float EliteSprintAndShootSprintDistance;
+        public float EliteSprintAndShootCollideDistance;
+        public int EliteSprintAndShootSprintDamage;
+
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
             public override void Bake(EnemyConfigAuthoringToSS authoring)
@@ -138,6 +151,23 @@ namespace ProjectGra
                     EnemySummonerFloatingRange = authoring.EnemySummonerFloatingRange,
                     EnemySummonerSpeed = authoring.EnemySummonerSpeed,
                     EnemySummonerExplodeDistance = authoring.EnemySummonerExplodeDistance,
+                });
+
+                // For EliteSprintAndShoot
+                AddComponent(entity, new EliteSprintAndShootConfigCom
+                {
+                    EliteSprintAndShootLeftSpawnPosOffset = authoring.EliteSprintAndShootLeftSpawnPosOffset,
+                    EliteSprintAndShootRightSpawnPosOffset = authoring.EliteSprintAndShootRightSpawnPosOffset,
+                    EliteSprintAndShootSpawnCount = authoring.EliteSprintAndShootSpawnCount,
+                    EliteSprintAndShootSpawnInterval = authoring.EliteSprintAndShootSpawnInterval,
+                    EliteSprintAndShootSpawnYAxisRotation = authoring.EliteSprintAndShootSpawnYAxisRotation,
+                    EliteSprintAndShootSpeed = authoring.EliteSprintAndShootSpeed,
+                    EliteSprintAndShootSprintDistance = authoring.EliteSprintAndShootSprintDistance,
+                    EliteSprintAndShootSprintSpeed = authoring.EliteSprintAndShootSprintSpeed,
+                    EliteSprintAndShootCollideDistance = authoring.EliteSprintAndShootCollideDistance,
+                    EliteSprintAndShootSkillCooldown = authoring.EliteSprintAndShootSkillCooldown,
+                    EliteSprintAndShootSprintDamage = authoring.EliteSprintAndShootSprintDamage,
+
                 });
             }
         }
@@ -224,5 +254,20 @@ namespace ProjectGra
         //scaling to set in every state,  basic scale should be previous scale,
         public float3 ScaleToSetInLaterThreeState;
         public float3 TimerToSetInLaterThreeState;
+    }
+
+    public struct EliteSprintAndShootConfigCom : IComponentData
+    {
+        public float3 EliteSprintAndShootRightSpawnPosOffset;
+        public float3 EliteSprintAndShootLeftSpawnPosOffset;
+        public float EliteSprintAndShootSpawnYAxisRotation;
+        public float EliteSprintAndShootSkillCooldown;
+        public int EliteSprintAndShootSpawnCount;
+        public float EliteSprintAndShootSpawnInterval;
+        public float EliteSprintAndShootSprintDistance;
+        public float EliteSprintAndShootSpeed;
+        public float EliteSprintAndShootSprintSpeed;
+        public float EliteSprintAndShootCollideDistance;
+        public int EliteSprintAndShootSprintDamage;
     }
 }

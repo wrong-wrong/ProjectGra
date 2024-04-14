@@ -7,6 +7,7 @@ namespace ProjectGra
         public float SpawneeTimer;
         public bool IsMovedBySpawneeMove;
         public bool IsControlledBySpawneeTimer;
+        public int BasicDamage;
         //public bool 
         public class Baker : Baker<SpawneeComAndAuthoring>
         {
@@ -20,7 +21,7 @@ namespace ProjectGra
                 }
 
                 //AddComponent<SpawneeTimer>(entity);
-                AddComponent<AttackCurDamage>(entity);
+                AddComponent(entity, new AttackCurDamage { damage = authoring.BasicDamage});
                 AddComponent<SpawneeMoveTag>(entity);
                 if (authoring.IsMovedBySpawneeMove) SetComponentEnabled<SpawneeMoveTag>(entity, true);
                 else SetComponentEnabled<SpawneeMoveTag>(entity, false);

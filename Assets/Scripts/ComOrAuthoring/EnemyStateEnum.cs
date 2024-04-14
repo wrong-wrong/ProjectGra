@@ -23,5 +23,8 @@ namespace ProjectGra
         Summon,
         ChasingToSelfDestruct,
         Explode,
+
+        // Elite
+        DoingSkill
     }
 }

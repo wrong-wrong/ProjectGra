@@ -186,6 +186,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyPrefab-NormalMelee (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -632,6 +637,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyPrefab-NormalMelee
       objectReference: {fileID: 0}
+    - target: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -785,7 +795,6 @@ MonoBehaviour:
   NormalRangedAttackDistance: 18
   NormalRangedFleeDistance: 10
   NormalRangedFleeSpeed: 5
-  NormalSpawneePrefab: {fileID: 0}
   SpawneeSpeed: 10
   SpawneeTimer: 4
   EggPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
@@ -809,6 +818,23 @@ MonoBehaviour:
     x: 1
     y: 1
     z: 4
+  EliteSprintAndShootRightSpawnPosOffset:
+    x: 1
+    y: 0.5
+    z: 1
+  EliteSprintAndShootLeftSpawnPosOffset:
+    x: -1
+    y: 0.5
+    z: 1
+  EliteSprintAndShootSpawnYAxisRotation: 30
+  EliteSprintAndShootSkillCooldown: 2
+  EliteSprintAndShootSpawnCount: 8
+  EliteSprintAndShootSpawnInterval: 0.4
+  EliteSprintAndShootSpeed: 3
+  EliteSprintAndShootSprintSpeed: 12
+  EliteSprintAndShootSprintDistance: 16
+  EliteSprintAndShootCollideDistance: 3
+  EliteSprintAndShootSprintDamage: 30
 --- !u!114 &1829473142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -830,6 +856,94 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1a8f4310021b97d40b41f2f87dea718e, type: 2}
   - {fileID: 11400000, guid: 49f4a018b75692944a19c816371e4df2, type: 2}
   - {fileID: 11400000, guid: afa6340da8d0f8241b4799b7c30602c8, type: 2}
+--- !u!1001 &297399563860817151
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 516433283474445698, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_Name
+      value: EliteSprintAndShootModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 11.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5410087243323394174, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6e40a9975c7605844abd7414fb3ac8b6, type: 3}
 --- !u!1001 &1373609433260503925
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -891,7 +1005,12 @@ PrefabInstance:
     - target: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
         type: 3}
       propertyPath: m_Name
-      value: EliteEggAndSprintModel
+      value: EliteEggAndShootModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6357093947444921006, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
         type: 3}
@@ -984,7 +1103,7 @@ PrefabInstance:
     - target: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
         type: 3}
       propertyPath: m_Name
-      value: EliteSprintAndBulletModel
+      value: EliteShooterModel
       objectReference: {fileID: 0}
     - target: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
         type: 3}
@@ -1084,6 +1203,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemySummonerModel
       objectReference: {fileID: 0}
+    - target: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1102,3 +1226,4 @@ SceneRoots:
   - {fileID: 7296339210943075671}
   - {fileID: 1373609433260503925}
   - {fileID: 8095085756926205347}
+  - {fileID: 297399563860817151}
