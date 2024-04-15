@@ -770,6 +770,8 @@ MonoBehaviour:
   SpawningCooldown: 1
   minRadius: 6
   maxRadius: 13
+  BeginWaveTimeSet: 3
+  InWaveTimeSet: 10
 --- !u!114 &1829473141
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,6 +10,8 @@ namespace ProjectGra
     {
         private float timer;
         private ComponentLookup<AttackExplosiveCom> explosiveLookup;
+        private float beginWaveTimeSet;
+        private float inWaveTimeSet;
         public void OnCreate(ref SystemState state)
         {
             //state.RequireForUpdate<PlayerTag>(); // equal to Initialized , since playerTag is added through baking
@@ -33,6 +35,9 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
             //tmp test code
             //var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
+            var config = SystemAPI.GetSingleton<GameWaveTimeConfig>();
+            beginWaveTimeSet = config.BeginWaveTime;
+            inWaveTimeSet = config.InWaveTime;
 
             PopulateWeaponStateWithWeaponIdx(ref state);
         }
@@ -328,7 +333,7 @@ namespace ProjectGra
                 case GameControllState.BeforeWave:
                     if ((timer -= deltatime) < 0f)   //state change
                     {
-                        timer = 60f; // setting in wave time;
+                        timer = inWaveTimeSet; // setting in wave time;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
 
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
@@ -366,7 +371,7 @@ namespace ProjectGra
                 case GameControllState.AfterWave:
                     if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  // TODO need wave clean up System
                     {
-                        timer = 2f; // setting begin wave time;!!!!      
+                        timer = beginWaveTimeSet; // setting begin wave time;!!!!      
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
                         EnterShopState(ref state);
                         Debug.Log("AfterWave to InShop!");

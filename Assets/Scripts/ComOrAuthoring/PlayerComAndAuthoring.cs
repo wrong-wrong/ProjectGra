@@ -33,6 +33,10 @@ namespace ProjectGra
                 //    wpStateMachineBuffer.Add(new AutoWeaponStateMachineBuffer { CurrentState = AutoWeaponState.None });
                 //}
                 AddComponent(entity, new PlayerOverlapRadius { Value = 0 });
+                AddComponent(entity, new FlashingCom { AccumulateTimer = 1f, Duration = 1, CycleTime = 1 });
+                SetComponentEnabled<FlashingCom>(entity, false);
+
+                AddComponent<EntityKnockBackCom>(entity);
             }
         }
     }

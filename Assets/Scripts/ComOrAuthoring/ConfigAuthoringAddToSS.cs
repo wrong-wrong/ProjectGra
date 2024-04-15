@@ -36,6 +36,9 @@ namespace ProjectGra
         public float SpawningCooldown;
         public float minRadius;
         public float maxRadius;
+        [Header("Game Wave Time Config")]
+        public float BeginWaveTimeSet;
+        public float InWaveTimeSet;
 
         public class Baker : Baker<ConfigAuthoringAddToSS>
         {
@@ -73,8 +76,14 @@ namespace ProjectGra
                     maxRadius = authoring.maxRadius,
                     minRadius = authoring.minRadius,
                 });
+                AddComponent(entity, new GameWaveTimeConfig { InWaveTime = authoring.InWaveTimeSet, BeginWaveTime = authoring.BeginWaveTimeSet });
             }
         }
+    }
+    public struct GameWaveTimeConfig : IComponentData
+    {
+        public float BeginWaveTime;
+        public float InWaveTime;
     }
     public struct EnemySpawningConfig : IComponentData
     {

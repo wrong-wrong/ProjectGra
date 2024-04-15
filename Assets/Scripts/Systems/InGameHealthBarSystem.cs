@@ -6,14 +6,33 @@ using UnityEngine.UI;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
-    public partial struct InGameHealthBarSystem : ISystem
+    public partial struct InGameHealthBarSystem : ISystem, ISystemStartStop
     {
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<GameControllInGame>();
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
         }
+
+        public void OnStartRunning(ref SystemState state)
+        {
+            
+        }
+
+        public void OnStopRunning(ref SystemState state)
+        {
+            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            // destory health bar GO whose entity has been provisionally destoryed
+            foreach (var (healthBarManagedCom, entity) in SystemAPI.Query<HealthBarUICleanupCom>()
+                .WithEntityAccess()
+                .WithNone<HealthBatUIOffset>())
+            {
+                Object.Destroy(healthBarManagedCom.HealthBarGO);
+                ecb.RemoveComponent<HealthBarUICleanupCom>(entity);
+            }
+        }
+
         public void OnUpdate(ref SystemState state)
         {
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);

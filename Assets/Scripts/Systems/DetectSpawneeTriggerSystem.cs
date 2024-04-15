@@ -18,6 +18,7 @@ namespace ProjectGra
         ComponentLookup<AttackKnockBackTag> attackKnockBackTagLookup;
         ComponentLookup<AttackExplosiveCom> attackExplosiveTagLookup;
         ComponentLookup<EntityKnockBackCom> entityKnockBackComLookup;
+        ComponentLookup<FlashingCom> flashingComLookup;
         BufferLookup<HitBuffer> hitBufferLookup;
         public void OnCreate(ref SystemState state)
         {
@@ -33,6 +34,7 @@ namespace ProjectGra
             entityHealthPointLookup = SystemAPI.GetComponentLookup<EntityHealthPoint>();
             entityStateMachineLookup = SystemAPI.GetComponentLookup<EntityStateMachine>();
             hitBufferLookup = SystemAPI.GetBufferLookup<HitBuffer>();
+            flashingComLookup = SystemAPI.GetComponentLookup<FlashingCom>();
         }
         public void OnUpdate(ref SystemState state)
         {
@@ -46,6 +48,7 @@ namespace ProjectGra
             attackPierceTagLookup.Update(ref state);
             localTransformLookup.Update(ref state);
             hitBufferLookup.Update(ref state); 
+            flashingComLookup.Update(ref state);
             var endFixedSimECB = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var normalSpawneeTriggerJob = new DetectNormalSpawneeTriggerJob
             {
@@ -58,6 +61,7 @@ namespace ProjectGra
                 AttackKnockBackLookup = attackKnockBackTagLookup,
                 AttackPierceLookup = attackPierceTagLookup,
                 LocalTransformLookup = localTransformLookup,
+                FlashingComLookup = flashingComLookup,
             };
             var pierceSpawneeTriggerJob = new DetectPierceSpawneeTriggerJob
             {
@@ -71,6 +75,7 @@ namespace ProjectGra
                 AttackPierceLookup = attackPierceTagLookup,
                 LocalTransformLookup = localTransformLookup,
                 HitBufferLookup = hitBufferLookup,
+                FlashingComLookup = flashingComLookup,
             };
             state.Dependency = normalSpawneeTriggerJob.Schedule(simulationSingleton, state.Dependency);
             state.Dependency = pierceSpawneeTriggerJob.Schedule(simulationSingleton, state.Dependency);
@@ -80,6 +85,7 @@ namespace ProjectGra
     public struct DetectNormalSpawneeTriggerJob : ITriggerEventsJob
     {
         public EntityCommandBuffer ecb;
+        public ComponentLookup<FlashingCom> FlashingComLookup;
         public ComponentLookup<EntityKnockBackCom> EntityKnockBackLookup;
         public ComponentLookup<EntityStateMachine> EntityStateMachineLookup;
         public ComponentLookup<EntityHealthPoint> EntityHealthPointLookup;
@@ -134,11 +140,18 @@ namespace ProjectGra
                 //ecb.SetComponent(Enemy, new EntityStateMachine { CurrentState = EntityState.Dead });    
                 EntityStateMachineLookup.GetRefRW(Enemy).ValueRW.CurrentState = EntityState.Dead;
             }
+            else
+            {
+                //ecb.SetComponentEnabled<FlashingCom>(Enemy, true);
+                FlashingComLookup.SetComponentEnabled(Enemy, true);
+                //FlashingComLookup.
+            }
         }
     }
     public struct DetectPierceSpawneeTriggerJob : ITriggerEventsJob
     {
         public EntityCommandBuffer ecb;
+        public ComponentLookup<FlashingCom> FlashingComLookup;
         public ComponentLookup<EntityKnockBackCom> EntityKnockBackLookup;
         public ComponentLookup<EntityStateMachine> EntityStateMachineLookup;
         public ComponentLookup<EntityHealthPoint> EntityHealthPointLookup;
@@ -185,6 +198,10 @@ namespace ProjectGra
                 //both way setting state machine works
                 //ecb.SetComponent(Enemy, new EntityStateMachine { CurrentState = EntityState.Dead });    
                 EntityStateMachineLookup.GetRefRW(triggerEvent.EntityB).ValueRW.CurrentState = EntityState.Dead;
+            }
+            else
+            {
+                FlashingComLookup.SetComponentEnabled(triggerEvent.EntityB, true);  
             }
             //Debug.Log("PierceSpawnee TriggerJob");
         }

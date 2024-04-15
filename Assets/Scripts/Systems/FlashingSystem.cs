@@ -9,7 +9,7 @@ namespace ProjectGra
         private float hitFlashCycleTime;
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<GameControllInGame>();
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             hitFlashCycleTime = 0.5f;
@@ -20,7 +20,7 @@ namespace ProjectGra
             foreach (var (flash, flashBit, basecolor) in SystemAPI.Query<RefRW<FlashingCom>, EnabledRefRW<FlashingCom>, RefRW<URPMaterialPropertyBaseColor>>())
             {
                 var ratio = flash.ValueRO.AccumulateTimer / flash.ValueRO.CycleTime;
-                basecolor.ValueRW.Value.yz = math.sin(math.radians(ratio * 180));//1-ratio;
+                basecolor.ValueRW.Value.yz = 1f - math.sin(math.radians(ratio * 180));//1-ratio;
                 if ((flash.ValueRW.AccumulateTimer += deltatime) < flash.ValueRO.Duration) continue;
                 flash.ValueRW.AccumulateTimer = 0;
                 flash.ValueRW.Duration = hitFlashCycleTime;
