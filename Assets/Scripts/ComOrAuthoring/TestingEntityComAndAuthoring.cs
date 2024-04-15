@@ -26,8 +26,5 @@ namespace ProjectGra
         }
     }
     public struct TestingEntityTag : IComponentData { }
-    //public struct SpawningTimer : IComponentData, IEnableableComponent
-    //{
-    //    public float time;
-    //}
+
 }

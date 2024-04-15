@@ -268,5 +268,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1ddeb0b92012344bcf837d56ea29c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 3
-  CycleTime: 0.8
+  FlashingCycleTime: 1
+  SpawningTimerAndFlashDuration: 3

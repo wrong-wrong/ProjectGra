@@ -83,14 +83,14 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-            foreach (var (flashbit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<EnabledRefRO<FlashingCom>
+            foreach (var (spawnTimer, spawnTimerBit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
                 , RefRW<MaterialMeshInfo>
                 , RefRW<PhysicsCollider>
                 , RefRW<EntityStateMachine>>()
-                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState)
                 .WithAll<EnemyEliteShooterCom>())
             {
-                if (flashbit.ValueRO) continue;
+                if ((spawnTimer.ValueRW.time -= deltatime) > 0f) continue;
+                spawnTimerBit.ValueRW = false;
                 materialAndMesh.ValueRW.MeshID = RealMeshId;
                 collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
                 stateMachine.ValueRW.CurrentState = EntityState.StageOne;

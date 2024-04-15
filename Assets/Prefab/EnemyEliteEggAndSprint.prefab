@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6357093947444921006}
   - component: {fileID: 8282559911092308827}
   - component: {fileID: 955262659281776454}
+  - component: {fileID: -7725940390556150291}
   m_Layer: 0
   m_Name: EnemyEliteEggAndSprint
   m_TagString: Untagged
@@ -273,5 +274,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1ddeb0b92012344bcf837d56ea29c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 3
-  CycleTime: 0.8
+  FlashingCycleTime: 1
+  SpawningTimerAndFlashDuration: 3
+--- !u!114 &-7725940390556150291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6137897146074687371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae6314a8d85f37247913f4a11bf22508, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthBarOffsetValue:
+    x: 0
+    y: 3
+    z: 0

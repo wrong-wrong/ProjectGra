@@ -79,14 +79,15 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-            foreach(var(flashbit, materialAndMesh, collider, stateMachine) in SystemAPI.Query <EnabledRefRO<FlashingCom>
+            // check spawn timer, only update entity with spawn timer
+            foreach(var(spawnTimer, spawnTimerBit,materialAndMesh, collider, stateMachine) in SystemAPI.Query <RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
                 , RefRW<MaterialMeshInfo>
                 , RefRW<PhysicsCollider>
                 , RefRW<EntityStateMachine>>()
-                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState)
                 .WithAll<EnemyEliteEggAndShootCom>())
             {
-                if (flashbit.ValueRO) continue;
+                if ((spawnTimer.ValueRW.time -= deltatime) > 0f) continue;
+                spawnTimerBit.ValueRW = false;
                 materialAndMesh.ValueRW.MeshID = RealMeshId;
                 collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
                 stateMachine.ValueRW.CurrentState = EntityState.StageOne;
@@ -95,14 +96,18 @@ namespace ProjectGra
                 ,RefRO<EntityHealthPoint>
                 ,DynamicBuffer<EnemyEliteFlyingEggBuffer>>()
                 .WithEntityAccess()
-                .WithNone<FlashingCom>())
+                .WithNone<SpawningTimer>())
+                //.WithNone<FlashingCom>())
             {
                 var tardir = playerTransform.Position - transform.ValueRO.Position;
+                //Debug.Log("Update Entity ID :" + entity.Index);
+
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.StageOne:
                         if(hp.ValueRO.HealthPoint < 500)
                         {
+                            //Debug.Log("Going to Stage two, Entity ID :" + entity.Index);
                             stateMachine.ValueRW.CurrentState = EntityState.StageTwo;
                             eliteCom.ValueRW.MovingRandomIntervalCooldown = 0f;
                             eliteCom.ValueRW.SkillCooldownRealTimer = 0f;
@@ -156,6 +161,7 @@ namespace ProjectGra
                         break;
                     case EntityState.StageTwo:
                         //todo using tarDirNormalizedMulSpeed
+                        //Debug.Log("stage two");
                         if ((eliteCom.ValueRW.MovingRandomIntervalCooldown -= deltatime) < 0f)
                         {
 
@@ -226,6 +232,10 @@ namespace ProjectGra
                         }
                         break;
                     case EntityState.Dead:
+                        for (int i = 0; i < buffer.Length; ++i)
+                        {
+                            ecb.DestroyEntity(buffer[i].EggInstance);
+                        }
                         ecb.DestroyEntity(entity);
                         break;
                 }

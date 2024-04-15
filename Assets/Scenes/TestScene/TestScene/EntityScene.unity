@@ -675,6 +675,7 @@ GameObject:
   - component: {fileID: 1829473139}
   - component: {fileID: 1829473141}
   - component: {fileID: 1829473142}
+  - component: {fileID: 1829473143}
   m_Layer: 0
   m_Name: SuperSingleton
   m_TagString: Untagged
@@ -879,6 +880,20 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1a8f4310021b97d40b41f2f87dea718e, type: 2}
   - {fileID: 11400000, guid: 49f4a018b75692944a19c816371e4df2, type: 2}
   - {fileID: 11400000, guid: afa6340da8d0f8241b4799b7c30602c8, type: 2}
+--- !u!114 &1829473143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829473135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90b200b05e2a604459ce81639b120dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthBarUIPrefab: {fileID: 790758129723131958, guid: 707b4e0d01231b14badda8e2632d5035,
+    type: 3}
 --- !u!1001 &297399563860817151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1034,11 +1049,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EliteEggAndShootModel
-      objectReference: {fileID: 0}
-    - target: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
