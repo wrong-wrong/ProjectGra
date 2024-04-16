@@ -2,8 +2,7 @@ using ProjectGra;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.UI;
-
+using Random = Unity.Mathematics.Random;
 public class PopupTextManager : MonoBehaviour
 {
     public int MaxPopupTextCount;
@@ -13,6 +12,7 @@ public class PopupTextManager : MonoBehaviour
     [SerializeField] Transform Canvas;
     //public Image TestImage;
     private List<PopupTextSingleUnit> popupTextRingList;
+    private List<Vector3> posRingList;
     private int ringListHead;
     private int ringListTail;
     private int ringListLength;
@@ -20,8 +20,11 @@ public class PopupTextManager : MonoBehaviour
     private Camera mainCam;
     //private Transform camTransform;
     private float maxDistanceSq;
+    private Random random;
     private void Awake()
     {
+        //int tmpVal = 5;
+        //Debug.Log(8 * ++tmpVal);
         maxDistanceSq = maxShowingPopupTextDistance * maxShowingPopupTextDistance;
         mainCam = Camera.main;
         //camTransform = mainCam.transform;
@@ -31,12 +34,15 @@ public class PopupTextManager : MonoBehaviour
             return;
         }
         Instance = this;
+        random = Random.CreateFromIndex(0);
         popupTextRingList = new List<PopupTextSingleUnit>(MaxPopupTextCount);
+        posRingList = new List<Vector3>(MaxPopupTextCount);
         for (int i = 0; i < MaxPopupTextCount; ++i)
         {
             var com = Object.Instantiate(singlePopupTextPrefab, Canvas).GetComponent<PopupTextSingleUnit>();
             com.DoHide();
             popupTextRingList.Add(com);
+            posRingList.Add(Vector3.zero);
         }
         ringListLength = popupTextRingList.Count;
         ringListHead = 0;
@@ -72,8 +78,8 @@ public class PopupTextManager : MonoBehaviour
         var deltatime = Time.deltaTime;
         for (int i = ringListHead, j = ringListTail; i != j; i = (i + 1) % ringListLength)
         {
-            //Debug.Log("ad");
-            if (!popupTextRingList[i].DoUpdateAndCheckIsActive(deltatime))
+            var screenPos = mainCam.WorldToScreenPoint(posRingList[i]);
+            if (!popupTextRingList[i].DoUpdateAndCheckIsActiveWithScreenPos(screenPos, deltatime))
             {
                 ringListHead = (ringListHead + 1) % ringListLength;
             }
@@ -82,13 +88,15 @@ public class PopupTextManager : MonoBehaviour
     }
     public bool RequirePopupTextAt(Vector3 pos, int val, float disSq)
     {
+        var f2 = math.normalize(random.NextFloat2());
         //Debug.Log("RequirePopupTextAt - called at popManager");
-        if ((ringListTail + 1) % ringListLength != ringListHead )
+        if ((ringListTail + 1) % ringListLength != ringListHead)
         {
             float fontsize = 60f;
             if (disSq > 64f) fontsize = 32f;
             var screenPos = mainCam.WorldToScreenPoint(pos);
-            popupTextRingList[ringListTail].DoInitAtScreenPos(screenPos, val, fontsize);
+            popupTextRingList[ringListTail].DoInitAtScreenPos(screenPos, val, fontsize, new Vector3(f2.x, f2.y,0));
+            posRingList[ringListTail] = pos;
             ringListTail = (ringListTail + 1) % ringListLength;
             return true;
         }

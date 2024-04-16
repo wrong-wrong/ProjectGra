@@ -10,10 +10,12 @@ public class PopupTextSingleUnit : MonoBehaviour
     [SerializeField] float showingTime;
     private float timer;
     public bool IsActived;
-
-
-    public void DoInitAtScreenPos(Vector3 screenPos, int val, float fontSize)
+    private int accumulateOffsetMultiplier;
+    private Vector3 randomDir;
+    public void DoInitAtScreenPos(Vector3 screenPos, int val, float fontSize, Vector3 randomDir)
     {
+        this.randomDir = randomDir;
+        accumulateOffsetMultiplier = 0;
         rectTransform.position = screenPos;
         rectTransform.localScale = Vector3.one;
         DoInit(val,fontSize);
@@ -24,6 +26,18 @@ public class PopupTextSingleUnit : MonoBehaviour
         text.fontSize = fontSize;
         timer = showingTime;
         IsActived = true;
+    }
+    public bool DoUpdateAndCheckIsActiveWithScreenPos(Vector3 screenPos, float deltatime)
+    {
+        if ((timer -= deltatime) > 0f)
+        {
+            rectTransform.localScale = Vector3.one * (disappearScale + timer / showingTime * (1 - disappearScale));
+            //rectTransform.position += Vector3.one * math.sin(math.radians(ratio * 90));
+            rectTransform.position = screenPos + randomDir * (accumulateOffsetMultiplier += 2);
+            return true;
+        }
+        DoHide();
+        return false;
     }
     public bool DoUpdateAndCheckIsActive(float deltatime)
     {

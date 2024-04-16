@@ -555,13 +555,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a1966f8d681664587369720af4f651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxPopupTextCount: 0
+  MaxPopupTextCount: 50
   maxShowingPopupTextDistance: 15
-  val: 0
   singlePopupTextPrefab: {fileID: 1809440307466595653, guid: 04846cfe8ab2dc04f9283e7a8942fdc4,
     type: 3}
   Canvas: {fileID: 388808261}
-  TestImage: {fileID: 1746191279}
 --- !u!4 &946538649
 Transform:
   m_ObjectHideFlags: 0
