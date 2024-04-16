@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5275451595791506276}
   - component: {fileID: 231328198188995260}
   - component: {fileID: -7673909342872033889}
+  - component: {fileID: -2156066083252539687}
   m_Layer: 0
   m_Name: EnemyEliteShooter
   m_TagString: Untagged
@@ -270,3 +271,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FlashingCycleTime: 1
   SpawningTimerAndFlashDuration: 3
+--- !u!114 &-2156066083252539687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6706160365292713119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae6314a8d85f37247913f4a11bf22508, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HealthBarOffsetValue:
+    x: 0
+    y: 5
+    z: 0

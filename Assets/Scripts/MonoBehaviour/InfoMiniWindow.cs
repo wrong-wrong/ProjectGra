@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace ProjectGra
 {
-    public class InfoMimiWindow : MonoBehaviour
+    public class InfoMiniWindow : MonoBehaviour
     {
         [SerializeField] Image Icon;
         [SerializeField] Image background;
@@ -92,6 +92,7 @@ namespace ProjectGra
 
             showPos.y += 50;
             InfoMiniWindowRect.position = showPos;
+            Debug.Log(showPos);
             if (isCanCombine)
             {
                 CombineButtonRect.localScale = Vector3.one;
@@ -202,6 +203,10 @@ namespace ProjectGra
         private int itemPrice;
         public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlot, Vector3 showPos)
         {
+            for(int i = 0, n = CategoryRectList.Count; i < n; ++i)
+            {
+                CategoryRectList[i].localScale = Vector3.zero;
+            }
             //Setting info window
             this.itemIdx = itemIdx;
             itemPrice = currentPrice;

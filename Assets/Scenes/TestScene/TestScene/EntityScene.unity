@@ -771,7 +771,7 @@ MonoBehaviour:
   minRadius: 6
   maxRadius: 13
   BeginWaveTimeSet: 3
-  InWaveTimeSet: 10
+  InWaveTimeSet: 30
 --- !u!114 &1829473141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -784,6 +784,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b2d4aeac3e59a4f915fd7c4def009a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EliteSprintAndShootPrefab: {fileID: 516433283474445698, guid: 6e40a9975c7605844abd7414fb3ac8b6,
+    type: 3}
+  EliteEggAndShootPrefab: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+    type: 3}
+  EliteShooterPrefab: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
+    type: 3}
   EliteShooterStageOneSpeed: 3
   EliteShooterStageTwoSpeed: 4
   EliteShooterStageOneInSkillShootingInterval: 1

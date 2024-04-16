@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 955262659281776454}
   - component: {fileID: -7725940390556150291}
   m_Layer: 0
-  m_Name: EnemyEliteEggAndSprint
+  m_Name: EnemyEliteEggAndShoot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

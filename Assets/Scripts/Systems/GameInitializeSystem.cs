@@ -108,6 +108,9 @@ namespace ProjectGra
                 EnemyNormalSprintMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyNormalSprintMesh),
                 EnemySummonerMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemySummonerMesh),
             });
+
+            // Create EffectRequestSharedStaticBuffer
+            EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(PopupTextManager.Instance.MaxPopupTextCount);
         }
 
 

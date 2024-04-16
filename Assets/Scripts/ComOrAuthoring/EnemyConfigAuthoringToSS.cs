@@ -6,6 +6,11 @@ namespace ProjectGra
 {
     public class EnemyConfigAuthoringToSS : MonoBehaviour
     {
+        [Header("ElitePrefab")]
+        public GameObject EliteSprintAndShootPrefab;
+        public GameObject EliteEggAndShootPrefab;
+        public GameObject EliteShooterPrefab;
+
         [Header("EliteShooterConfig")]
         public float EliteShooterStageOneSpeed;
         public float EliteShooterStageTwoSpeed;
@@ -203,6 +208,10 @@ namespace ProjectGra
                     StageTwoInSkillShootingInterval = authoring.EliteShooterStageTwoInSkillShootingInterval,
                     StageTwoSkillShootCount = authoring.EliteShooterStageTwoSkillShootCount,
                 });
+
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterPrefab, TransformUsageFlags.Dynamic) });
             }
         }
     }

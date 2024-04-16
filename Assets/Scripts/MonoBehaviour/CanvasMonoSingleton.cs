@@ -24,7 +24,7 @@ namespace ProjectGra
         [SerializeField] CanvasGroup ItemFoundAndUpgradeCanvasGroup;
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [Header("InfoMiniWindow")]
-        [SerializeField] InfoMimiWindow infoMiniWindow;
+        [SerializeField] InfoMiniWindow infoMiniWindow;
         //[Header("AttributeTextInItsCanvas")]
         //[SerializeField] TextMeshProUGUI attributeInfoText;
 
