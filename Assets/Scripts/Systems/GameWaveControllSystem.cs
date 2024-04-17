@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -257,7 +258,8 @@ namespace ProjectGra
             playerHp.ValueRW.HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint();
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
-
+            var playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
+            state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(playerPrefab));
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;

@@ -5,6 +5,8 @@ using UnityEngine;
 using Random = Unity.Mathematics.Random;
 public class PopupTextManager : MonoBehaviour
 {
+    public static PopupTextManager Instance;
+    public bool IsInitialized;
     public int MaxPopupTextCount;
     [SerializeField] float maxShowingPopupTextDistance;
     //[SerializeField] int val;
@@ -16,7 +18,6 @@ public class PopupTextManager : MonoBehaviour
     private int ringListHead;
     private int ringListTail;
     private int ringListLength;
-    public static PopupTextManager Instance;
     private Camera mainCam;
     //private Transform camTransform;
     private float maxDistanceSq;
@@ -47,9 +48,11 @@ public class PopupTextManager : MonoBehaviour
         ringListLength = popupTextRingList.Count;
         ringListHead = 0;
         ringListTail = 0;
+        this.enabled = false;
     }
     void Update()
     {
+
         var disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList;
         if (disSqList.Length != 0)
         {

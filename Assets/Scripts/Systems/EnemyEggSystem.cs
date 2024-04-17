@@ -28,6 +28,9 @@ namespace ProjectGra
                 {
                     case EntityState.Dead:
                         ecb.DestroyEntity(entity);
+                        // request particle
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
                         break;
                     case EntityState.EggHatching:
                         if ((eggtimer.ValueRW.Timer -= deltatime) < 0)

@@ -52,8 +52,8 @@ namespace ProjectGra
                 var fillingImg = imgList[imgList.Length - 1];
                 eliteHp.ValueRW.MaxHealthPoint = entityHp.ValueRO.HealthPoint;
                 eliteHp.ValueRW.PreviousHealthPoint = entityHp.ValueRO.HealthPoint;
-                Debug.Log(imgList.Length);
-                Debug.Log(fillingImg.name);
+                //Debug.Log(imgList.Length);
+                //Debug.Log(fillingImg.name);
                 fillingImg.fillAmount = 1;
                 Debug.LogWarning("Using fixed index to get filling img from the Image List - GetComponentsInChildren");
                 ecb.AddComponent(entity, new HealthBarUICleanupCom { HealthBarGO = healthBar, BarFillingImage = fillingImg});

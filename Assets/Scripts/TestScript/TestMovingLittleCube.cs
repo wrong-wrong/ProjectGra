@@ -10,7 +10,7 @@ public class TestMovingLittleCube : MonoBehaviour
         {
             var worldPos = gameObject.transform.position;
             PopupTextManager.Instance.RequirePopupTextAt(worldPos, val,0);
-            AudioManager.Instance.RequireAudioPlayedAt(worldPos);
+            //AudioManager.Instance.RequireAudioPlayedAt(worldPos);
         }
     }
 }

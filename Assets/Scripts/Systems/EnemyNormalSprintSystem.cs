@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Rendering;
 using Unity.Transforms;
+using UnityEngine;
 using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
@@ -126,6 +127,9 @@ namespace ProjectGra
                                 , localTransform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);
+                        // request particle
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(localTransform.ValueRO.Position);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
                         break;
                 }
             }

@@ -110,7 +110,12 @@ namespace ProjectGra
             });
 
             // Create EffectRequestSharedStaticBuffer
-            EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(PopupTextManager.Instance.MaxPopupTextCount);
+            Debug.LogWarning("Using number to give native list in buffer a initial size won't limit the max number of element in native list");
+            EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(PopupTextManager.Instance.MaxPopupTextCount,AudioManager.Instance.MaxAudioSourceCount,ParticleManager.Instance.MaxParticleCount);
+            //Debug.LogError("Using fix number to create effect request buffer");
+            PopupTextManager.Instance.enabled = true;
+            AudioManager.Instance.enabled = true;
+            ParticleManager.Instance.enabled = true;
         }
 
 

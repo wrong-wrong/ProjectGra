@@ -3535,7 +3535,6 @@ GameObject:
   - component: {fileID: 553316556}
   - component: {fileID: 553316555}
   - component: {fileID: 553316554}
-  - component: {fileID: 553316558}
   m_Layer: 5
   m_Name: PopupTextCanvas
   m_TagString: Untagged
@@ -3625,23 +3624,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &553316558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 553316552}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2a1966f8d681664587369720af4f651, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MaxPopupTextCount: 50
-  maxShowingPopupTextDistance: 20
-  singlePopupTextPrefab: {fileID: 1809440307466595653, guid: 04846cfe8ab2dc04f9283e7a8942fdc4,
-    type: 3}
-  Canvas: {fileID: 553316557}
 --- !u!1 &559129622
 GameObject:
   m_ObjectHideFlags: 0
@@ -5149,6 +5131,92 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 843508687}
   m_CullTransparentMesh: 1
+--- !u!1 &851757557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 851757559}
+  - component: {fileID: 851757560}
+  - component: {fileID: 851757562}
+  - component: {fileID: 851757561}
+  m_Layer: 0
+  m_Name: Managers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &851757559
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851757557}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &851757560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851757557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2a1966f8d681664587369720af4f651, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsInitialized: 0
+  MaxPopupTextCount: 50
+  maxShowingPopupTextDistance: 20
+  singlePopupTextPrefab: {fileID: 1809440307466595653, guid: 04846cfe8ab2dc04f9283e7a8942fdc4,
+    type: 3}
+  Canvas: {fileID: 553316557}
+--- !u!114 &851757561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851757557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15e59df33a6553e44af59fdba7823de6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 7834473744641540106, guid: 189b51902653b414aba8377a755c461d,
+    type: 3}
+  particleRingList: []
+  MaxParticleCount: 15
+--- !u!114 &851757562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851757557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10943657f1e292c47ac42dd25375272a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioPrefab: {fileID: 5288813798280102983, guid: 0ad73d8edb9dd9a4ab5f7bc0c252c59c,
+    type: 3}
+  MaxAudioSourceCount: 10
+  audioSourceRingList: []
+  audioSOList:
+  - {fileID: 11400000, guid: 8da363625b402c149914a028751417b6, type: 2}
 --- !u!1 &874655253
 GameObject:
   m_ObjectHideFlags: 0
@@ -13303,3 +13371,4 @@ SceneRoots:
   - {fileID: 33401916}
   - {fileID: 2038525355}
   - {fileID: 553316557}
+  - {fileID: 851757559}

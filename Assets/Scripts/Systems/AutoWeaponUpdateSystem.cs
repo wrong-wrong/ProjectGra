@@ -46,6 +46,10 @@ namespace ProjectGra
                         var spawnee = ecb.Instantiate(wp.SpawneePrefab);
                         ecb.SetComponent(spawnee, wp.autoWeaponLocalTransform);
                         wp.RealCooldown = wp.Cooldown;
+
+                        // request audio
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(wp.autoWeaponLocalTransform.Position);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
                     }
                     else // MeleeWeapon
                     {
@@ -58,6 +62,8 @@ namespace ProjectGra
                                 wp.MeleeRealShootingTimer = 0f;
                                 wp.WeaponCurrentState = WeaponState.Thrust;
                                 state.EntityManager.GetComponentData<PhysicsCollider>(wp.WeaponModel).Value.Value.SetCollisionFilter(playerSpawneeCollidesWithEnemyLayer);
+                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(wp.autoWeaponLocalTransform.Position);
+                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
                                 //change collisionFilter to begin trigger
                                 //Debug.Log("AutoMeleeWeapon start Thrust");
                                 break;

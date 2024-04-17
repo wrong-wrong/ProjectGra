@@ -11,13 +11,22 @@ namespace ProjectGra
         public NativeList<float> PopupTextDistanceSqList;
         public NativeList<float3> PopupTextWorldPosList;
         public NativeList<int> PopupTextValueList;
+        public NativeList<float3> AudioPosList;
+        public NativeList<AudioEnum> AudioEnumList;
+        public NativeList<float3> ParticlePosList;
+        public NativeList<ParticleEnum> ParticleEnumList;
         //public float3 PlayerPosition;
-        public EffectRequestSharedStaticBuffer(int popupTextCapacity)
+        public EffectRequestSharedStaticBuffer(int popupTextCapacity, int audioSourceCapacity, int particleCapacity)
         {
             PopupTextDistanceSqList = new NativeList<float>(popupTextCapacity,Allocator.Persistent);
             PopupTextWorldPosList = new NativeList<float3>(popupTextCapacity,Allocator.Persistent);
             PopupTextValueList = new NativeList<int>(popupTextCapacity,Allocator.Persistent);
-            //PlayerPosition = 0;
+            
+            AudioPosList = new NativeList<float3>(audioSourceCapacity,Allocator.Persistent);
+            AudioEnumList = new NativeList<AudioEnum>(audioSourceCapacity,Allocator.Persistent);
+
+            ParticlePosList = new NativeList<float3>(particleCapacity, Allocator.Persistent);
+            ParticleEnumList= new NativeList<ParticleEnum>(particleCapacity, Allocator.Persistent);
         }    
 
         public void SortPopupText()

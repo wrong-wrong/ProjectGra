@@ -141,8 +141,8 @@ namespace ProjectGra
                 var explosion = ecb.Instantiate(explosiveCom.ExplosionPrefab);
                 ecb.SetComponent<LocalTransform>(explosion, spawneeLocalTransform);
             }
-            
 
+            //Debug.Log("Destory Spawnee using ecb in NormalSpawneeJob");
             ecb.DestroyEntity(Spawnee);
             var refHP = EntityHealthPointLookup.GetRefRW(Enemy);
             var damage = CurDamageLookup[Spawnee].damage;
@@ -186,8 +186,8 @@ namespace ProjectGra
             //EntityA tends to be spawnee
             //Entity Spawnee;
             //Entity Enemy;
-            //Debug.Log("Pierced Job Execute");
-            if (!AttackPierceLookup.HasComponent(triggerEvent.EntityA)) return;
+            if (!AttackPierceLookup.HasComponent(triggerEvent.EntityA) && !AttackPierceLookup.HasComponent(triggerEvent.EntityB)) return;
+            //Debug.Log("Pierced Job Executing");
             HitBufferLookup.TryGetBuffer(triggerEvent.EntityA, out var hitBuffer);
             //Debug.Log(hitBuffer.Length);
             //if (hitBuffer.Length == 0) return;

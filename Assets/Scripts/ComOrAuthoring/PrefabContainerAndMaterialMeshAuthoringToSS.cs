@@ -6,6 +6,7 @@ namespace ProjectGra
 {
     public class PrefabContainerAndMaterialMeshAuthoringToSS : MonoBehaviour
     {
+        public GameObject PlayerPrefab;
         public GameObject MaterialPrefab;
         public GameObject ItemPrefab;
         public GameObject SummonExplosionPrefab;
@@ -31,7 +32,8 @@ namespace ProjectGra
                     ItemPrefab = GetEntity(authoring.ItemPrefab, TransformUsageFlags.Renderable),
                     SummonExplosionPrefab = GetEntity(authoring.SummonExplosionPrefab, TransformUsageFlags.Dynamic),
                     NormalEnemySpawneePrefab = GetEntity(authoring.NormalEnemySpawneePrefab, TransformUsageFlags.Dynamic),
-                    ScalingSpawneePrefab = GetEntity(authoring.ScalingSpawneePrefab, TransformUsageFlags.Dynamic)
+                    ScalingSpawneePrefab = GetEntity(authoring.ScalingSpawneePrefab, TransformUsageFlags.Dynamic),
+                    PlayerPrefab = GetEntity(authoring.PlayerPrefab, TransformUsageFlags.Dynamic),
                 });
                 AddComponentObject(entity, new MeshContainerCom
                 {
@@ -49,6 +51,7 @@ namespace ProjectGra
     }
     public struct PrefabContainerCom : IComponentData
     {
+        public Entity PlayerPrefab;
         public Entity MaterialPrefab;
         public Entity ItemPrefab;
         public Entity SummonExplosionPrefab;

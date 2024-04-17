@@ -70,6 +70,10 @@ namespace ProjectGra
                             state.EntityManager.GetComponentData<PhysicsCollider>(mainWeaponState.ValueRW.WeaponModel).Value.Value.SetCollisionFilter(playerSpawneeCollidesWithEnemyLayer);
                             //change collisionFilter to begin trigger
                             //Debug.Log("MainMeleeWeapon start Thrust");
+
+                            // request audio
+                            EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(mainWeaponState.ValueRO.mainWeaponLocalTransform.Position);
+                            EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
                             break;
                         case WeaponState.Thrust:
                             var lerpAmount = (mainWeaponState.ValueRW.MeleeRealShootingTimer += deltatime) / mainWeaponState.ValueRO.MeleeShootingTimer;
@@ -125,6 +129,10 @@ namespace ProjectGra
                             damage = (int)(mainWeaponState.ValueRO.DamageAfterBonus * mainWeaponState.ValueRO.WeaponCriticalHitRatio)
                         });
                     }
+
+                    // request audio
+                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(mainWeaponState.ValueRO.mainWeaponLocalTransform.Position);
+                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
                 }
                 //mainWeaponState.ValueRW.RealCooldown = mainWeaponState.ValueRO.Cooldown;
                 //var spawnee = state.EntityManager.Instantiate(mainWeaponState.ValueRO.SpawneePrefab);
