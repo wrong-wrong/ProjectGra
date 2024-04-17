@@ -90,14 +90,27 @@ namespace ProjectGra
                 collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
-            foreach (var (transform, attack, stateMachine, flashCom, flashBit, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>
+            foreach (var (transform, attack, stateMachine, flashCom, knockbackBit, knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>
                 , RefRW<FlashingCom>
-                , EnabledRefRW<FlashingCom>>()
+                , EnabledRefRW<EntityKnockBackCom>
+                , RefRW<EntityKnockBackCom>>()
                 .WithEntityAccess()
                 .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
                 var tarDir = playerTransform.Position - transform.ValueRO.Position;
                 var tarDirSq = math.csum(tarDir * tarDir);
+
+                var normalizedDir = math.normalize(tarDir);
+                if (knockbackBit.ValueRO)
+                {
+                    transform.ValueRW.Position += normalizedDir * -10 * deltatime;
+                    if ((knockbackCom.ValueRW.Timer -= deltatime) < 0)
+                    {
+                        knockbackBit.ValueRW = false;
+                        knockbackCom.ValueRW.Timer = 0.3f;
+                    }
+                }
+
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.Follow:
@@ -111,11 +124,11 @@ namespace ProjectGra
                         {
                             //Debug.Log("Setting state to Sprint");
                             stateMachine.ValueRW.CurrentState = EntityState.SprintAttack;
-                            attack.ValueRW.SprintDirNormalizedMulSpeed = math.normalize(tarDir) * sprintSpeed * transform.ValueRO.Scale; // by multiplying scale, trying to enhance the enemies hatched from the egg
+                            attack.ValueRW.SprintDirNormalizedMulSpeed = normalizedDir * sprintSpeed * transform.ValueRO.Scale; // by multiplying scale, trying to enhance the enemies hatched from the egg
                             attack.ValueRW.AttackCooldown = attackCoolDown;
                             attack.ValueRW.SprintTimer = 1.5f * sprintDistance / sprintSpeed; // magic number trying to let the enemy sprint for a longer distance
                             attack.ValueRW.SprintWaitTimer = sprintWaitTimerSetting;
-                            flashBit.ValueRW = true;
+                            ecb.SetComponentEnabled<FlashingCom>(entity,true);
                             flashCom.ValueRW.FlashColorDifference = flashColorDifference;
                             flashCom.ValueRW.Duration = 1f;
                             flashCom.ValueRW.CycleTime = 0.2f;
@@ -124,7 +137,7 @@ namespace ProjectGra
                         {
                             transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             if (tarDirSq < 4f) continue;
-                            transform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
+                            transform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
                         }
                         break;
                     case EntityState.SprintAttack:

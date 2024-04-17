@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5627373939720350530}
   - component: {fileID: -8256880247186758851}
   m_Layer: 0
-  m_Name: EnemySummoner
+  m_Name: EnemyPrefab-Summoner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

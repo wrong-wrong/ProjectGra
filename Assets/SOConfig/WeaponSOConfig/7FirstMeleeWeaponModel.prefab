@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6349562363183364497}
   - component: {fileID: 8311293303217521447}
   - component: {fileID: 6768326508850380105}
+  - component: {fileID: 38479288119638317}
   m_Layer: 0
   m_Name: 7FirstMeleeWeaponModel
   m_TagString: Untagged
@@ -303,5 +304,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f96d2d13f722ee649b3e283196e51daa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &38479288119638317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5106712197949598478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc71df11870b3ef4a9420e29cef6f640, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

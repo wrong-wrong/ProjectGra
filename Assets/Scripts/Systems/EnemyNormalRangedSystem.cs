@@ -90,19 +90,33 @@ namespace ProjectGra
                 collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
-            foreach (var(localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>>()
-                .WithEntityAccess())
+            foreach (var(localTransform, attack, stateMachine, knockbackBit, knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>
+                , EnabledRefRW<EntityKnockBackCom>
+                , RefRW<EntityKnockBackCom>>()
+                .WithEntityAccess()
+                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
+
                 var tarDir = playerLocalTransform.Position - localTransform.ValueRO.Position;
                 var disSq = math.csum(tarDir * tarDir);
                 if(disSq == 0)
                 {
                     continue;
                 }
+                var normalizedDir = math.normalize(tarDir);
+                if (knockbackBit.ValueRO)
+                {
+                    localTransform.ValueRW.Position += normalizedDir * -10 * deltatime;
+                    if ((knockbackCom.ValueRW.Timer -= deltatime) < 0)
+                    {
+                        knockbackBit.ValueRW = false;
+                        knockbackCom.ValueRW.Timer = 0.3f;
+                    }
+                }
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.Follow:
-                        localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
+                        localTransform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
                         localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                         if (disSq < attackDistanceSq)
                         {
@@ -110,7 +124,7 @@ namespace ProjectGra
                         }
                         break;
                     case EntityState.Flee:
-                        localTransform.ValueRW.Position -= math.normalize(tarDir) * fleeSpeed * deltatime;
+                        localTransform.ValueRW.Position -= normalizedDir * fleeSpeed * deltatime;
                         if (disSq > fleeDistanceSq * 1.6)
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
