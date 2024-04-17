@@ -11,11 +11,9 @@ GameObject:
   - component: {fileID: 6689582199026634159}
   - component: {fileID: 45703782694188040}
   - component: {fileID: 5298442864329902620}
-  - component: {fileID: 7303865735149777703}
-  - component: {fileID: 3567651555299635881}
   - component: {fileID: 8468212138469146958}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerColliderPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,30 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7303865735149777703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 276394362530565384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7957b2872ec09344b6d5c1e43dcc327, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3567651555299635881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 276394362530565384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 863b2d6e11ed3d44cbfeccaac4c6f203, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8468212138469146958
 MonoBehaviour:
   m_ObjectHideFlags: 0

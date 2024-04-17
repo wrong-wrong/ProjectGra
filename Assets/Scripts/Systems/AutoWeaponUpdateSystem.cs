@@ -56,16 +56,32 @@ namespace ProjectGra
                         switch (wp.WeaponCurrentState)
                         {
                             case WeaponState.None:
-                                //just shoot, because it would be targeting something if code execute up here
-                                wp.MeleeTargetPosition = wp.autoWeaponLocalTransform.Forward() * wp.Range + wp.autoWeaponLocalTransform.Position;
-                                wp.MeleeOriginalPosition = wp.autoWeaponLocalTransform.Position;
-                                wp.MeleeRealShootingTimer = 0f;
-                                wp.WeaponCurrentState = WeaponState.Thrust;
                                 state.EntityManager.GetComponentData<PhysicsCollider>(wp.WeaponModel).Value.Value.SetCollisionFilter(playerSpawneeCollidesWithEnemyLayer);
-                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(wp.autoWeaponLocalTransform.Position);
-                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
-                                //change collisionFilter to begin trigger
-                                //Debug.Log("AutoMeleeWeapon start Thrust");
+                                wp.MeleeRealShootingTimer = 0f;
+
+                                if (!wp.IsMeleeSweep)
+                                {
+                                    //just shoot, because it would be targeting something if code execute up here
+                                    wp.MeleeTargetPosition = wp.autoWeaponLocalTransform.Forward() * wp.Range + wp.autoWeaponLocalTransform.Position;
+                                    wp.MeleeOriginalPosition = wp.autoWeaponLocalTransform.Position;
+                                    wp.WeaponCurrentState = WeaponState.Thrust;
+                                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(wp.autoWeaponLocalTransform.Position);
+                                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
+                                    //change collisionFilter to begin trigger
+                                    //Debug.Log("AutoMeleeWeapon start Thrust");
+                                }
+                                else
+                                {
+                                    // using MeleeTargetPosition as forwardMulRange
+                                    wp.MeleeTargetPosition = wp.autoWeaponLocalTransform.Forward() * wp.Range;
+                                    wp.MeleeSweepRightMulHalfWidth = wp.autoWeaponLocalTransform.Right() * wp.SweepHalfWidth;
+                                    wp.MeleeOriginalPosition = wp.autoWeaponLocalTransform.Position;
+                                    wp.WeaponCurrentState = WeaponState.Sweep;
+                                    // request audio
+                                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(wp.autoWeaponLocalTransform.Position);
+                                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
+                                }
+
                                 break;
                             case WeaponState.Thrust:
                                 var lerpAmount = (wp.MeleeRealShootingTimer += deltatime) / wp.MeleeShootingTimer;
@@ -85,6 +101,24 @@ namespace ProjectGra
                                 {
                                     //TODO : Modify lerpAmount with  sine function? to make a uneven movement
                                     SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel).ValueRW.Position = math.lerp(wp.MeleeOriginalPosition, wp.MeleeTargetPosition, lerpAmount);
+                                }
+                                break;
+                            case WeaponState.Sweep:
+                                var ratio = (wp.MeleeRealShootingTimer += deltatime) / wp.MeleeShootingTimer;
+                                if (ratio < 1f)
+                                {
+                                    // radians(x) == x * 0.0174532925f,   radians( ratio * 180) == ratio * 0.0174532925f * 180 == ratio * pi
+                                    SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel).ValueRW.Position =
+                                        wp.MeleeOriginalPosition
+                                        + wp.MeleeTargetPosition * math.sin(ratio * math.PI) // using meleeTargetPosition as forwardMulRange
+                                        + wp.MeleeSweepRightMulHalfWidth * math.cos(ratio * math.PI);
+                                }
+                                else
+                                {
+                                    wp.WeaponCurrentState = WeaponState.None;
+                                    wp.RealCooldown = wp.Cooldown;
+                                    state.EntityManager.GetComponentData<PhysicsCollider>(wp.WeaponModel).Value.Value.SetCollisionFilter(emptyCollisionFilter);
+                                    state.EntityManager.GetBuffer<HitBuffer>(wp.WeaponModel).Clear();
                                 }
                                 break;
                             case WeaponState.Retrieve:

@@ -185,6 +185,9 @@ namespace ProjectGra
         //Melee weapon only
         public float MeleeShootingTimer;
         public float3 MeleeTargetPosition;
+        public float3 MeleeSweepRightMulHalfWidth;
+        public float SweepHalfWidth;
+
         public float MeleeRealShootingTimer;  // used to lerp 
         public float3 MeleeOriginalPosition;
         //Ranged weapon only 
@@ -198,6 +201,7 @@ namespace ProjectGra
 
         public WeaponState WeaponCurrentState;
         public bool IsMeleeWeapon;
+        public bool IsMeleeSweep;
         //only used when needs to update attribute 
         //public int BasicDamage;
         //public float4 DamageBonus;

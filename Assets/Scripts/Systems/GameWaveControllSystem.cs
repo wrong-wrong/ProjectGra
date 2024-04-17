@@ -232,7 +232,7 @@ namespace ProjectGra
                         //sucks
                     }
                 }
-                else
+                else // melee weapon
                 {
                     autoWpEcb.Add(new AutoWeaponBuffer
                     {
@@ -246,8 +246,10 @@ namespace ProjectGra
                         WeaponCriticalHitChance = calculatedCritHitChance,
                         WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
                         Range = calculatedRange,
-                        MeleeShootingTimer = calculatedRange / 20f,
+                        MeleeShootingTimer = calculatedRange / config.MeleeForwardSpeed,
                         IsMeleeWeapon = config.IsMeleeWeapon,
+                        IsMeleeSweep = config.IsMeleeSweep,
+                        SweepHalfWidth = config.SweepHalfWidth,
                         //SpawneePrefab = Entity.Null
                     });
                     //SETTING AttackCurDamage TO THE NEWWEAPONMODEL  !!!

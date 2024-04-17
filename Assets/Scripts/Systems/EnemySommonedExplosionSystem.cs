@@ -24,7 +24,7 @@ namespace ProjectGra
         // 1.256637 == 0.8f * 1.57079632;
         public void OnCreate(ref SystemState state)
         {
-            state.RequireForUpdate<GameControllInGame>();
+            state.RequireForUpdate<GameControllNotInShop>();
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<SummonedExplosionCom>();
