@@ -5,10 +5,20 @@ using UnityEngine;
 
 public class TestMonoLaucher : MonoBehaviour
 {
-    public Color managedColor;
-    public float4 mycustomColor;
+
     public static TestMonoLaucher Instance;
     // Start is called before the first frame update
+
+    //// test melee weapon sweep
+    public Transform PlayerModel;
+    public float ForwardSpeed;
+    public float ForwardRange;
+    public float HalfWidth;
+
+    //// test flash color
+    //public Color managedColor;
+    //public float4 mycustomColor;
+
     private void Awake()
     {
         if(Instance != null)
@@ -29,9 +39,9 @@ public class TestMonoLaucher : MonoBehaviour
     void Update()
     {
         #region custom color test
-        if (!Input.GetKeyUp(KeyCode.Space)) return;
-        Debug.Log(managedColor.r + ", " + managedColor.g + ", " + managedColor.b);
-        mycustomColor = new float4(managedColor.r, managedColor.g, managedColor.b, managedColor.a);
+        //if (!Input.GetKeyUp(KeyCode.Space)) return;
+        //Debug.Log(managedColor.r + ", " + managedColor.g + ", " + managedColor.b);
+        //mycustomColor = new float4(managedColor.r, managedColor.g, managedColor.b, managedColor.a);
         #endregion
 
         #region effect request test

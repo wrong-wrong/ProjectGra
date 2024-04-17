@@ -128,6 +128,7 @@ namespace ProjectGra
                 }
                 else // Melee Weapon
                 {
+
                     ecb.SetComponent(playerEntity, new MainWeapon
                     {
                         WeaponIndex = weaponIdx[0],
@@ -139,11 +140,38 @@ namespace ProjectGra
                         DamageAfterBonus = calculatedDamageAfterBonus, // setting to negtive to indicate its not targeting something
                         WeaponCriticalHitChance = calculatedCritHitChance,
                         WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
-                        MeleeShootingTimer = calculatedRange / 20f,
+                        MeleeShootingTimer = calculatedRange / config.MeleeForwardSpeed,
                         IsMeleeWeapon = config.IsMeleeWeapon,
+                        IsMeleeSweep = config.IsMeleeSweep,
                         Range = calculatedRange,
                         //SpawneePrefab = Entity.Null
+                        SweepHalfWidth = config.SweepHalfWidth
                     });
+                    //if (!config.IsMeleeSweep)
+                    //{
+                    //    ecb.SetComponent(playerEntity, new MainWeapon
+                    //    {
+                    //        WeaponIndex = weaponIdx[0],
+                    //        WeaponModel = newWpModel,
+                    //        WeaponPositionOffset = config.WeaponPositionOffset,
+                    //        mainWeaponLocalTransform = ModelTransform,
+                    //        RealCooldown = 0f,
+                    //        Cooldown = calculatedCooldown,
+                    //        DamageAfterBonus = calculatedDamageAfterBonus, // setting to negtive to indicate its not targeting something
+                    //        WeaponCriticalHitChance = calculatedCritHitChance,
+                    //        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                    //        MeleeShootingTimer = calculatedRange / 20f,
+                    //        IsMeleeWeapon = config.IsMeleeWeapon,
+                    //        IsMeleeSweep = config.IsMeleeSweep,
+                    //        Range = calculatedRange,
+                    //        //SpawneePrefab = Entity.Null
+                    //    });
+                    //}
+                    //else
+                    //{
+
+                    //}
+
                     ecb.SetComponent(newWpModel, new AttackCurDamage { damage = calculatedDamageAfterBonus });
                 }
 

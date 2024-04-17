@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a528da624e5a8e47b0f417ce0cd3006, type: 3}
-  m_Name: 7FirstMeleeWeapon
+  m_Name: 8SecondSweepMeleeSO
   m_EditorClassIdentifier: 
   IsMeleeWeapon: 1
-  IsMeleeSweep: 0
-  SweepHalfWidth: 0
-  MeleeForwardSpeed: 20
-  WeaponName: FirstMeleeWeapon
-  BasePrice: 7
-  color: {r: 0.6509804, g: 0.7960785, b: 0.5529412, a: 1}
-  WeaponIndex: 7
-  WeaponModel: {fileID: 5106712197949598478, guid: 346df1cda119a124d86c32247c37feff,
+  IsMeleeSweep: 1
+  SweepHalfWidth: 3
+  MeleeForwardSpeed: 12
+  WeaponName: SecondSweepMelee
+  BasePrice: 10
+  color: {r: 0.6901961, g: 0.55816, b: 0.18823528, a: 1}
+  WeaponIndex: 8
+  WeaponModel: {fileID: 8249870532000828795, guid: b313778dc7b409547b79d5ce0975402c,
     type: 3}
   SpawneePrefabs: {fileID: 0}
   MeleeBonus: 0
   RangedBonus: 0
   ElementBonus: 0
   AttackSpeedBonus: 0
-  BasicDamage: 30
-  WeaponCriticalHitChance: 0
-  WeaponCriticalHitRatio: 0
-  Cooldown: 1
-  Range: 8
+  BasicDamage: 20
+  WeaponCriticalHitChance: 10
+  WeaponCriticalHitRatio: 2
+  Cooldown: 1.5
+  Range: 10
   WeaponPositionOffsetRelativeToCameraTarget:
-    x: 0
+    x: 0.6
     y: 0
-    z: 0
+    z: 1.5
   WeaponCategoryList: 02000000

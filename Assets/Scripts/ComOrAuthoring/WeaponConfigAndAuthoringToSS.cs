@@ -72,7 +72,10 @@ namespace ProjectGra
                             WeaponCriticalHitRatio = so.WeaponCriticalHitRatio,
                             Cooldown = so.Cooldown,
                             Range = so.Range,
-                            IsMeleeWeapon = so.IsMeleeWeapon
+                            IsMeleeWeapon = so.IsMeleeWeapon,
+                            IsMeleeSweep = so.IsMeleeSweep,
+                            SweepHalfWidth = so.SweepHalfWidth,
+                            MeleeForwardSpeed = so.MeleeForwardSpeed
                         });
                     }
 
@@ -109,9 +112,12 @@ namespace ProjectGra
         public float WeaponCriticalHitRatio;
         public float Cooldown;
         public float Range;
+        public float SweepHalfWidth;
         public Entity WeaponPrefab;  //this is Prefab
         public Entity SpawneePrefab;
+        public float MeleeForwardSpeed;
         public bool IsMeleeWeapon;
+        public bool IsMeleeSweep;
     }
     public class WeaponManagedAndMonoOnlyConfigCom : IComponentData
     {
@@ -133,6 +139,8 @@ namespace ProjectGra
         //Melee weapon only
         public float MeleeShootingTimer;
         public float3 MeleeTargetPosition;
+        public float3 MeleeSweepRightMulHalfWidth;
+        public float SweepHalfWidth;
         public float MeleeRealShootingTimer;  // used to lerp 
         public float3 MeleeOriginalPosition;
 
@@ -153,6 +161,7 @@ namespace ProjectGra
 
         public Entity WeaponModel; // read by follow system  // needs to be the instantiated Entity
         public WeaponState WeaponCurrentState;
+        public bool IsMeleeSweep;
         public bool IsMeleeWeapon;
         //Useless field
         //public int BasicDamage;
@@ -204,6 +213,7 @@ namespace ProjectGra
         Thrust,
         Retrieve,
         Cooldown,
+        Sweep,
     }
 
 }

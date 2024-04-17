@@ -71,6 +71,7 @@ namespace ProjectGra
             };
             var pierceSpawneeTriggerJob = new DetectPierceSpawneeTriggerJob
             {
+                PlayerPosition = playerTransform.Position,
                 ecb = endFixedSimECB,
                 CurDamageLookup = spawneeCurDamageLookup,
                 EntityHealthPointLookup = entityHealthPointLookup,
@@ -82,6 +83,9 @@ namespace ProjectGra
                 LocalTransformLookup = localTransformLookup,
                 HitBufferLookup = hitBufferLookup,
                 FlashingComLookup = flashingComLookup,
+                posList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList,
+                disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList,
+                valList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList,
             };
             //EffectRequestSharedStaticBuffer.SharedValue.Data.PlayerPosition = playerTransform.Position;
             EffectRequestSharedStaticBuffer.SharedValue.Data.SortPopupText();
@@ -170,6 +174,7 @@ namespace ProjectGra
     }
     public struct DetectPierceSpawneeTriggerJob : ITriggerEventsJob
     {
+        public float3 PlayerPosition;
         public EntityCommandBuffer ecb;
         public ComponentLookup<FlashingCom> FlashingComLookup;
         public ComponentLookup<EntityKnockBackCom> EntityKnockBackLookup;
@@ -181,48 +186,59 @@ namespace ProjectGra
         [ReadOnly] public ComponentLookup<AttackPierceTag> AttackPierceLookup;
         [ReadOnly] public ComponentLookup<AttackKnockBackTag> AttackKnockBackLookup;
         [ReadOnly] public ComponentLookup<AttackExplosiveCom> AttackExplosiveLookup;
+        public NativeList<float> disSqList;
+        public NativeList<float3> posList;
+        public NativeList<int> valList;
         public void Execute(TriggerEvent triggerEvent)
         {
             //EntityA tends to be spawnee
-            //Entity Spawnee;
-            //Entity Enemy;
-            if (!AttackPierceLookup.HasComponent(triggerEvent.EntityA) && !AttackPierceLookup.HasComponent(triggerEvent.EntityB)) return;
+            Entity Spawnee = triggerEvent.EntityA;
+            Entity Enemy = triggerEvent.EntityB;
+            if (!AttackPierceLookup.HasComponent(Spawnee) && !AttackPierceLookup.HasComponent(Enemy)) return;
             //Debug.Log("Pierced Job Executing");
-            HitBufferLookup.TryGetBuffer(triggerEvent.EntityA, out var hitBuffer);
+            HitBufferLookup.TryGetBuffer(Spawnee, out var hitBuffer);
             //Debug.Log(hitBuffer.Length);
             //if (hitBuffer.Length == 0) return;
             for(int i = 0, n = hitBuffer.Length; i < n; i++)
             {
-                if (hitBuffer[i].HitEntity == triggerEvent.EntityB) {return; }
+                if (hitBuffer[i].HitEntity == Enemy) {return; }
             }
-            var bufferEcb = ecb.SetBuffer<HitBuffer>(triggerEvent.EntityA);
-            bufferEcb.Add(new HitBuffer { HitEntity = triggerEvent.EntityB });
+            var spawneeLocalTransform = LocalTransformLookup[Spawnee];
 
-            if (AttackKnockBackLookup.HasComponent(triggerEvent.EntityA))
+            var bufferEcb = ecb.SetBuffer<HitBuffer>(Spawnee);
+            bufferEcb.Add(new HitBuffer { HitEntity = Enemy });
+
+            if (AttackKnockBackLookup.HasComponent(Spawnee))
             {
-                ecb.SetComponentEnabled<EntityKnockBackCom>(triggerEvent.EntityB, true);
+                ecb.SetComponentEnabled<EntityKnockBackCom>(Enemy, true);
             }
             //Handling explosive;
-            if (AttackExplosiveLookup.TryGetComponent(triggerEvent.EntityA, out var explosiveCom))
+            if (AttackExplosiveLookup.TryGetComponent(Spawnee, out var explosiveCom))
             {
                 var explosion = ecb.Instantiate(explosiveCom.ExplosionPrefab);
-                ecb.SetComponent<LocalTransform>(explosion, LocalTransformLookup[triggerEvent.EntityA]);
+                ecb.SetComponent<LocalTransform>(explosion, LocalTransformLookup[Spawnee]);
             }
 
-            var refHP = EntityHealthPointLookup.GetRefRW(triggerEvent.EntityB);
+            var refHP = EntityHealthPointLookup.GetRefRW(Enemy);
             //Debug.Log("NormalSpawneeJob");
             //Debug.Log("Pierced Job - Hurting");
-            if ((refHP.ValueRW.HealthPoint -= CurDamageLookup[triggerEvent.EntityA].damage) <= 0)
+            var damage = CurDamageLookup[Spawnee].damage;
+            if ((refHP.ValueRW.HealthPoint -= damage) <= 0)
             {
-                ecb.RemoveComponent<PhysicsCollider>(triggerEvent.EntityB);
+                ecb.RemoveComponent<PhysicsCollider>(Enemy);
                 //both way setting state machine works
                 //ecb.SetComponent(Enemy, new EntityStateMachine { CurrentState = EntityState.Dead });    
-                EntityStateMachineLookup.GetRefRW(triggerEvent.EntityB).ValueRW.CurrentState = EntityState.Dead;
+                EntityStateMachineLookup.GetRefRW(Enemy).ValueRW.CurrentState = EntityState.Dead;
             }
             else
             {
-                FlashingComLookup.SetComponentEnabled(triggerEvent.EntityB, true);  
+                FlashingComLookup.SetComponentEnabled(Enemy, true);  
             }
+            var disSq = math.distancesq(PlayerPosition, spawneeLocalTransform.Position);
+            var pos = spawneeLocalTransform.Position;
+            posList.Add(pos);
+            disSqList.Add(disSq);
+            valList.Add(damage);
             //Debug.Log("PierceSpawnee TriggerJob");
         }
     }

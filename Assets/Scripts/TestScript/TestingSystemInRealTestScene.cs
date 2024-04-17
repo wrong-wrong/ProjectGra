@@ -1,4 +1,5 @@
 using ProjectGra;
+using System.Net;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
@@ -9,6 +10,13 @@ using Random = Unity.Mathematics.Random;
 public partial struct TestingSystemInRealTestScene : ISystem
 {
     private Random random;
+
+    // melee weapon sweep test
+    float3 forwardMulRange;
+    float3 rightMulHalfWidth;
+    float sweepAccumulateTimer;
+    float sweepTotalTime;
+    float3 originalPos;
     public void OnCreate(ref SystemState state)
     {
 
@@ -19,6 +27,36 @@ public partial struct TestingSystemInRealTestScene : ISystem
     public void OnUpdate(ref SystemState state) 
     {
         //if (!Input.GetKeyUp(KeyCode.Space)) return;
+
+
+        #region melee weapon sweep test
+        var deltatime = SystemAPI.Time.DeltaTime;
+        if((sweepAccumulateTimer += deltatime) < sweepTotalTime)
+        {
+            var testEntity = SystemAPI.GetSingletonEntity<TestingEntityTag>();
+            var transformRW = SystemAPI.GetComponentRW<LocalTransform>(testEntity);
+            var ratio = sweepAccumulateTimer / sweepTotalTime;
+            transformRW.ValueRW.Position = originalPos + forwardMulRange * math.sin(math.radians(ratio * 180)) + rightMulHalfWidth * math.cos(math.radians(ratio * 180));
+        }
+
+
+        if (!Input.GetKeyUp(KeyCode.Space)) return;
+        sweepAccumulateTimer = 0;
+
+        var playerTransform = TestMonoLaucher.Instance.PlayerModel;
+        originalPos = playerTransform.position;
+        sweepTotalTime = TestMonoLaucher.Instance.ForwardRange / TestMonoLaucher.Instance.ForwardSpeed;
+        forwardMulRange = playerTransform.forward * TestMonoLaucher.Instance.ForwardRange;
+        rightMulHalfWidth = playerTransform.right * TestMonoLaucher.Instance.HalfWidth;
+
+
+        //// rotation is controlled by cameratargetfollowSystem in real application
+        //var testEntity2 = SystemAPI.GetSingletonEntity<TestingEntityTag>();
+        //var transformRW2 = SystemAPI.GetComponentRW<LocalTransform>(testEntity2);
+        //transformRW2.ValueRW.Rotation = quaternion.LookRotation(playerTransform.forward, math.up());
+        
+        #endregion
+
 
         #region effect request test
         //var popText_disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList;
@@ -49,28 +87,28 @@ public partial struct TestingSystemInRealTestScene : ISystem
         #region flashing com multiple color test
 
 
-        var deltatime = SystemAPI.Time.DeltaTime;
-        foreach (var (flash, flashBit, basecolor) in SystemAPI.Query<RefRW<FlashingCom>, EnabledRefRW<FlashingCom>, RefRW<URPMaterialPropertyBaseColor>>())
-        {
-            var ratio = flash.ValueRO.AccumulateTimer / flash.ValueRO.CycleTime;
-            basecolor.ValueRW.Value.xyz = 1f - flash.ValueRO.FlashColorDifference * math.sin(math.radians(ratio * 180));//1-ratio;
-            if ((flash.ValueRW.AccumulateTimer += deltatime) < flash.ValueRO.Duration) continue;
-            flash.ValueRW.AccumulateTimer = 0;
-            flash.ValueRW.Duration = 1f;
-            flash.ValueRW.CycleTime = 1f;
-            flashBit.ValueRW = false;
-            basecolor.ValueRW.Value = new float4(1, 1, 1, 1);
+        //var deltatime = SystemAPI.Time.DeltaTime;
+        //foreach (var (flash, flashBit, basecolor) in SystemAPI.Query<RefRW<FlashingCom>, EnabledRefRW<FlashingCom>, RefRW<URPMaterialPropertyBaseColor>>())
+        //{
+        //    var ratio = flash.ValueRO.AccumulateTimer / flash.ValueRO.CycleTime;
+        //    basecolor.ValueRW.Value.xyz = 1f - flash.ValueRO.FlashColorDifference * math.sin(math.radians(ratio * 180));//1-ratio;
+        //    if ((flash.ValueRW.AccumulateTimer += deltatime) < flash.ValueRO.Duration) continue;
+        //    flash.ValueRW.AccumulateTimer = 0;
+        //    flash.ValueRW.Duration = 1f;
+        //    flash.ValueRW.CycleTime = 1f;
+        //    flashBit.ValueRW = false;
+        //    basecolor.ValueRW.Value = new float4(1, 1, 1, 1);
 
-        }
+        //}
 
-        if (!Input.GetKeyUp(KeyCode.Space)) return;
-        float4 customColor = TestMonoLaucher.Instance.mycustomColor;
-        foreach(var (flashingCom, flashingBit) in SystemAPI.Query<RefRW<FlashingCom>, EnabledRefRW<FlashingCom>>()
-            .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
-        {
-            flashingCom.ValueRW.FlashColorDifference = new float3(1 - customColor.x, 1 - customColor.y, 1 - customColor.z);
-            flashingBit.ValueRW = true;
-        }
+        //if (!Input.GetKeyUp(KeyCode.Space)) return;
+        //float4 customColor = TestMonoLaucher.Instance.mycustomColor;
+        //foreach(var (flashingCom, flashingBit) in SystemAPI.Query<RefRW<FlashingCom>, EnabledRefRW<FlashingCom>>()
+        //    .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
+        //{
+        //    flashingCom.ValueRW.FlashColorDifference = new float3(1 - customColor.x, 1 - customColor.y, 1 - customColor.z);
+        //    flashingBit.ValueRW = true;
+        //}
         #endregion
     }
 }

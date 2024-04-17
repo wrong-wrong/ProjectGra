@@ -8,6 +8,10 @@ namespace ProjectGra
     public class WeaponScriptableObjectConfig : ScriptableObject
     {
         public bool IsMeleeWeapon;
+        public bool IsMeleeSweep;
+        public float SweepHalfWidth;
+        public float MeleeForwardSpeed;
+
         [Header("UI only field")]
         public string WeaponName;
         public int BasePrice;

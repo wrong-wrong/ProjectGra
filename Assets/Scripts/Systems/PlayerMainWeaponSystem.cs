@@ -43,7 +43,6 @@ namespace ProjectGra
         {
             var deltatime = SystemAPI.Time.DeltaTime;
             //need cur main weapon position,  cur spawnee prefab, player input, real cooldown, 
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             foreach (var (mainWeaponState, inputState, playerAttribute) in SystemAPI.Query<RefRW<MainWeapon>, EnabledRefRO<ShootInput>, RefRO<PlayerAtttributeDamageRelated>>()
                     .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
@@ -63,29 +62,46 @@ namespace ProjectGra
                             if (!inputState.ValueRO) return;
                             //just shoot, because it would be targeting something if code execute up here
                             //Debug.Log(mainWeaponState.ValueRO.mainWeaponLocalTransform.Forward());
-                            mainWeaponState.ValueRW.MeleeTargetPosition = mainWeaponState.ValueRO.mainWeaponLocalTransform.Forward() * mainWeaponState.ValueRO.Range + mainWeaponState.ValueRO.mainWeaponLocalTransform.Position;
-                            mainWeaponState.ValueRW.MeleeOriginalPosition = mainWeaponState.ValueRO.mainWeaponLocalTransform.Position;
                             mainWeaponState.ValueRW.MeleeRealShootingTimer = 0f;
-                            mainWeaponState.ValueRW.WeaponCurrentState = WeaponState.Thrust;
                             state.EntityManager.GetComponentData<PhysicsCollider>(mainWeaponState.ValueRW.WeaponModel).Value.Value.SetCollisionFilter(playerSpawneeCollidesWithEnemyLayer);
-                            //change collisionFilter to begin trigger
-                            //Debug.Log("MainMeleeWeapon start Thrust");
+                            if (!mainWeaponState.ValueRW.IsMeleeSweep)
+                            {
+                                mainWeaponState.ValueRW.MeleeTargetPosition = mainWeaponState.ValueRO.mainWeaponLocalTransform.Forward() * mainWeaponState.ValueRO.Range + mainWeaponState.ValueRO.mainWeaponLocalTransform.Position;
+                                mainWeaponState.ValueRW.MeleeOriginalPosition = mainWeaponState.ValueRO.mainWeaponLocalTransform.Position;
+                                mainWeaponState.ValueRW.WeaponCurrentState = WeaponState.Thrust;
+                                //change collisionFilter to begin trigger
+                                //Debug.Log("MainMeleeWeapon start Thrust");
 
-                            // request audio
-                            EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(mainWeaponState.ValueRO.mainWeaponLocalTransform.Position);
-                            EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
+                                // request audio
+                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(mainWeaponState.ValueRO.mainWeaponLocalTransform.Position);
+                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
+                            }
+                            else
+                            {
+
+                                // using MeleeTargetPosition as forwardMulRange
+                                mainWeaponState.ValueRW.MeleeTargetPosition = mainWeaponState.ValueRO.mainWeaponLocalTransform.Forward() * mainWeaponState.ValueRO.Range;
+                                mainWeaponState.ValueRW.MeleeSweepRightMulHalfWidth = mainWeaponState.ValueRO.mainWeaponLocalTransform.Right() * mainWeaponState.ValueRO.SweepHalfWidth;
+                                mainWeaponState.ValueRW.MeleeOriginalPosition = mainWeaponState.ValueRO.mainWeaponLocalTransform.Position;
+                                mainWeaponState.ValueRW.WeaponCurrentState = WeaponState.Sweep;
+                                // request audio
+                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(mainWeaponState.ValueRO.mainWeaponLocalTransform.Position);
+                                EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.NormalShoot);
+                            }
+
                             break;
                         case WeaponState.Thrust:
                             var lerpAmount = (mainWeaponState.ValueRW.MeleeRealShootingTimer += deltatime) / mainWeaponState.ValueRO.MeleeShootingTimer;
                             if (lerpAmount > 1f)
                             {
                                 mainWeaponState.ValueRW.WeaponCurrentState = WeaponState.Retrieve;
-                                state.EntityManager.GetComponentData<PhysicsCollider>(mainWeaponState.ValueRW.WeaponModel).Value.Value.SetCollisionFilter(emptyCollisionFilter);
-                                //change collisionFilter when start retrieve
                                 mainWeaponState.ValueRW.MeleeOriginalPosition = mainWeaponState.ValueRO.MeleeTargetPosition;
                                 mainWeaponState.ValueRW.MeleeRealShootingTimer = 0f;
-                                var hitBuffer = ecb.SetBuffer<HitBuffer>(mainWeaponState.ValueRW.WeaponModel);
-                                hitBuffer.Clear();
+                                //change collisionFilter when start retrieve
+                                state.EntityManager.GetComponentData<PhysicsCollider>(mainWeaponState.ValueRW.WeaponModel).Value.Value.SetCollisionFilter(emptyCollisionFilter);
+                                state.EntityManager.GetBuffer<HitBuffer>(mainWeaponState.ValueRW.WeaponModel).Clear();
+                                //var hitBuffer = ecb.SetBuffer<HitBuffer>(mainWeaponState.ValueRW.WeaponModel);
+                                //hitBuffer.Clear();
                                 //Debug.Log("MainMeleeWeapon start Retrieve");
                                 // In Retrieve using wp.autoWeaponLocalTransform instead of wp.MeleeTargetPosition = wp.auto
                             }
@@ -95,6 +111,24 @@ namespace ProjectGra
                                 //TODO : Modify lerpAmount with  sine function? to make a uneven movement
                                 SystemAPI.GetComponentRW<LocalTransform>(mainWeaponState.ValueRW.WeaponModel).ValueRW.Position = 
                                     math.lerp(mainWeaponState.ValueRW.MeleeOriginalPosition, mainWeaponState.ValueRW.MeleeTargetPosition, math.sin(lerpAmount * 1.5707963f));
+                            }
+                            break;
+                        case WeaponState.Sweep:
+                            var ratio = (mainWeaponState.ValueRW.MeleeRealShootingTimer += deltatime) / mainWeaponState.ValueRO.MeleeShootingTimer;
+                            if(ratio < 1f)
+                            {
+                                // radians(x) == x * 0.0174532925f,   radians( ratio * 180) == ratio * 0.0174532925f * 180 == ratio * pi
+                                SystemAPI.GetComponentRW<LocalTransform>(mainWeaponState.ValueRW.WeaponModel).ValueRW.Position =
+                                    mainWeaponState.ValueRW.MeleeOriginalPosition
+                                    + mainWeaponState.ValueRO.MeleeTargetPosition * math.sin(ratio * math.PI) // using meleeTargetPosition as forwardMulRange
+                                    + mainWeaponState.ValueRO.MeleeSweepRightMulHalfWidth * math.cos(ratio * math.PI);
+                            }
+                            else
+                            {
+                                mainWeaponState.ValueRW.WeaponCurrentState = WeaponState.None;
+                                mainWeaponState.ValueRW.RealCooldown = mainWeaponState.ValueRW.Cooldown;
+                                state.EntityManager.GetComponentData<PhysicsCollider>(mainWeaponState.ValueRW.WeaponModel).Value.Value.SetCollisionFilter(emptyCollisionFilter);
+                                state.EntityManager.GetBuffer<HitBuffer>(mainWeaponState.ValueRW.WeaponModel).Clear();
                             }
                             break;
                         case WeaponState.Retrieve:
@@ -119,6 +153,7 @@ namespace ProjectGra
                 }
                 else if (inputState.ValueRO)
                 {
+                    var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
                     mainWeaponState.ValueRW.RealCooldown = mainWeaponState.ValueRO.Cooldown;
                     var spawnee = ecb.Instantiate(mainWeaponState.ValueRO.SpawneePrefab);
                     ecb.SetComponent(spawnee, mainWeaponState.ValueRO.mainWeaponLocalTransform);
