@@ -423,7 +423,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946538647}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2a1966f8d681664587369720af4f651, type: 3}
   m_Name: 
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946538647}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 10943657f1e292c47ac42dd25375272a, type: 3}
   m_Name: 
@@ -478,6 +478,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e770205c8c89184ab1786649884b9ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  managedColor: {r: 1, g: 0, b: 0, a: 1}
+  mycustomColor:
+    x: 0
+    y: 0
+    z: 0
+    w: 0
 --- !u!114 &946538652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,7 +491,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946538647}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15e59df33a6553e44af59fdba7823de6, type: 3}
   m_Name: 

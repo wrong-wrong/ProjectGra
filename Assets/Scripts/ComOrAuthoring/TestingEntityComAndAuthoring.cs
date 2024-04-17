@@ -15,7 +15,8 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent<TestingEntityTag>(entity);
-                //AddComponent(entity, new URPMaterialPropertyBaseColor { Value = new float4(1,1,1,1)});
+                AddComponent(entity, new URPMaterialPropertyBaseColor { Value = new float4(1,1,1,1)});
+                AddComponent(entity, new FlashingCom { AccumulateTimer = 0f, CycleTime = 1f, Duration = 1f });
                 //AddComponent<SpawningTimer>(entity);
                 //var entitiesGraphicsSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<EntitiesGraphicsSystem>();
                 //var batchMeshId = entitiesGraphicsSystem.RegisterMesh(authoring.mesh);

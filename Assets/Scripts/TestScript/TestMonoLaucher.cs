@@ -1,10 +1,23 @@
 using ProjectGra;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class TestMonoLaucher : MonoBehaviour
 {
+    public Color managedColor;
+    public float4 mycustomColor;
+    public static TestMonoLaucher Instance;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        if(Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     void Start()
     {
         var testsystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystem<TestingSystemInRealTestScene>();
@@ -15,6 +28,13 @@ public class TestMonoLaucher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region custom color test
+        if (!Input.GetKeyUp(KeyCode.Space)) return;
+        Debug.Log(managedColor.r + ", " + managedColor.g + ", " + managedColor.b);
+        mycustomColor = new float4(managedColor.r, managedColor.g, managedColor.b, managedColor.a);
+        #endregion
+
+        #region effect request test
         //if (!Input.GetKeyUp(KeyCode.T)) return;
 
         //var disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList;
@@ -24,5 +44,6 @@ public class TestMonoLaucher : MonoBehaviour
         //{
         //    Debug.Log("Getting :" + disSqList[i] + " - " + posList[i] + " - " + valList[i]);
         //}
+        #endregion
     }
 }

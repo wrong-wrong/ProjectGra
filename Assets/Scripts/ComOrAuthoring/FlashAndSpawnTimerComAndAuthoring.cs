@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ProjectGra
@@ -22,6 +23,7 @@ namespace ProjectGra
                     Duration = authoring.SpawningTimerAndFlashDuration,
                     //AccumulateTimer = authoring.AccumulateTimer,
                     CycleTime = authoring.FlashingCycleTime,
+                    FlashColorDifference = new float3(0,1,1), //  float3(1,1,1) - red.xyz
                 });
                 AddComponent(entity, new SpawningTimer { time = authoring.SpawningTimerAndFlashDuration });
             }
@@ -32,6 +34,7 @@ namespace ProjectGra
         public float Duration;
         public float AccumulateTimer;
         public float CycleTime;
+        public float3 FlashColorDifference; // equals to float3(1,1,1) - the color.xyz of the color you want
     }
     public struct SpawningTimer : IComponentData, IEnableableComponent
     {

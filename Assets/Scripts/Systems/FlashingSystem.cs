@@ -20,7 +20,7 @@ namespace ProjectGra
             foreach (var (flash, flashBit, basecolor) in SystemAPI.Query<RefRW<FlashingCom>, EnabledRefRW<FlashingCom>, RefRW<URPMaterialPropertyBaseColor>>())
             {
                 var ratio = flash.ValueRO.AccumulateTimer / flash.ValueRO.CycleTime;
-                basecolor.ValueRW.Value.yz = 1f - math.sin(math.radians(ratio * 180));//1-ratio;
+                basecolor.ValueRW.Value.xyz = 1f - flash.ValueRO.FlashColorDifference * math.sin(math.radians(ratio * 180));//1-ratio;
                 if ((flash.ValueRW.AccumulateTimer += deltatime) < flash.ValueRO.Duration) continue;
                 flash.ValueRW.AccumulateTimer = 0;
                 flash.ValueRW.Duration = hitFlashCycleTime;
