@@ -15,7 +15,9 @@ namespace ProjectGra
         private Entity ColliderPrefab;
         private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
+        float3 flashColorDifference;
         float followSpeed;
+        float sprintWaitTimerSetting;
         float deathTimer;
 
         int attackVal;
@@ -44,6 +46,7 @@ namespace ProjectGra
         public void OnStartRunning(ref SystemState state)
         {
             var config = SystemAPI.GetSingleton<NormalSprintConfigCom>();
+            flashColorDifference = config.FlashColorDifference;
             followSpeed = config.FollowSpeed;
             deathTimer = config.DeathCountdown;
             attackCoolDown = config.AttackCooldown;
@@ -53,6 +56,7 @@ namespace ProjectGra
             hitDistanceSq = config.HitDistance * config.HitDistance;
             lootChance = config.LootChance;
             attackVal = config.AttackVal;
+            sprintWaitTimerSetting = config.SprintWaitTimerSetting;
             var container = SystemAPI.GetSingleton<PrefabContainerCom>();
             MaterialPrefab = container.MaterialPrefab;
             ItemPrefab = container.ItemPrefab;
@@ -86,32 +90,46 @@ namespace ProjectGra
                 collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
-            foreach (var (localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>>()
-                .WithEntityAccess())
+            foreach (var (transform, attack, stateMachine, flashCom, flashBit, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>
+                , RefRW<FlashingCom>
+                , EnabledRefRW<FlashingCom>>()
+                .WithEntityAccess()
+                .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
-                var tarDir = playerTransform.Position - localTransform.ValueRO.Position;
+                var tarDir = playerTransform.Position - transform.ValueRO.Position;
                 var tarDirSq = math.csum(tarDir * tarDir);
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.Follow:
-
-                        if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f && tarDirSq < startSprintDistanceSq)//if (tarDirSq < startSprintDistanceSq && attack.ValueRO.AttackCooldown < 0f)
+                        if(attack.ValueRO.SprintTimer > 0f)
+                        {
+                            attack.ValueRW.SprintTimer -= deltatime;
+                            transform.ValueRW.Position += attack.ValueRO.SprintDirNormalizedMulSpeed * deltatime;
+                            continue;
+                        }
+                        if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f && tarDirSq < startSprintDistanceSq * transform.ValueRO.Scale)//if (tarDirSq < startSprintDistanceSq && attack.ValueRO.AttackCooldown < 0f)
                         {
                             //Debug.Log("Setting state to Sprint");
                             stateMachine.ValueRW.CurrentState = EntityState.SprintAttack;
-                            attack.ValueRW.SprintDirNormalized = math.normalize(tarDir);
+                            attack.ValueRW.SprintDirNormalizedMulSpeed = math.normalize(tarDir) * sprintSpeed * transform.ValueRO.Scale; // by multiplying scale, trying to enhance the enemies hatched from the egg
                             attack.ValueRW.AttackCooldown = attackCoolDown;
                             attack.ValueRW.SprintTimer = 1.5f * sprintDistance / sprintSpeed; // magic number trying to let the enemy sprint for a longer distance
+                            attack.ValueRW.SprintWaitTimer = sprintWaitTimerSetting;
+                            flashBit.ValueRW = true;
+                            flashCom.ValueRW.FlashColorDifference = flashColorDifference;
+                            flashCom.ValueRW.Duration = 1f;
+                            flashCom.ValueRW.CycleTime = 0.2f;
                         }
                         else
                         {
-                            localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                            transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             if (tarDirSq < 4f) continue;
-                            localTransform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
+                            transform.ValueRW.Position += math.normalize(tarDir) * followSpeed * deltatime;
                         }
                         break;
                     case EntityState.SprintAttack:
-                        localTransform.ValueRW.Position += attack.ValueRO.SprintDirNormalized * sprintSpeed * deltatime;
+                        if ((attack.ValueRW.SprintWaitTimer -= deltatime) > 0f) continue;
+                        transform.ValueRW.Position += attack.ValueRO.SprintDirNormalizedMulSpeed * deltatime;
                         if (tarDirSq < hitDistanceSq)
                         {
                             //Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
@@ -129,11 +147,11 @@ namespace ProjectGra
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
                             ecb.SetComponent<LocalTransform>(material
-                                , localTransform.ValueRO);
+                                , transform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);
                         // request particle
-                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(localTransform.ValueRO.Position);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
                         EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
                         break;
                 }

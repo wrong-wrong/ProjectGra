@@ -46,6 +46,8 @@ namespace ProjectGra
         public float NormalSprintSprintSpeed;
         public float NormalSprintHitDistanceDuringSprint;
         public float NormalSprintLootChance;
+        public Color NormalSprintFlashColor;
+        public float NormalSprintSprintWaitTimerSetting;
 
 
         [Header("NormalRangedConfig")]
@@ -124,6 +126,8 @@ namespace ProjectGra
                     SprintSpeed = authoring.NormalSprintSprintSpeed,
                     HitDistance = authoring.NormalSprintHitDistanceDuringSprint,
                     LootChance = authoring.NormalSprintLootChance,
+                    FlashColorDifference = new float3(1 - authoring.NormalSprintFlashColor.r, 1 - authoring.NormalSprintFlashColor.g, 1 - authoring.NormalSprintFlashColor.b),
+                    SprintWaitTimerSetting = authoring.NormalSprintSprintWaitTimerSetting,
                 });
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalRangedConfigCom
@@ -257,10 +261,11 @@ namespace ProjectGra
         public float AttackCooldown;
         public float DeathCountdown;
         public float LootChance;
-
+        public float SprintWaitTimerSetting;
         public float AttackDistance;
         public float SprintSpeed;
         public float HitDistance;
+        public float3 FlashColorDifference;
     }
 
     public struct EnemySummonerConfigCom : IComponentData
