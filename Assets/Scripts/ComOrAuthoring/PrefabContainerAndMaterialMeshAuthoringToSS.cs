@@ -6,6 +6,15 @@ namespace ProjectGra
 {
     public class PrefabContainerAndMaterialMeshAuthoringToSS : MonoBehaviour
     {
+        [Header("Collider Prefab")]
+        public GameObject EnemyEliteEggAndShootCollider;
+        public GameObject EnemyEliteShootCollider;
+        public GameObject EnemyEliteSprintAndShootCollider;
+        public GameObject EnemyNormalMeleeCollider;
+        public GameObject EnemyNormalRangedCollider;
+        public GameObject EnemyNormalSprintCollider;
+        public GameObject EnemySummonerCollider;
+
         public GameObject PlayerPrefab;
         public GameObject MaterialPrefab;
         public GameObject ItemPrefab;
@@ -46,8 +55,28 @@ namespace ProjectGra
                     EnemyNormalSprintMesh = authoring.EnemyNormalSprintMesh,
                     EnemySummonerMesh = authoring.EnemySummonerMesh,
                 });
+                AddComponent(entity, new RealColliderPrefabContainerCom
+                {
+                    EnemyEliteEggAndShootCollider = GetEntity(authoring.EnemyEliteEggAndShootCollider, TransformUsageFlags.None),
+                    EnemyEliteShootCollider = GetEntity(authoring.EnemyEliteEggAndShootCollider, TransformUsageFlags.None),
+                    EnemyEliteSprintAndShootCollider = GetEntity(authoring.EnemyEliteSprintAndShootCollider, TransformUsageFlags.None),
+                    EnemyNormalMeleeCollider = GetEntity(authoring.EnemyNormalMeleeCollider, TransformUsageFlags.None),
+                    EnemyNormalRangedCollider = GetEntity(authoring.EnemyNormalRangedCollider, TransformUsageFlags.None),
+                    EnemyNormalSprintCollider = GetEntity(authoring.EnemyNormalSprintCollider, TransformUsageFlags.None),
+                    EnemySummonerCollider = GetEntity(authoring.EnemySummonerCollider, TransformUsageFlags.None),
+                });
             }
         }
+    }
+    public struct RealColliderPrefabContainerCom : IComponentData
+    {
+        public Entity EnemyEliteEggAndShootCollider;
+        public Entity EnemyEliteShootCollider;
+        public Entity EnemyEliteSprintAndShootCollider;
+        public Entity EnemyNormalMeleeCollider;
+        public Entity EnemyNormalRangedCollider;
+        public Entity EnemyNormalSprintCollider;
+        public Entity EnemySummonerCollider;
     }
     public struct PrefabContainerCom : IComponentData
     {

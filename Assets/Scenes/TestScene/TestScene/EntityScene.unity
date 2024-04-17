@@ -298,6 +298,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9105b2800ecae394e84c5ea6b97a012d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnemyEliteEggAndShootCollider: {fileID: 708674237894179587, guid: f9500e64d3071384cbcf9c4d3fde3eb3,
+    type: 3}
+  EnemyEliteShootCollider: {fileID: 5049642114882118702, guid: 0b1c1d4c2cf08144a8a3903f0d049624,
+    type: 3}
+  EnemyEliteSprintAndShootCollider: {fileID: 2481459197391601156, guid: 10dbf71e6ed11de4199bc6a75e6ba7cc,
+    type: 3}
+  EnemyNormalMeleeCollider: {fileID: 6274886529841577571, guid: c70bd840af5713b4ca04b5017d082fb7,
+    type: 3}
+  EnemyNormalRangedCollider: {fileID: 8345473314236090788, guid: 9448a9992cf71354d985c34b88cdf122,
+    type: 3}
+  EnemyNormalSprintCollider: {fileID: 2904020847243990145, guid: 18ea3e0ee6a37354d927750c5be3edc4,
+    type: 3}
+  EnemySummonerCollider: {fileID: 3305609984999069499, guid: a280782d3961a0c44b22328526894ea0,
+    type: 3}
   PlayerPrefab: {fileID: 276394362530565384, guid: d7ea521285d3c784b83732950bd6baf7,
     type: 3}
   MaterialPrefab: {fileID: 2179307715675949388, guid: aa7b56e2b71fad347b727f7d64116776,

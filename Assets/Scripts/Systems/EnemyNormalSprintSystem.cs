@@ -11,6 +11,8 @@ namespace ProjectGra
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemyNormalSprintSystem : ISystem, ISystemStartStop
     {
+
+        private Entity ColliderPrefab;
         private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         float followSpeed;
@@ -56,6 +58,8 @@ namespace ProjectGra
             ItemPrefab = container.ItemPrefab;
             var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
             RealMeshId = batchMeshIDContainer.EnemyNormalSprintMeshID;
+            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalSprintCollider;
+
         }
         public void OnStopRunning(ref SystemState state) { }
 
@@ -66,7 +70,7 @@ namespace ProjectGra
             var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
 
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-
+            var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
             foreach (var (spawnTimer, spawnTimerBit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
@@ -78,7 +82,8 @@ namespace ProjectGra
                 if ((spawnTimer.ValueRW.time -= deltatime) > 0f) continue;
                 spawnTimerBit.ValueRW = false;
                 materialAndMesh.ValueRW.MeshID = RealMeshId;
-                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                //collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
             foreach (var (localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalSprintAttack>, RefRW<EntityStateMachine>>()

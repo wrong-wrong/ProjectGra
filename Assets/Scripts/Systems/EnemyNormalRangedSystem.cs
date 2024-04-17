@@ -11,6 +11,8 @@ namespace ProjectGra
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemyNormalRangedSystem : ISystem, ISystemStartStop
     {
+        private Entity ColliderPrefab;
+
         private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         float followSpeed;
@@ -61,6 +63,7 @@ namespace ProjectGra
             ItemPrefab = container.ItemPrefab;
             var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
             RealMeshId = batchMeshIDContainer.EnemyNormalRangedMeshID;
+            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalRangedCollider;
 
         }
         public void OnStopRunning(ref SystemState state) { }
@@ -72,6 +75,8 @@ namespace ProjectGra
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();
+            var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
+
             foreach (var (spawnTimer, spawnTimerBit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
                 , RefRW<MaterialMeshInfo>
                 , RefRW<PhysicsCollider>
@@ -81,7 +86,8 @@ namespace ProjectGra
                 if ((spawnTimer.ValueRW.time -= deltatime) > 0f) continue;
                 spawnTimerBit.ValueRW = false;
                 materialAndMesh.ValueRW.MeshID = RealMeshId;
-                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                //collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
             foreach (var(localTransform, attack, stateMachine, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>>()

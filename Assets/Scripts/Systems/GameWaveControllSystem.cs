@@ -13,6 +13,7 @@ namespace ProjectGra
         private ComponentLookup<AttackExplosiveCom> explosiveLookup;
         private float beginWaveTimeSet;
         private float inWaveTimeSet;
+        //private Entity playerPrefab;
         public void OnCreate(ref SystemState state)
         {
             //state.RequireForUpdate<PlayerTag>(); // equal to Initialized , since playerTag is added through baking
@@ -39,7 +40,7 @@ namespace ProjectGra
             var config = SystemAPI.GetSingleton<GameWaveTimeConfig>();
             beginWaveTimeSet = config.BeginWaveTime;
             inWaveTimeSet = config.InWaveTime;
-
+            //playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
             PopulateWeaponStateWithWeaponIdx(ref state);
         }
         public void OnStopRunning(ref SystemState state)
@@ -258,8 +259,7 @@ namespace ProjectGra
             playerHp.ValueRW.HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint();
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
-            var playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
-            state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(playerPrefab));
+            state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab));
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;

@@ -5177,7 +5177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a1966f8d681664587369720af4f651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsInitialized: 0
   MaxPopupTextCount: 50
   maxShowingPopupTextDistance: 20
   singlePopupTextPrefab: {fileID: 1809440307466595653, guid: 04846cfe8ab2dc04f9283e7a8942fdc4,

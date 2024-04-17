@@ -6,7 +6,7 @@ using Random = Unity.Mathematics.Random;
 public class PopupTextManager : MonoBehaviour
 {
     public static PopupTextManager Instance;
-    public bool IsInitialized;
+    //public bool IsInitialized;
     public int MaxPopupTextCount;
     [SerializeField] float maxShowingPopupTextDistance;
     //[SerializeField] int val;
@@ -49,6 +49,7 @@ public class PopupTextManager : MonoBehaviour
         ringListHead = 0;
         ringListTail = 0;
         this.enabled = false;
+        Debug.LogWarning("Current popup text update logic only works when all text have the same showing time");
     }
     void Update()
     {

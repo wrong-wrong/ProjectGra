@@ -11,6 +11,8 @@ namespace ProjectGra
     //[UpdateBefore(typeof(EnemySummonedExplosionSystem))]
     public partial struct EnemyEliteShooterSystem : ISystem, ISystemStartStop
     {
+        private Entity ColliderPrefab;
+
         private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         private float4 spawneePosOffsetX;
@@ -68,7 +70,7 @@ namespace ProjectGra
             random = Random.CreateFromIndex(0);
             var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
             RealMeshId = batchMeshIDContainer.EnemyEliteShootMeshID;
-
+            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteShootCollider;
         }
 
         public void OnStopRunning(ref SystemState state)
@@ -78,6 +80,7 @@ namespace ProjectGra
 
         public void OnUpdate(ref SystemState state)
         {
+            var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
@@ -92,7 +95,8 @@ namespace ProjectGra
                 if ((spawnTimer.ValueRW.time -= deltatime) > 0f) continue;
                 spawnTimerBit.ValueRW = false;
                 materialAndMesh.ValueRW.MeshID = RealMeshId;
-                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                //collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.StageOne;
             }
             foreach (var (eliteCom, transform, stateMachine, hp, entity) in SystemAPI.Query<RefRW<EnemyEliteShooterCom>, RefRW<LocalTransform>, RefRW<EntityStateMachine>

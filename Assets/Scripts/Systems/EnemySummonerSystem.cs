@@ -10,6 +10,7 @@ namespace ProjectGra
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct EnemySummonerSystem : ISystem, ISystemStartStop
     {
+        private Entity ColliderPrefab;
         private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         private Entity summonExplosionPrefab;
@@ -56,6 +57,8 @@ namespace ProjectGra
             calculatedMulOfCycleSpeed = 360 * 0.0174532925f / floatingCycleSpeed;
             var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
             RealMeshId = batchMeshIDContainer.EnemySummonerMeshID;
+
+            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemySummonerCollider;
         }
 
         public void OnStopRunning(ref SystemState state)
@@ -69,6 +72,7 @@ namespace ProjectGra
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var deltatime = SystemAPI.Time.DeltaTime;
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
             foreach (var (spawnTimer, spawnTimerBit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
                 , RefRW<MaterialMeshInfo>
                 , RefRW<PhysicsCollider>
@@ -78,7 +82,8 @@ namespace ProjectGra
                 if ((spawnTimer.ValueRW.time -= deltatime) > 0f) continue;
                 spawnTimerBit.ValueRW = false;
                 materialAndMesh.ValueRW.MeshID = RealMeshId;
-                collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                //collider.ValueRW.Value.Value.SetCollisionFilter(enemyCollidesWithRayCastAndPlayerSpawnee);
+                collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Init;
             }
             foreach (var (stateMachine, movement, attack, transform, scalingBit, scalingCom, entity) in SystemAPI.Query<RefRW<EntityStateMachine>, RefRW<EnemySummonerMovement>, RefRW<EnemySummonerAttack>
