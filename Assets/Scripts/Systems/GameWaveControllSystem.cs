@@ -92,12 +92,14 @@ namespace ProjectGra
 
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
-                var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
+                var calculatedDamageAfterBonus = (int)((1f + playerAttibute.DamagePercentage)
                     * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
-                var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
-                var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
 
+                var cooldownModifier = math.clamp(1f - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
+                var calculatedCooldown = config.Cooldown * cooldownModifier;
+                var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
+                Debug.Log("Attribute related - All Weapon Cooldown modified with : " + cooldownModifier);
                 if (!isMeleeWeapon[0]) // Ranged Weapon
                 {
                     //using ecb or set directly
@@ -204,6 +206,7 @@ namespace ProjectGra
                     * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
                 var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
+                //Debug.Log("Attribute related - Auto wp " + i + 1 + "Cooldown modified with percentage:" + math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f));
                 var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
                 tmpRange = math.max(tmpRange, config.Range);
                 if (!isMeleeWeapon[i + 1]) // Ranged Weapon
@@ -271,16 +274,7 @@ namespace ProjectGra
         {
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
-
-            //Update weaponstate
-            var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
-            sysData.ValueRW.tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop();
-            sysData.ValueRW.tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop();
-
-            Debug.Log(sysData.ValueRW.tmpWpIdx);
-            Debug.Log(sysData.ValueRW.tmpIsMeleeWp);
-            PopulateWeaponStateWithWeaponIdx(ref state, sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
-
+    
             //Setting player data in ECS
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerMaterialsCount = SystemAPI.GetComponentRW<PlayerMaterialCount>(playerEntity);
@@ -290,6 +284,16 @@ namespace ProjectGra
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
             state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab));
+
+
+            //Update weaponstate
+            var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
+            sysData.ValueRW.tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop();
+            sysData.ValueRW.tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop();
+
+            Debug.Log(sysData.ValueRW.tmpWpIdx);
+            Debug.Log(sysData.ValueRW.tmpIsMeleeWp);
+            PopulateWeaponStateWithWeaponIdx(ref state, sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;

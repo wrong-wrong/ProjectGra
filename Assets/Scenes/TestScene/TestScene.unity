@@ -2023,25 +2023,25 @@ MonoBehaviour:
 
     Armor
 
-    Speed
+    Speed%
 
     Range
 
-    CritHitChance
+    CritHitChance%
 
-    Damage
+    Damage%
 
-    MeleeDamage
+    MeleeDamage%
 
-    RangedDamage
+    RangedDamage%
 
-    ElementDamage
+    ElementDamage%
 
-    AttackSpeed
+    AttackSpeed%
 
-    LifeSteal
+    LifeSteal%
 
-    Dodge'
+    Dodge%'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4511,25 +4511,25 @@ MonoBehaviour:
 
     Armor
 
-    Speed
+    Speed%
 
     Range
 
-    CriticalHitChance
+    CriticalHitChance%
 
-    DamagePercentage
+    DamagePercentage%
 
-    MeleeDamage
+    MeleeDamage%
 
-    RangedDamage
+    RangedDamage%
 
-    ElementDamage
+    ElementDamage%
 
-    AttackSpeed
+    AttackSpeed%
 
-    LifeSteal
+    LifeSteal%
 
-    Dodge'
+    Dodge%'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -11233,6 +11233,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8faa0e21c5ab893498024cbb4108a024, type: 2}
   - {fileID: 11400000, guid: db7b89965fb543b408d84a06817f37f8, type: 2}
   - {fileID: 11400000, guid: 1e20a3150f5795745946a9f1c0531c9d, type: 2}
+  - {fileID: 11400000, guid: 394ec08cd0035a944846c2cfb8683035, type: 2}
+  - {fileID: 11400000, guid: 9c7add2e402d6014daef7834d4d8c156, type: 2}
   ItemSOList:
   - {fileID: 11400000, guid: eba521a11a85924438c1305ecc5c3b70, type: 2}
   - {fileID: 11400000, guid: 6cb94cfc6fe1e0446961009fbce17c4c, type: 2}

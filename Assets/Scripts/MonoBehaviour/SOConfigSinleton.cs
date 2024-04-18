@@ -54,7 +54,7 @@ namespace ProjectGra
         }
         public int GetRandomAttributeIdx()
         {
-            return random.NextInt(11);
+            return random.NextInt(13);
         }
         public int GetRandomItemConfigIdx()
         {

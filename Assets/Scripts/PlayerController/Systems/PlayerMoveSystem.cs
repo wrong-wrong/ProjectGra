@@ -10,6 +10,7 @@ namespace ProjectGra
     {
         //TODO config : speed; sprint multiplier;
         float playerBasicSpeed;
+        float playerOriginalSpeed;
         float playerSprintMultiplier;
         float CamXSensitivity;
         public void OnCreate(ref SystemState state)
@@ -22,9 +23,12 @@ namespace ProjectGra
         public void OnStartRunning(ref SystemState state) 
         {
             var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
-            playerBasicSpeed = configCom.PlayerBasicMoveSpeedValue;
+            playerOriginalSpeed = configCom.PlayerBasicMoveSpeedValue;
             playerSprintMultiplier = configCom.PlayerSprintMultiplierValue;
             CamXSensitivity = configCom.CamXSensitivity;
+            var playerAttribute = SystemAPI.GetSingleton<PlayerAttributeMain>();
+            Debug.Log("Attribute related - Speed modified with percentage : " + (playerAttribute.SpeedPercentage + 1));
+            playerBasicSpeed = playerOriginalSpeed * (1 + playerAttribute.SpeedPercentage);
         }
         public void OnStopRunning(ref SystemState state) { }
         public void OnUpdate(ref SystemState state) 

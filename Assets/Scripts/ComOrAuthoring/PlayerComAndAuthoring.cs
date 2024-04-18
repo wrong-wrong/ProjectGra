@@ -66,7 +66,7 @@ namespace ProjectGra
     {
         public int MaxHealthPoint;
         public int HealthRegain;
-        public int Armor;
+        public float Armor;
         public float SpeedPercentage;
         public float Range;
         public float LifeSteal;
