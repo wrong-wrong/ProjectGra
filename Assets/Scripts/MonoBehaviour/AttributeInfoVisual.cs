@@ -7,7 +7,7 @@ namespace ProjectGra
     public class AttributeInfoVisual : MonoBehaviour
     {
         //[SerializeField] 
-        [SerializeField] List<TextMeshProUGUI> playerAttributeTextList;
+        [SerializeField] TextMeshProUGUI playerAttributeText;
         public void OnEnable()
         {
             //Debug.Log("AttributeInfoVisual - OnEnable");
@@ -20,16 +20,29 @@ namespace ProjectGra
         public void UpdateSinglePlayerAttribute()
         {
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
-            for (int i = 0; i < 11; ++i)
+            for (int i = 0; i < 13; ++i)
             {
-                var tmp = PlayerDataModel.Instance.attributeValueList[i];
-                strBuilder.Append(tmp);
-                playerAttributeTextList[i].text = strBuilder.ToString();
-                if (tmp < 0) playerAttributeTextList[i].color = Color.red;
-                else if (tmp > 0) playerAttributeTextList[i].color = Color.green;
-                else playerAttributeTextList[i].color = Color.white;
-                strBuilder.Clear();
+                var val = PlayerDataModel.Instance.attributeValueList[i];
+                if (val < 0)
+                {
+                    strBuilder.Append("<color=\"red\">");
+                    strBuilder.Append(val);
+                    strBuilder.Append("</color>");
+                }
+                else if (val > 0)
+                {
+                    strBuilder.Append("<color=\"green\">");
+                    strBuilder.Append(val);
+                    strBuilder.Append("</color>");
+                }
+                else
+                {
+                    strBuilder.Append(val);
+                }
+                strBuilder.AppendLine();
             }
+            playerAttributeText.text = strBuilder.ToString();
+            strBuilder.Clear();
         }
     }
 }

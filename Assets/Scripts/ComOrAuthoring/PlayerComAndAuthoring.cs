@@ -69,6 +69,8 @@ namespace ProjectGra
         public int Armor;
         public float SpeedPercentage;
         public float Range;
+        public float LifeSteal;
+        public float Dodge;
     }
     public struct PlayerOverlapRadius : IComponentData
     {

@@ -21,7 +21,7 @@ namespace ProjectGra.PlayerController
             _topClamp = 90.0f;
             _bottomClamp = -90.0f;
             state.RequireForUpdate<GameControllNotInShop>();
-            state.RequireForUpdate<ConfigComponent>();
+            state.RequireForUpdate<PlayerConfigComponent>();
             state.RequireForUpdate<CameraTargetReference>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<GameControllNotPaused>();
@@ -29,7 +29,7 @@ namespace ProjectGra.PlayerController
         public void OnStartRunning(ref SystemState state)
         {
             offsetList = new NativeArray<float3>(3, Allocator.Persistent);
-            var configCom = SystemAPI.GetSingleton<ConfigComponent>();
+            var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
             CamYSensitivity = configCom.CamYSensitivity;
             mainWpOffset = configCom.mainWpOffset;
             offsetList[0] = configCom.leftAutoWpOffset;

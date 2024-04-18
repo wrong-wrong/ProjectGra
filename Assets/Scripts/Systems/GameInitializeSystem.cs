@@ -13,13 +13,13 @@ namespace ProjectGra
         public void OnCreate(ref SystemState state) {
             state.RequireForUpdate<SuperSingletonTag>();
             state.RequireForUpdate<TestSceneExecuteTag>();
-            state.RequireForUpdate<ConfigComponent>();
+            state.RequireForUpdate<PlayerConfigComponent>();
         }
         public void OnUpdate(ref SystemState state)
         {
             state.Enabled = false;
             var superSingleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
-            var configCom = SystemAPI.GetSingleton<ConfigComponent>();
+            var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
 
             state.EntityManager.AddComponentObject(superSingleton, new CameraTargetReference { 
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
@@ -34,6 +34,8 @@ namespace ProjectGra
                 Armor = configCom.Armor,
                 SpeedPercentage = configCom.SpeedPercentage,
                 Range = configCom.Range,
+                LifeSteal = configCom.LifeSteal,
+                Dodge = configCom.Dodge,
             });
             state.EntityManager.SetComponentData(playerEntity, new EntityHealthPoint { HealthPoint = configCom.MaxHealthPoint });
             state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated

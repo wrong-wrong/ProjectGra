@@ -21,7 +21,7 @@ namespace ProjectGra
         }
         public void OnStartRunning(ref SystemState state) 
         {
-            var configCom = SystemAPI.GetSingleton<ConfigComponent>();
+            var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
             playerBasicSpeed = configCom.PlayerBasicMoveSpeedValue;
             playerSprintMultiplier = configCom.PlayerSprintMultiplierValue;
             CamXSensitivity = configCom.CamXSensitivity;

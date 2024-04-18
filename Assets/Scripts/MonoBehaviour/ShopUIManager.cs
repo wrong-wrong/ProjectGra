@@ -21,7 +21,7 @@ namespace ProjectGra
         [Header("Item Scroll View's Content RectTransform")]
         [SerializeField] RectTransform content;
         [Header("Player Attribute")]
-        [SerializeField] List<TextMeshProUGUI> playerAttributeTextList;
+        [SerializeField] TextMeshProUGUI playerAttributeText;
 
 
 
@@ -256,19 +256,30 @@ namespace ProjectGra
         {
             Debug.Log("ShopUIManager - UpdateShopPlayerAttribute");
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
-            for(int i = 0; i < 11; ++i)
+            for(int i = 0; i < 13; ++i)
             {
-                strBuilder.Append(PlayerDataModel.Instance.attributeValueList[i]);
-                playerAttributeTextList[i].text = strBuilder.ToString();
                 var val = PlayerDataModel.Instance.attributeValueList[i];
-                if (val < 0) playerAttributeTextList[i].color = Color.red;
-                else if (val > 0) playerAttributeTextList[i].color = Color.green;
+                if (val < 0)
+                {
+                    strBuilder.Append("<color=\"red\">");
+                    strBuilder.Append(val);
+                    strBuilder.Append("</color>");
+                }
+                else if (val > 0)
+                {
+                    strBuilder.Append("<color=\"green\">");
+                    strBuilder.Append(val);
+                    strBuilder.Append("</color>");
+                }
                 else
                 {
-                    playerAttributeTextList[i].color = Color.white;
+                    strBuilder.Append(val);
                 }
-                strBuilder.Clear();
+                strBuilder.AppendLine();
             }
+            playerAttributeText.text = strBuilder.ToString();
+            strBuilder.Clear();
+
         }
 
 

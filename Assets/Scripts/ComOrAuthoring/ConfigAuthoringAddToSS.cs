@@ -32,6 +32,9 @@ namespace ProjectGra
         [SerializeField] private float CriticalHitChance;
         [SerializeField] private float Range;
 
+        [SerializeField] private float LifeSteal;
+        [SerializeField] private float Dodge;
+
         [Header("Enemy Spawning Config")]
         public float SpawningCooldown;
         public float minRadius;
@@ -45,7 +48,7 @@ namespace ProjectGra
             public override void Bake(ConfigAuthoringAddToSS authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity, new ConfigComponent
+                AddComponent(entity, new PlayerConfigComponent
                 {
                     mainWpOffset = authoring.mainWpOffset,
                     midAutoWpOffset = authoring.midAutoWpOffset,
@@ -69,6 +72,9 @@ namespace ProjectGra
                     CriticalHitChance = authoring.CriticalHitChance,
                     DamagePercentage = authoring.DamagePercentage,
                     Range = authoring.Range,
+
+                    LifeSteal = authoring.LifeSteal,
+                    Dodge = authoring.Dodge,
                 });
                 AddComponent(entity, new EnemySpawningConfig
                 {
@@ -91,7 +97,7 @@ namespace ProjectGra
         public float minRadius;
         public float maxRadius;
     }
-    public struct ConfigComponent : IComponentData
+    public struct PlayerConfigComponent : IComponentData
     {
 
         public float3 mainWpOffset;
@@ -117,6 +123,9 @@ namespace ProjectGra
         public float DamagePercentage;
         public float CriticalHitChance;
         public float Range;
+
+        public float LifeSteal;
+        public float Dodge;
     }
 
 }

@@ -20,7 +20,8 @@ namespace ProjectGra
         //9Element 
         //10AttackSpeed %
 
-        //11 life steal
+        //11 life steal %
+        //12 dodge %
         //Should not store decimals here
         //public List<string> AttributeNameList;
 
@@ -37,8 +38,8 @@ namespace ProjectGra
                 Destroy(gameObject);
             }
             Instance = this;
-            attributeValueList.Capacity = 11;
-            for(int i = 0; i < 11; ++i)
+            attributeValueList.Capacity = 13;
+            for(int i = 0; i < 13; ++i)
             {
                 attributeValueList.Add(0);
             }
@@ -78,7 +79,12 @@ namespace ProjectGra
             attributeValueList[7] = (int)(damageAttribute.MeleeRangedElementAttSpd.x);
             attributeValueList[8] = (int)(damageAttribute.MeleeRangedElementAttSpd.y);
             attributeValueList[9] = (int)(damageAttribute.MeleeRangedElementAttSpd.z);
-            attributeValueList[10] = (int)(damageAttribute.MeleeRangedElementAttSpd.w);
+            attributeValueList[10] = (int)(damageAttribute.MeleeRangedElementAttSpd.w * 100);
+
+            //life steal
+            attributeValueList[11] = (int)(mainAttribute.LifeSteal * 100);
+            // dodge
+            attributeValueList[12] = (int)(mainAttribute.Dodge * 100);
             OnPlayerAttributeChanged?.Invoke();
         }
         public void AddAttributeValWith(int attributeIdx, int val)
@@ -116,7 +122,7 @@ namespace ProjectGra
                 DamagePercentage = attributeValueList[6]/100f,
                 MeleeRangedElementAttSpd = new float4(attributeValueList[7],
                 attributeValueList[8], attributeValueList[9],
-                attributeValueList[10])
+                attributeValueList[10]/100f)
             };
         }
 
@@ -129,6 +135,8 @@ namespace ProjectGra
                 Armor = (int)attributeValueList[2],
                 SpeedPercentage = attributeValueList[3]/100,
                 Range = attributeValueList[4],
+                LifeSteal = attributeValueList[11] / 100,
+                Dodge = attributeValueList[12] / 100,
             };
         }
 
