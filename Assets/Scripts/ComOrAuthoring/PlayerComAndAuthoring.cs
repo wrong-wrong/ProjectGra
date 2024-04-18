@@ -13,7 +13,6 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent<PlayerAttributeMain>(entity);
                 AddComponent<PlayerAtttributeDamageRelated>(entity);
-                //AddComponent(entity, new PlayerDamagedRecordCom{damagedThisFrame = 0});
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
                 AddComponent(entity, new PlayerItemCount { Count = 0 });
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
@@ -37,13 +36,21 @@ namespace ProjectGra
                 SetComponentEnabled<FlashingCom>(entity, false);
 
                 AddComponent<EntityKnockBackCom>(entity);
+
+                AddBuffer<PlayerDamagedRecordBuffer>(entity);
+                AddComponent<PlayerSuccessfulAttackCount>(entity);
             }
         }
     }
 
-    public struct PlayerDamagedRecordCom : IComponentData
+    [InternalBufferCapacity(0)]
+    public struct PlayerDamagedRecordBuffer : IBufferElementData
     {
-        public int damagedThisFrame;
+        public int Value;
+    }
+    public struct PlayerSuccessfulAttackCount : IComponentData
+    {
+        public int Value;
     }
     public struct PlayerAtttributeDamageRelated : IComponentData
     {

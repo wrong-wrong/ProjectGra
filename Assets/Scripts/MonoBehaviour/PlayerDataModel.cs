@@ -19,6 +19,8 @@ namespace ProjectGra
         //8Ranged 
         //9Element 
         //10AttackSpeed %
+
+        //11 life steal
         //Should not store decimals here
         //public List<string> AttributeNameList;
 
