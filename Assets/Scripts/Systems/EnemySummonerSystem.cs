@@ -11,7 +11,6 @@ namespace ProjectGra
     public partial struct EnemySummonerSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         private Entity summonExplosionPrefab;
         private Random random;
@@ -32,11 +31,6 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<EnemySummonerDeath>();
             random = Random.CreateFromIndex(0);
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
         }
 
         public void OnStartRunning(ref SystemState state)
@@ -118,7 +112,7 @@ namespace ProjectGra
                         // update pos using tarDir
                         transform.ValueRW.Position.xz += movement.ValueRO.tarDirMulSpeed * deltatime;
                         // distanceSq < summonDisSq, go to summon state
-                        if (distanceSq < summonDistanceSq)
+                        if (distanceSq < summonDistanceSq * transform.ValueRO.Scale)
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.Summon;
                         }
@@ -134,7 +128,7 @@ namespace ProjectGra
                             continue;
                         }
                         // distanceSq > summonDisSq, go to follow state, and set random tarDirNormalizeMulSpeed & rotaion
-                        if (distanceSq > summonDistanceSq * 1.2f)
+                        if (distanceSq > summonDistanceSq * 1.5f * transform.ValueRO.Scale)
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.Follow;
                             tarDir.xz = math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
@@ -193,6 +187,11 @@ namespace ProjectGra
                         if (scalingCom.ValueRO.Ratio > 1f)
                         {
                             ecb.DestroyEntity(entity);
+
+                            EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(transform.ValueRO.Position);
+                            EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.Explode);
+                            var explosion = ecb.Instantiate(summonExplosionPrefab);
+                            ecb.SetComponent<LocalTransform>(explosion, new LocalTransform { Position = transform.ValueRO.Position , Scale = 1f, Rotation = quaternion.identity});
                         }
                         break;
                 }

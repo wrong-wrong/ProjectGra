@@ -5,7 +5,7 @@ using Unity.Transforms;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
-    public partial struct GameWaveCleanupSystem : ISystem
+    public partial struct GameWaveCleanupSystem : ISystem, ISystemStartStop
     {
         private float cleanupTimer;
         private float realTimer;
@@ -16,6 +16,20 @@ namespace ProjectGra
             cleanupTimer = 3;
             realTimer = cleanupTimer;
         }
+
+        public void OnStartRunning(ref SystemState state)
+        {
+            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            foreach (var (summon, entity) in SystemAPI.Query<RefRO<SummonedExplosionCom>>().WithEntityAccess())
+            {
+                ecb.DestroyEntity(entity);
+            }
+        }
+
+        public void OnStopRunning(ref SystemState state)
+        {
+        }
+
         public void OnUpdate(ref SystemState state)
         {
             var deltatime = SystemAPI.Time.DeltaTime;

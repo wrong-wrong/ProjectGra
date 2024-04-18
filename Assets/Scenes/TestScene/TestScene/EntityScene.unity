@@ -1026,6 +1026,8 @@ MonoBehaviour:
   SpawneeTimer: 4
   EggPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
     type: 3}
+  EnemySummonerPrefab: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
+    type: 3}
   EnemySummonerSpeed: 3
   EnemySummonerAttackCooldown: 3
   EnemySummonerFloatingRange: 3

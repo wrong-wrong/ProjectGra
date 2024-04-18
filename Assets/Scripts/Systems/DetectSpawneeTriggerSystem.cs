@@ -15,7 +15,7 @@ namespace ProjectGra
         ComponentLookup<AttackCurDamage> spawneeCurDamageLookup;
         ComponentLookup<EntityStateMachine> entityStateMachineLookup;
         ComponentLookup<LocalTransform> localTransformLookup;
-        ComponentLookup<AttackPierceTag> attackPierceTagLookup;
+        ComponentLookup<AttackPierce> attackPierceTagLookup;
         ComponentLookup<AttackKnockBackTag> attackKnockBackTagLookup;
         ComponentLookup<AttackExplosiveCom> attackExplosiveTagLookup;
         ComponentLookup<EntityKnockBackCom> entityKnockBackComLookup;
@@ -28,7 +28,7 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             spawneeCurDamageLookup = SystemAPI.GetComponentLookup<AttackCurDamage>(true);
             localTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(true);
-            attackPierceTagLookup = SystemAPI.GetComponentLookup<AttackPierceTag>(true);
+            attackPierceTagLookup = SystemAPI.GetComponentLookup<AttackPierce>(true);
             attackKnockBackTagLookup = SystemAPI.GetComponentLookup<AttackKnockBackTag>(true);
             attackExplosiveTagLookup = SystemAPI.GetComponentLookup<AttackExplosiveCom>(true);
             entityKnockBackComLookup = SystemAPI.GetComponentLookup<EntityKnockBackCom>();  
@@ -68,6 +68,7 @@ namespace ProjectGra
                 posList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList,
                 disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList,
                 valList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList,
+                
             };
             var pierceSpawneeTriggerJob = new DetectPierceSpawneeTriggerJob
             {
@@ -105,7 +106,7 @@ namespace ProjectGra
         [ReadOnly] public ComponentLookup<LocalTransform> LocalTransformLookup;
         [ReadOnly] public ComponentLookup<AttackCurDamage> CurDamageLookup;
         //[ReadOnly] public ComponentLookup<LocalTransform> LocalTransformLookup;
-        [ReadOnly] public ComponentLookup<AttackPierceTag> AttackPierceLookup;
+        [ReadOnly] public ComponentLookup<AttackPierce> AttackPierceLookup;
         [ReadOnly] public ComponentLookup<AttackKnockBackTag> AttackKnockBackLookup;
         [ReadOnly] public ComponentLookup<AttackExplosiveCom> AttackExplosiveLookup;
         public NativeList<float> disSqList;
@@ -183,18 +184,19 @@ namespace ProjectGra
         public BufferLookup<HitBuffer> HitBufferLookup;
         [ReadOnly] public ComponentLookup<AttackCurDamage> CurDamageLookup;
         [ReadOnly] public ComponentLookup<LocalTransform> LocalTransformLookup;
-        [ReadOnly] public ComponentLookup<AttackPierceTag> AttackPierceLookup;
+        [ReadOnly] public ComponentLookup<AttackPierce> AttackPierceLookup;
         [ReadOnly] public ComponentLookup<AttackKnockBackTag> AttackKnockBackLookup;
         [ReadOnly] public ComponentLookup<AttackExplosiveCom> AttackExplosiveLookup;
         public NativeList<float> disSqList;
         public NativeList<float3> posList;
         public NativeList<int> valList;
+
         public void Execute(TriggerEvent triggerEvent)
         {
             //EntityA tends to be spawnee
             Entity Spawnee = triggerEvent.EntityA;
             Entity Enemy = triggerEvent.EntityB;
-            if (!AttackPierceLookup.HasComponent(Spawnee) && !AttackPierceLookup.HasComponent(Enemy)) return;
+            if (!AttackPierceLookup.TryGetComponent(Spawnee,out AttackPierce pierceCom)) return;
             //Debug.Log("Pierced Job Executing");
             HitBufferLookup.TryGetBuffer(Spawnee, out var hitBuffer);
             //Debug.Log(hitBuffer.Length);
@@ -205,8 +207,10 @@ namespace ProjectGra
             }
             var spawneeLocalTransform = LocalTransformLookup[Spawnee];
 
-            var bufferEcb = ecb.SetBuffer<HitBuffer>(Spawnee);
-            bufferEcb.Add(new HitBuffer { HitEntity = Enemy });
+            //var bufferEcb = ecb.SetBuffer<HitBuffer>(Spawnee);
+            //bufferEcb.Add(new HitBuffer { HitEntity = Enemy });
+
+            ecb.AppendToBuffer<HitBuffer>(Spawnee, new HitBuffer { HitEntity = Enemy });
 
             if (AttackKnockBackLookup.HasComponent(Spawnee))
             {
@@ -233,6 +237,10 @@ namespace ProjectGra
             else
             {
                 FlashingComLookup.SetComponentEnabled(Enemy, true);  
+            }
+            if(hitBuffer.Length + 1 >= pierceCom.MaxPierceCount)
+            {
+                ecb.DestroyEntity(Spawnee);
             }
             var disSq = math.distancesq(PlayerPosition, spawneeLocalTransform.Position);
             var pos = spawneeLocalTransform.Position;

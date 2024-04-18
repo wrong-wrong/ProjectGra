@@ -5,18 +5,22 @@ namespace ProjectGra
 {
     public class AttackPierceComAndAuthoring : MonoBehaviour
     {
+        public int MaxPierceCount;
         public class Baker : Baker<AttackPierceComAndAuthoring>
         {
             public override void Bake(AttackPierceComAndAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent<AttackPierceTag>(entity);
+                AddComponent(entity, new AttackPierce { MaxPierceCount = authoring.MaxPierceCount });
                 AddBuffer<HitBuffer>(entity);
             }
         }
     }
 
-    public struct AttackPierceTag : IComponentData { }
+    public struct AttackPierce : IComponentData 
+    {
+        public int MaxPierceCount;
+    }
     [InternalBufferCapacity(0)]
     public struct HitBuffer : IBufferElementData 
     {

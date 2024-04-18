@@ -5217,6 +5217,7 @@ MonoBehaviour:
   audioSourceRingList: []
   audioSOList:
   - {fileID: 11400000, guid: 8da363625b402c149914a028751417b6, type: 2}
+  - {fileID: 11400000, guid: d5aeefb2e57dcad469f7e10e5a484638, type: 2}
 --- !u!1 &874655253
 GameObject:
   m_ObjectHideFlags: 0

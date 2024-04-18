@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     //[UpdateAfter(typeof(PlayerAttackSystem))]
     public partial struct HandleTimeOutSpawneeSystem : ISystem
     {
@@ -17,7 +17,7 @@ namespace ProjectGra
         //destory or recycle  spawnee with disabled Timer
         public void OnUpdate(ref SystemState state)
         {
-            var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var deltaTime = SystemAPI.Time.DeltaTime;
             foreach (var (timer, entity)in SystemAPI.Query<RefRW<SpawneeTimer>>().WithEntityAccess())
             {

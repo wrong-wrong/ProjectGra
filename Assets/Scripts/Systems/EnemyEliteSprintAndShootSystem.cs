@@ -12,10 +12,7 @@ namespace ProjectGra
     public partial struct EnemyEliteSprintAndShootSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
-
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
-        //private Entity eggPrefab;
         private Random random;
 
         private Entity normalSpawneePrefab;
@@ -40,15 +37,6 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<EnemyEliteSprintAndShootCom>();
             random = Random.CreateFromIndex(0);
-            //unsafe
-            //{
-            //    Debug.Log(sizeof(quaternion));
-            //}
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
         }
         public void OnStartRunning(ref SystemState state)
         {
@@ -73,13 +61,7 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
-            //if(Input.GetKeyUp(KeyCode.Space))
-            //{
-            //    Debug.Log("Elite KeyUp Space");
-            //    var transformRW = SystemAPI.GetComponentRW<LocalTransform>(SystemAPI.GetSingletonEntity<EnemyEliteSprintAndShootCom>());
-            //    transformRW.ValueRW.Rotation = math.mul(transformRW.ValueRO.Rotation,quaternion.RotateY(15)); // left ,
-            //    //quaternion.
-            //}
+
             // only one stage, one kind of skill
             // shooting spawnee while sprint
             var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);

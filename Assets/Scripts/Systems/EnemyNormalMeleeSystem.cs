@@ -12,8 +12,6 @@ namespace ProjectGra
     public partial struct EnemyNormalMeleeSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
-
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         float followSpeed;
         float attackDistanceSq;
@@ -32,11 +30,6 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<NormalMeleeConfigCom>();
             random = Random.CreateFromIndex(0);
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
 
         }
         public void OnStartRunning(ref SystemState state)
@@ -83,19 +76,19 @@ namespace ProjectGra
                 collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
-            foreach (var (localTransform, stateMachine, attack, death, knockbackBit,knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
+            foreach (var (transform, stateMachine, attack, death, knockbackBit,knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
                 , RefRW<NormalMeleeDeath>
                 , EnabledRefRW<EntityKnockBackCom>
                 , RefRW<EntityKnockBackCom>>()
                 .WithEntityAccess()
                 .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
-                var tarDir = playerLocalTransform.Position - localTransform.ValueRO.Position;
+                var tarDir = playerLocalTransform.Position - transform.ValueRO.Position;
                 var disSq = math.csum(tarDir * tarDir);
                 var normalizedDir = math.normalize(tarDir);
                 if (knockbackBit.ValueRO)
                 {
-                    localTransform.ValueRW.Position += normalizedDir * -10 * deltatime;
+                    transform.ValueRW.Position += normalizedDir * -10 * deltatime;
                     if ((knockbackCom.ValueRW.Timer -= deltatime) < 0)
                     {
                         knockbackBit.ValueRW = false;
@@ -112,28 +105,22 @@ namespace ProjectGra
                         }
                         else
                         {
-                            localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                            transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             if (disSq < 4f) continue;
-                            localTransform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
+                            transform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
                         }
                         break;
 
                     case EntityState.MeleeAttack:
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
-                        attack.ValueRW.AttackCooldown = cooldown;
-                        if (disSq > attackDistanceSq)
-                        {
-                        }
-                        else
-                        {
-                            Debug.Log("Player should take damage");
-                            playerHealthPoint.ValueRW.HealthPoint -= attackVal;
-                        }
+                        attack.ValueRW.AttackCooldown = cooldown;                        
+                        Debug.Log("Player attacked by normal melee");
+                        playerHealthPoint.ValueRW.HealthPoint -= (int)(attackVal * transform.ValueRO.Scale);
                         break;
                     case EntityState.Dead:
                         if ((death.ValueRW.timer -= deltatime) > 0f)
                         {
-                            localTransform.ValueRW.Scale = death.ValueRO.timer / deathCountDown;
+                            transform.ValueRW.Scale = death.ValueRO.timer / deathCountDown;
                         }
                         else
                         {
@@ -141,11 +128,11 @@ namespace ProjectGra
                             {
                                 var material = ecb.Instantiate(MaterialPrefab);
                                 ecb.SetComponent<LocalTransform>(material
-                                    , localTransform.ValueRO);
+                                    , transform.ValueRO);
                             }
                             ecb.DestroyEntity(entity);
                             // request particle
-                            EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(localTransform.ValueRO.Position);
+                            EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
                             EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
                         }
                         break;

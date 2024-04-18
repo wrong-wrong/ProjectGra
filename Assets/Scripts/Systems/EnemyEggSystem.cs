@@ -1,8 +1,5 @@
 using Unity.Entities;
-using Unity.Physics;
-using Unity.Rendering;
 using Unity.Transforms;
-using UnityEngine.Rendering;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
@@ -20,6 +17,7 @@ namespace ProjectGra
         {
             var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var deltatime = SystemAPI.Time.DeltaTime;
+            var allEnemyBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
             foreach (var (eggtimer, hatch, transform, stateMachine, entity) in SystemAPI.Query<RefRW<EnemyEggTimerCom>, RefRO<EnemyEggToBeHatched>, RefRO<LocalTransform>
                 , RefRW<EntityStateMachine>>().WithEntityAccess()
                 .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
@@ -35,7 +33,8 @@ namespace ProjectGra
                     case EntityState.EggHatching:
                         if ((eggtimer.ValueRW.Timer -= deltatime) < 0)
                         {
-                            var hatched = ecb.Instantiate(hatch.ValueRO.Prefab);
+                            //var hatched = ecb.Instantiate(hatch.ValueRO.Prefab);
+                            var hatched = ecb.Instantiate(allEnemyBuffer[hatch.ValueRO.PrefabIdx].Prefab);
                             ecb.SetComponent(hatched, new LocalTransform { Position = transform.ValueRO.Position, Scale = 2f });
                             ecb.SetComponent(hatched, new EntityHealthPoint { HealthPoint = 100 });
                             ecb.SetComponentEnabled<FlashingCom>(hatched, false);

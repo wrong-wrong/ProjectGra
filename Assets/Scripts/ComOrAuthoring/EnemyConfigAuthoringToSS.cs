@@ -68,6 +68,7 @@ namespace ProjectGra
 
         [Header("EnemySummonerConfig")]
         //public float EnemySummonerDeathCountdown;
+        public GameObject EnemySummonerPrefab;
         public float EnemySummonerSpeed;
         public float EnemySummonerAttackCooldown;
         public float EnemySummonerFloatingRange;
@@ -101,12 +102,10 @@ namespace ProjectGra
             public override void Bake(EnemyConfigAuthoringToSS authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                var NormalMeleePrefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic);
                 var buffer = AddBuffer<AllEnemyPrefabBuffer>(entity);
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = NormalMeleePrefab });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalMeleeConfigCom
                 {
-                    EnemyPrefab = NormalMeleePrefab,
                     AttackVal = authoring.NormalMeleeAttackVal,
                     FollowSpeed = authoring.NormalMeleeFollowSpeed,
                     AttackDistance = authoring.NormalMeleeAttackDistance,
@@ -117,7 +116,6 @@ namespace ProjectGra
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalSprintConfigCom
                 {
-                    EnemyPrefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic),
                     AttackVal = authoring.NormalRangedAttackVal,
                     FollowSpeed = authoring.NormalSprintFollowSpeed,
                     AttackDistance = authoring.NormalSprintAttackDistance,
@@ -148,11 +146,6 @@ namespace ProjectGra
                     SpawneeTimer = authoring.SpawneeTimer,
                 });
 
-                //because no data need to set to the EggSystem, there is no need to creat a component
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
-
-                Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
-
                 // For summoned explosion
                 AddComponent(entity, new SummonedExplosionSystemConfigCom
                 {
@@ -161,6 +154,7 @@ namespace ProjectGra
                 });
 
                 // For summoner
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EnemySummonerPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new EnemySummonerConfigCom
                 {
                     EnemySummonerAttackCooldown = authoring.EnemySummonerAttackCooldown,
@@ -173,6 +167,11 @@ namespace ProjectGra
                     EnemySummonerSpeed = authoring.EnemySummonerSpeed,
                     EnemySummonerExplodeDistance = authoring.EnemySummonerExplodeDistance,
                 });
+
+
+
+                //because no data need to set to the EggSystem, there is no need to creat a component
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
 
                 // For EliteSprintAndShoot
                 AddComponent(entity, new EliteSprintAndShootConfigCom
@@ -216,6 +215,8 @@ namespace ProjectGra
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootPrefab, TransformUsageFlags.Dynamic) });
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootPrefab, TransformUsageFlags.Dynamic) });
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterPrefab, TransformUsageFlags.Dynamic) });
+                Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
+
             }
         }
     }
@@ -255,7 +256,7 @@ namespace ProjectGra
     }
     public struct NormalSprintConfigCom : IComponentData
     {
-        public Entity EnemyPrefab;
+        //public Entity EnemyPrefab;
         public int AttackVal;
         public float FollowSpeed;
         public float AttackCooldown;
@@ -283,7 +284,7 @@ namespace ProjectGra
 
     public struct NormalMeleeConfigCom : IComponentData
     {
-        public Entity EnemyPrefab;
+        //public Entity EnemyPrefab;
         public int AttackVal;
         public float FollowSpeed;
         public float AttackCooldown;

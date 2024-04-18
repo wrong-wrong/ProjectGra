@@ -12,8 +12,6 @@ namespace ProjectGra
     public partial struct EnemyEliteShooterSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
-
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         private float4 spawneePosOffsetX;
         private float4 spawneePosOffsetY;
@@ -48,11 +46,6 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
         }
 
         public void OnStartRunning(ref SystemState state)

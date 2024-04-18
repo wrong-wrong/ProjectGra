@@ -6,17 +6,19 @@ using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
-[DisableAutoCreation]
+//[DisableAutoCreation]
+//[UpdateInGroup(typeof(FixedStepSimulationSystemGroup),OrderLast = true)]
+//[UpdateAfter(typeof(EndFixedStepSimulationEntityCommandBufferSystem))]
 public partial struct TestingSystemInRealTestScene : ISystem
 {
     private Random random;
 
     // melee weapon sweep test
-    float3 forwardMulRange;
-    float3 rightMulHalfWidth;
-    float sweepAccumulateTimer;
-    float sweepTotalTime;
-    float3 originalPos;
+    //float3 forwardMulRange;
+    //float3 rightMulHalfWidth;
+    //float sweepAccumulateTimer;
+    //float sweepTotalTime;
+    //float3 originalPos;
     public void OnCreate(ref SystemState state)
     {
 
@@ -30,24 +32,24 @@ public partial struct TestingSystemInRealTestScene : ISystem
 
 
         #region melee weapon sweep test
-        var deltatime = SystemAPI.Time.DeltaTime;
-        if((sweepAccumulateTimer += deltatime) < sweepTotalTime)
-        {
-            var testEntity = SystemAPI.GetSingletonEntity<TestingEntityTag>();
-            var transformRW = SystemAPI.GetComponentRW<LocalTransform>(testEntity);
-            var ratio = sweepAccumulateTimer / sweepTotalTime;
-            transformRW.ValueRW.Position = originalPos + forwardMulRange * math.sin(math.radians(ratio * 180)) + rightMulHalfWidth * math.cos(math.radians(ratio * 180));
-        }
+        //var deltatime = SystemAPI.Time.DeltaTime;
+        //if((sweepAccumulateTimer += deltatime) < sweepTotalTime)
+        //{
+        //    var testEntity = SystemAPI.GetSingletonEntity<TestingEntityTag>();
+        //    var transformRW = SystemAPI.GetComponentRW<LocalTransform>(testEntity);
+        //    var ratio = sweepAccumulateTimer / sweepTotalTime;
+        //    transformRW.ValueRW.Position = originalPos + forwardMulRange * math.sin(math.radians(ratio * 180)) + rightMulHalfWidth * math.cos(math.radians(ratio * 180));
+        //}
 
 
-        if (!Input.GetKeyUp(KeyCode.Space)) return;
-        sweepAccumulateTimer = 0;
+        //if (!Input.GetKeyUp(KeyCode.Space)) return;
+        //sweepAccumulateTimer = 0;
 
-        var playerTransform = TestMonoLaucher.Instance.PlayerModel;
-        originalPos = playerTransform.position;
-        sweepTotalTime = TestMonoLaucher.Instance.ForwardRange / TestMonoLaucher.Instance.ForwardSpeed;
-        forwardMulRange = playerTransform.forward * TestMonoLaucher.Instance.ForwardRange;
-        rightMulHalfWidth = playerTransform.right * TestMonoLaucher.Instance.HalfWidth;
+        //var playerTransform = TestMonoLaucher.Instance.PlayerModel;
+        //originalPos = playerTransform.position;
+        //sweepTotalTime = TestMonoLaucher.Instance.ForwardRange / TestMonoLaucher.Instance.ForwardSpeed;
+        //forwardMulRange = playerTransform.forward * TestMonoLaucher.Instance.ForwardRange;
+        //rightMulHalfWidth = playerTransform.right * TestMonoLaucher.Instance.HalfWidth;
 
 
         //// rotation is controlled by cameratargetfollowSystem in real application

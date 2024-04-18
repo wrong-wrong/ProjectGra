@@ -1,21 +1,35 @@
 using ProjectGra;
 using System.Diagnostics;
+using Unity.Mathematics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 public class StressTestScript : MonoBehaviour
 {
     // Start is called before the first frame update
+
+    // branch test
+    //[SerializeField] int reps;
+    //int val;
+    //bool flag;
+    //int times;
+    //long totalticks;
+    //long minTicks;
+    //long maxTicks;
     private void Awake()
     {
         #region reference stress test Awake
-        int capacity = 64;
-        EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(capacity, capacity, capacity);
-        for (int i = 0; i < capacity; ++i)
-        {
-            EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Add(0);
-        }
+        //int capacity = 64;
+        //EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(capacity, capacity, capacity);
+        //for (int i = 0; i < capacity; ++i)
+        //{
+        //    EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Add(0);
+        //}
+
         #endregion
+
+        // branch test
+        //minTicks = long.MaxValue; maxTicks = long.MinValue;
     }
 
     // Update is called once per frame
@@ -39,6 +53,36 @@ public class StressTestScript : MonoBehaviour
         ////EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Clear();
         //Debug.Log(EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList[0]);
         //Debug.Break();
-        #endregion 
+        #endregion
+
+        #region branch test
+
+        //for(int j = 0; j < 100; ++j)
+        //{
+        //    val = 0;
+        //    Stopwatch stopwatch = Stopwatch.StartNew(); 
+        //    for (int i = 0; i < reps; ++i)
+        //    {
+        //        if(flag)
+        //        {
+        //            ++val;
+        //        }
+        //        else
+        //        {
+        //            --val;
+        //        }
+        //        flag = !flag;
+        //    }
+        //    stopwatch.Stop();
+
+        //    Debug.Log(stopwatch.ElapsedTicks);
+        //    totalticks += stopwatch.ElapsedTicks;
+        //    minTicks = math.min(minTicks, stopwatch.ElapsedTicks);
+        //    maxTicks = math.max(maxTicks, stopwatch.ElapsedTicks);
+        //    ++times;
+        //}
+        //Debug.Log("Average ticks : " + totalticks / times + "\nTest times : " + times + "\nMaxTick : " + maxTicks + "\nMinTicks : " + minTicks);
+        //Debug.Break();
+        #endregion
     }
 }

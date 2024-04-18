@@ -6,17 +6,14 @@ namespace ProjectGra
 {
     public class EnemyEggComAndAuthoring : MonoBehaviour
     {
-        public GameObject ToBeHatchedEntityPrefab;
+        //public GameObject ToBeHatchedEntityPrefab;
         public class Baker : Baker<EnemyEggComAndAuthoring>
         {
             public override void Bake(EnemyEggComAndAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity,new EnemyEggTimerCom { Timer = 5f});
-                AddComponent(entity, new EnemyEggToBeHatched
-                {
-                    Prefab = GetEntity(authoring.ToBeHatchedEntityPrefab, TransformUsageFlags.Dynamic),
-                });
+                AddComponent<EnemyEggToBeHatched>(entity);
             }
         }
     }
@@ -26,6 +23,6 @@ namespace ProjectGra
     }
     public struct EnemyEggToBeHatched : IComponentData 
     {
-        public Entity Prefab;
+        public int PrefabIdx;
     }
 }

@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: 6MagentaPierceWeaponSO
   m_EditorClassIdentifier: 
   IsMeleeWeapon: 0
+  IsMeleeSweep: 0
+  SweepHalfWidth: 0
+  MeleeForwardSpeed: 0
   WeaponName: Magenta
   BasePrice: 25
   color: {r: 0.20000002, g: 0.20000002, b: 0.6, a: 1}
@@ -25,10 +28,10 @@ MonoBehaviour:
   RangedBonus: 0
   ElementBonus: 0
   AttackSpeedBonus: 0
-  BasicDamage: 10
+  BasicDamage: 0
   WeaponCriticalHitChance: 0.6
   WeaponCriticalHitRatio: 2
-  Cooldown: 0.8
+  Cooldown: 0.2
   Range: 14
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0

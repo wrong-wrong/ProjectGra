@@ -29,7 +29,6 @@ namespace ProjectGra
         private float2 postiveOne;
         private float3 offsetMin;
         private float3 offsetMax;
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
 
         public void OnCreate(ref SystemState state)
@@ -45,11 +44,6 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
         }
 
         public void OnStartRunning(ref SystemState state)
@@ -58,7 +52,7 @@ namespace ProjectGra
             NormalSpawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
 
             Debug.LogWarning("using fixed number in EliteEggAndShoot to get egg prefab");
-            EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[3].Prefab;
+            EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[4].Prefab;
             
             var config = SystemAPI.GetSingleton<EliteEggAndShootConfig>();
             Speed = config.Speed;
@@ -223,7 +217,8 @@ namespace ProjectGra
                                 var originalPos = new float3 { x = transform.ValueRO.Position.x, z = transform.ValueRO.Position.z, y = 1f };
 
                                 var egg = ecb.Instantiate(EggPrefab);
-                                ecb.SetComponent(EggPrefab, new LocalTransform { Position = originalPos, Scale = 1f, Rotation = quaternion.identity });
+                                ecb.SetComponent(egg, new LocalTransform { Position = originalPos, Scale = 1f, Rotation = quaternion.identity });
+                                ecb.SetComponent(egg, new EnemyEggToBeHatched { PrefabIdx = random.NextInt(4) });
                                 ecb.AppendToBuffer<EnemyEliteFlyingEggBuffer>(entity, new EnemyEliteFlyingEggBuffer
                                 {
                                     EggInstance = egg,

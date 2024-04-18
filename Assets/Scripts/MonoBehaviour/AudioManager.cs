@@ -133,6 +133,7 @@ namespace ProjectGra
     public enum AudioEnum
     {
         NormalShoot,
+        Explode,
     }
 
 }

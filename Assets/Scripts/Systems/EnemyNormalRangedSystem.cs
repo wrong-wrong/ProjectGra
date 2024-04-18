@@ -12,8 +12,6 @@ namespace ProjectGra
     public partial struct EnemyNormalRangedSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
-
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         float followSpeed;
         float attackDistanceSq;
@@ -37,11 +35,7 @@ namespace ProjectGra
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             random = Random.CreateFromIndex(0);
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
+
         }
 
         public void OnStartRunning(ref SystemState state) 
@@ -90,14 +84,14 @@ namespace ProjectGra
                 collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
-            foreach (var(localTransform, attack, stateMachine, knockbackBit, knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>
+            foreach (var(transform, attack, stateMachine, knockbackBit, knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<NormalRangedAttack>, RefRW<EntityStateMachine>
                 , EnabledRefRW<EntityKnockBackCom>
                 , RefRW<EntityKnockBackCom>>()
                 .WithEntityAccess()
                 .WithOptions(EntityQueryOptions.IgnoreComponentEnabledState))
             {
 
-                var tarDir = playerLocalTransform.Position - localTransform.ValueRO.Position;
+                var tarDir = playerLocalTransform.Position - transform.ValueRO.Position;
                 var disSq = math.csum(tarDir * tarDir);
                 if(disSq == 0)
                 {
@@ -106,7 +100,7 @@ namespace ProjectGra
                 var normalizedDir = math.normalize(tarDir);
                 if (knockbackBit.ValueRO)
                 {
-                    localTransform.ValueRW.Position += normalizedDir * -10 * deltatime;
+                    transform.ValueRW.Position += normalizedDir * -10 * deltatime;
                     if ((knockbackCom.ValueRW.Timer -= deltatime) < 0)
                     {
                         knockbackBit.ValueRW = false;
@@ -116,15 +110,15 @@ namespace ProjectGra
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.Follow:
-                        localTransform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
-                        localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
-                        if (disSq < attackDistanceSq)
+                        transform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
+                        transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                        if (disSq < attackDistanceSq * transform.ValueRO.Scale)
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
                         }
                         break;
                     case EntityState.Flee:
-                        localTransform.ValueRW.Position -= normalizedDir * fleeSpeed * deltatime;
+                        transform.ValueRW.Position -= normalizedDir * fleeSpeed * deltatime;
                         if (disSq > fleeDistanceSq * 1.6)
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.RangedAttack;
@@ -135,17 +129,17 @@ namespace ProjectGra
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.Flee;
                         }
-                        else if (disSq > attackDistanceSq)
+                        else if (disSq > attackDistanceSq * 1.2f * transform.ValueRO.Scale)
                         {
                             stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         }
                         if ((attack.ValueRW.AttackCooldown -= deltatime) < 0f)
                         {
 
-                            localTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
+                            transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             attack.ValueRW.AttackCooldown = attackCooldown;
                             var spawnee = ecb.Instantiate(spawneePrefab);
-                            ecb.SetComponent(spawnee, localTransform.ValueRO);
+                            ecb.SetComponent(spawnee, transform.ValueRO);
                         }
                         break;
                     case EntityState.Dead:
@@ -153,11 +147,11 @@ namespace ProjectGra
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
                             ecb.SetComponent<LocalTransform>(material
-                                , localTransform.ValueRO);
+                                , transform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);
                         // request particle
-                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(localTransform.ValueRO.Position);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
                         EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
                         break;
                 }

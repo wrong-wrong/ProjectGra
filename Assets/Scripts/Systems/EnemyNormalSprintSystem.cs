@@ -13,7 +13,6 @@ namespace ProjectGra
     {
 
         private Entity ColliderPrefab;
-        private CollisionFilter enemyCollidesWithRayCastAndPlayerSpawnee;
         private BatchMeshID RealMeshId;
         float3 flashColorDifference;
         float followSpeed;
@@ -37,11 +36,7 @@ namespace ProjectGra
             state.RequireForUpdate<GameControllNotPaused>();
             state.RequireForUpdate<TestSceneExecuteTag>();
             random = Random.CreateFromIndex(0);
-            enemyCollidesWithRayCastAndPlayerSpawnee = new CollisionFilter
-            {
-                BelongsTo = 1 << 3, // enemy layer
-                CollidesWith = 1 << 1 | 1 << 5, // ray cast & player spawnee
-            };
+
         }
         public void OnStartRunning(ref SystemState state)
         {
