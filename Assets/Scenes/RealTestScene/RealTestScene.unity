@@ -423,12 +423,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946538647}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d2a1966f8d681664587369720af4f651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaxPopupTextCount: 50
+  DodgeString: Dodge !
+  DodgeStringPos: {x: 0, y: 0, z: 0}
+  DodgeStringFontSize: 60
+  DodgeStringDir: {x: 0, y: 1, z: 0}
+  LifeStealString: Life Steal !
+  LifeStealStringPos: {x: 0, y: 0, z: 0}
+  LifeStealStringFontSize: 60
+  LifeStealStringDir: {x: 1, y: 0, z: 0}
   maxShowingPopupTextDistance: 15
   singlePopupTextPrefab: {fileID: 1809440307466595653, guid: 04846cfe8ab2dc04f9283e7a8942fdc4,
     type: 3}

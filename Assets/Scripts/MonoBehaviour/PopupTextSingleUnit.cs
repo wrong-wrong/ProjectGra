@@ -12,6 +12,23 @@ public class PopupTextSingleUnit : MonoBehaviour
     public bool IsActived;
     private int accumulateOffsetMultiplier;
     private Vector3 randomDir;
+
+    public void DoInitShowDodge(Vector3 screenPos, string textStr, float fontSize, Vector3 randomDir)
+    {
+        this.randomDir = randomDir;
+        accumulateOffsetMultiplier = 0;
+        rectTransform.position = screenPos;
+        rectTransform.localScale = Vector3.one;
+        DoInit(textStr, fontSize);
+    }
+    public void DoInitShowLifeSteal(Vector3 screenPos, string textStr,  float fontSize, Vector3 randomDir)
+    {
+        this.randomDir = randomDir;
+        accumulateOffsetMultiplier = 0;
+        rectTransform.position = screenPos;
+        rectTransform.localScale = Vector3.one;
+        DoInit(textStr, fontSize);
+    }
     public void DoInitAtScreenPos(Vector3 screenPos, int val, float fontSize, Vector3 randomDir)
     {
         this.randomDir = randomDir;
@@ -19,6 +36,13 @@ public class PopupTextSingleUnit : MonoBehaviour
         rectTransform.position = screenPos;
         rectTransform.localScale = Vector3.one;
         DoInit(val,fontSize);
+    }
+    private void DoInit(string textStr, float fontSize)
+    {
+        text.text = textStr;
+        text.fontSize = fontSize;
+        timer = showingTime;
+        IsActived = true;
     }
     private void DoInit(int val, float fontSize)
     {

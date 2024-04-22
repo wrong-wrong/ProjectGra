@@ -6,6 +6,7 @@ using UnityEngine;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(PlayerInputSystem))]
     public partial struct PlayerMoveSystem : ISystem, ISystemStartStop
     {
         //TODO config : speed; sprint multiplier;

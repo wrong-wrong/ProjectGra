@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpUpdateAfterPhysicsSysGrp))]
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
     public partial struct InGameUIUpdateSystem : ISystem
     {
         int lastHealthPoint;

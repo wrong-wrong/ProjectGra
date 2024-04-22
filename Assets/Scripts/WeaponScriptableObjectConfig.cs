@@ -20,6 +20,7 @@ namespace ProjectGra
 
         [Header("Common field")]
         public int WeaponIndex;
+        public int WeaponLevel;
 
         public GameObject WeaponModel;
         public GameObject SpawneePrefabs;
@@ -29,11 +30,11 @@ namespace ProjectGra
         public float ElementBonus;
         public float AttackSpeedBonus;
 
-        public int BasicDamage;
-        public float WeaponCriticalHitChance;
-        public float WeaponCriticalHitRatio;
-        public float Cooldown;
-        public float Range;
+        public int4 BasicDamage;
+        public float4 WeaponCriticalHitChance;
+        public float4 WeaponCriticalHitRatio;
+        public float4 Cooldown;
+        public float4 Range;
 
         public float3 WeaponPositionOffsetRelativeToCameraTarget;
 

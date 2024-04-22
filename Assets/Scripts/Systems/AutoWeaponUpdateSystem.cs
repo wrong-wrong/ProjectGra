@@ -6,7 +6,8 @@ using UnityEngine;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(PlayerMainWeaponSystem))]
     public partial struct AutoWeaponUpdateSystem : ISystem
     {
         private CollisionFilter emptyCollisionFilter;

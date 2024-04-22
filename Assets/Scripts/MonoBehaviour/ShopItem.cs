@@ -130,31 +130,31 @@ public class ShopItem : MonoBehaviour
         //Setting Text
         var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
         var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage())
-            * (config.BasicDamage + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
-        var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance;
-        var calculatedCooldown = config.Cooldown * math.clamp(1 -PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);
-        var calculatedRange = PlayerDataModel.Instance.GetRange()+ config.Range;   //used to set spawnee's timer
+            * (config.BasicDamage[contentLevel] + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
+        var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance[contentLevel];
+        var calculatedCooldown = config.Cooldown[contentLevel] * math.clamp(1 -PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);
+        var calculatedRange = PlayerDataModel.Instance.GetRange()+ config.Range[contentLevel];   //used to set spawnee's timer
         strBuilder.Append(calculatedDamageAfterBonus);
         strBuilder.Append('|');
-        strBuilder.Append(config.BasicDamage);
+        strBuilder.Append(config.BasicDamage[contentLevel]);
         strBuilder.AppendLine();
 
         strBuilder.Append(calculatedCritHitChance);
         strBuilder.Append('|');
-        strBuilder.Append(config.WeaponCriticalHitChance);
+        strBuilder.Append(config.WeaponCriticalHitChance[contentLevel]);
         strBuilder.AppendLine();
 
-        strBuilder.Append(config.WeaponCriticalHitRatio);
+        strBuilder.Append(config.WeaponCriticalHitRatio[contentLevel]);
         strBuilder.AppendLine();
 
         strBuilder.Append(calculatedCooldown);
         strBuilder.Append('|');
-        strBuilder.Append(config.Cooldown);
+        strBuilder.Append(config.Cooldown[contentLevel]);
         strBuilder.AppendLine();
 
         strBuilder.Append(calculatedRange);
         strBuilder.Append('|');
-        strBuilder.Append(config.Range);
+        strBuilder.Append(config.Range[contentLevel]);
         strBuilder.AppendLine();
 
         strBuilder.Append(config.DamageBonus);

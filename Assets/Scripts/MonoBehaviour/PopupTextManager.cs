@@ -8,6 +8,14 @@ public class PopupTextManager : MonoBehaviour
     public static PopupTextManager Instance;
     //public bool IsInitialized;
     public int MaxPopupTextCount;
+    [SerializeField] string DodgeString;
+    [SerializeField] Vector3 DodgeStringPos;
+    [SerializeField] float DodgeStringFontSize;
+    [SerializeField] Vector3 DodgeStringDir;
+    [SerializeField] string LifeStealString;
+    [SerializeField] Vector3 LifeStealStringPos;
+    [SerializeField] float LifeStealStringFontSize;
+    [SerializeField] Vector3 LifeStealStringDir;
     [SerializeField] float maxShowingPopupTextDistance;
     //[SerializeField] int val;
     [SerializeField] GameObject singlePopupTextPrefab;
@@ -50,7 +58,16 @@ public class PopupTextManager : MonoBehaviour
         ringListTail = 0;
         this.enabled = false;
         Debug.LogWarning("Current popup text update logic only works when all text have the same showing time");
+        //Debug.Log("Awake");
     }
+    //private void OnEnable()
+    //{
+    //    Debug.Log("OnEnable");
+    //}
+    //private void Start()
+    //{
+    //    Debug.Log("Start");
+    //}
     void Update()
     {
 
@@ -92,22 +109,46 @@ public class PopupTextManager : MonoBehaviour
     }
     public bool RequirePopupTextAt(Vector3 pos, int val, float disSq)
     {
-        var f2 = math.normalize(random.NextFloat2());
-        //Debug.Log("RequirePopupTextAt - called at popManager");
-        if ((ringListTail + 1) % ringListLength != ringListHead)
+        if ((ringListTail + 1) % ringListLength == ringListHead) return false;
+        if (disSq >= 0)
         {
-            float fontsize = 60f;
-            if (disSq > 64f) fontsize = 32f;
-            var screenPos = mainCam.WorldToScreenPoint(pos);
-            popupTextRingList[ringListTail].DoInitAtScreenPos(screenPos, val, fontsize, new Vector3(f2.x, f2.y,0));
-            posRingList[ringListTail] = pos;
-            ringListTail = (ringListTail + 1) % ringListLength;
+            return RequireDamageText(pos, val, disSq);
+        }
+        if (disSq == -1)
+        {
+            RequireLifeStealText();
             return true;
         }
-        else
+        if (disSq == -2)
         {
-            //Debug.Log("No available popup text");
-            return false;
+            RequireDodgeText();
+            return true;
         }
+        Debug.LogError("Exception in RequirePopupText - No valid disSq value");
+        return true;
+    }
+    private bool RequireDamageText(Vector3 pos, int val, float disSq)
+    {
+        var f2 = math.normalize(random.NextFloat2());
+        float fontsize = 60f;
+        if (disSq > 64f) fontsize = 32f;
+        var screenPos = mainCam.WorldToScreenPoint(pos);
+        popupTextRingList[ringListTail].DoInitAtScreenPos(screenPos, val, fontsize, new Vector3(f2.x, f2.y, 0));
+        posRingList[ringListTail] = pos;
+        ringListTail = (ringListTail + 1) % ringListLength;
+        return true;
+    }
+    private void RequireDodgeText()
+    {
+        popupTextRingList[ringListTail].DoInitShowDodge(DodgeStringPos, DodgeString, DodgeStringFontSize, DodgeStringDir);
+        posRingList[ringListTail] = DodgeStringPos;
+        ringListTail = (ringListTail + 1) % ringListLength;
+    }
+
+    private void RequireLifeStealText()
+    {
+        popupTextRingList[ringListTail].DoInitShowLifeSteal(LifeStealStringPos, LifeStealString, LifeStealStringFontSize, LifeStealStringDir);
+        posRingList[ringListTail] = LifeStealStringPos;
+        ringListTail = (ringListTail + 1) % ringListLength;
     }
 }

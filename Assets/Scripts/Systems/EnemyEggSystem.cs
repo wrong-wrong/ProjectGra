@@ -2,7 +2,8 @@ using Unity.Entities;
 using Unity.Transforms;
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(EnemySummonerSystem))]
     public partial struct EnemyEggSystem : ISystem
     {
         public void OnCreate(ref SystemState state)
@@ -15,7 +16,7 @@ namespace ProjectGra
 
         public void OnUpdate(ref SystemState state)
         {
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var deltatime = SystemAPI.Time.DeltaTime;
             var allEnemyBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
             foreach (var (eggtimer, hatch, transform, stateMachine, entity) in SystemAPI.Query<RefRW<EnemyEggTimerCom>, RefRO<EnemyEggToBeHatched>, RefRO<LocalTransform>

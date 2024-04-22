@@ -123,16 +123,16 @@ namespace ProjectGra
             strBuilder.Clear();
 
             var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage())
-            * (config.BasicDamage + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
-            var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance;
-            var calculatedCooldown = config.Cooldown * math.clamp(1 - PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);
-            var calculatedRange = PlayerDataModel.Instance.GetRange() + config.Range;
+            * (config.BasicDamage[weaponLevel] + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
+            var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance[weaponLevel];
+            var calculatedCooldown = config.Cooldown[weaponLevel] * math.clamp(1 - PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);
+            var calculatedRange = PlayerDataModel.Instance.GetRange() + config.Range[weaponLevel];
             strBuilder.Append(calculatedDamageAfterBonus);
             strBuilder.Append('|');
-            strBuilder.Append(config.BasicDamage);
+            strBuilder.Append(config.BasicDamage[weaponLevel]);
             strBuilder.AppendLine();
             strBuilder.Append('x');
-            strBuilder.Append(config.WeaponCriticalHitRatio);
+            strBuilder.Append(config.WeaponCriticalHitRatio[weaponLevel]);
             strBuilder.Append('(');
             strBuilder.Append(calculatedCritHitChance);
             strBuilder.Append("chance)");
@@ -141,7 +141,7 @@ namespace ProjectGra
             strBuilder.AppendLine();
             strBuilder.Append(calculatedRange);
             strBuilder.Append('|');
-            strBuilder.Append(config.Range);
+            strBuilder.Append(config.Range[weaponLevel]);
             strBuilder.AppendLine();
             WeaponInfoText.text = strBuilder.ToString();
             strBuilder.Clear();

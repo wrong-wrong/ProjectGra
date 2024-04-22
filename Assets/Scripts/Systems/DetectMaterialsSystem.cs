@@ -31,7 +31,7 @@ namespace ProjectGra
             var playerExperience = SystemAPI.GetSingletonRW<PlayerExperienceAndLevel>();
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
             var itemTagLookup = SystemAPI.GetComponentLookup<ItemTag>();
-            var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var hits = new NativeList<DistanceHit>(state.WorldUpdateAllocator);
             if(collisionWorld.OverlapSphere(playerTransform.Position, 2f, ref hits, materialFilter))
             {

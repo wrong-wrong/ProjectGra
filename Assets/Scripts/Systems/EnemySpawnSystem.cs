@@ -51,7 +51,7 @@ namespace ProjectGra
                 sysData.ValueRW.realCooldown = sysData.ValueRO.spawningCooldown;
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
                 var playerPosition = SystemAPI.GetComponent<LocalTransform>(playerEntity).Position;
-                var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+                var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
                 var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(allEnemyPrefabBuffer.Length)].Prefab);
                 float2 f2pos;
                 f2pos.x = sysData.ValueRW.random.NextFloat(playerPosition.x - sysData.ValueRO.minRadius, playerPosition.x + sysData.ValueRO.minRadius);

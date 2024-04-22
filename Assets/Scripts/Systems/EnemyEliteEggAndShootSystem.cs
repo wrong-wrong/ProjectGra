@@ -8,7 +8,8 @@ using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(AutoWeaponUpdateSystem))]
     public partial struct EnemyEliteEggAndShootSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
@@ -44,6 +45,7 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
+            Debug.LogWarning("using fixed number in EliteEggAndShoot to get egg prefab");
         }
 
         public void OnStartRunning(ref SystemState state)
@@ -51,7 +53,6 @@ namespace ProjectGra
             var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
             NormalSpawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
 
-            Debug.LogWarning("using fixed number in EliteEggAndShoot to get egg prefab");
             EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[4].Prefab;
             
             var config = SystemAPI.GetSingleton<EliteEggAndShootConfig>();
@@ -77,7 +78,7 @@ namespace ProjectGra
             var deltatime = SystemAPI.Time.DeltaTime;
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             // check spawn timer, only update entity with spawn timer
             foreach(var(spawnTimer, spawnTimerBit,materialAndMesh, collider, stateMachine) in SystemAPI.Query <RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
                 , RefRW<MaterialMeshInfo>

@@ -106,12 +106,14 @@ namespace ProjectGra
         //readonly 
         public int WeaponIndex;
         public float3 WeaponPositionOffset;
-        public int BasicDamage;
         public float4 DamageBonus;
-        public float WeaponCriticalHitChance;
-        public float WeaponCriticalHitRatio;
-        public float Cooldown;
-        public float Range;
+
+        public int4 BasicDamage;
+        public float4 WeaponCriticalHitChance;
+        public float4 WeaponCriticalHitRatio;
+        public float4 Cooldown;
+        public float4 Range;
+
         public float SweepHalfWidth;
         public Entity WeaponPrefab;  //this is Prefab
         public Entity SpawneePrefab;

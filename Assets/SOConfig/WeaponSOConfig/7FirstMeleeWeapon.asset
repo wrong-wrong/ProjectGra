@@ -20,6 +20,7 @@ MonoBehaviour:
   BasePrice: 7
   color: {r: 0.6509804, g: 0.7960785, b: 0.5529412, a: 1}
   WeaponIndex: 7
+  WeaponLevel: 0
   WeaponModel: {fileID: 5106712197949598478, guid: 346df1cda119a124d86c32247c37feff,
     type: 3}
   SpawneePrefabs: {fileID: 0}
@@ -27,13 +28,33 @@ MonoBehaviour:
   RangedBonus: 0
   ElementBonus: 0
   AttackSpeedBonus: 0
-  BasicDamage: 30
-  WeaponCriticalHitChance: 0
-  WeaponCriticalHitRatio: 0
-  Cooldown: 1
-  Range: 8
-  WeaponPositionOffsetRelativeToCameraTarget:
+  BasicDamage:
+    x: 10
+    y: 15
+    z: 20
+    w: 25
+  WeaponCriticalHitChance:
     x: 0
     y: 0
     z: 0
+    w: 0
+  WeaponCriticalHitRatio:
+    x: 0
+    y: 0
+    z: 0
+    w: 0
+  Cooldown:
+    x: 1
+    y: 1
+    z: 1
+    w: 1
+  Range:
+    x: 10
+    y: 10
+    z: 10
+    w: 10
+  WeaponPositionOffsetRelativeToCameraTarget:
+    x: 0
+    y: -0.4
+    z: 0.6
   WeaponCategoryList: 02000000

@@ -69,6 +69,10 @@ namespace ProjectGra
         {
             return new int4(weaponSlotList[0].WeaponIdx, weaponSlotList[1].WeaponIdx, weaponSlotList[2].WeaponIdx, weaponSlotList[3].WeaponIdx);
         }
+        public int4 GetSlotWeaponLevelInShop()
+        {
+            return new int4(weaponSlotList[0].WeaponLevel, weaponSlotList[1].WeaponLevel, weaponSlotList[2].WeaponLevel, weaponSlotList[3].WeaponLevel);
+        }
         public bool4 GetSlotWeaponIsMelee()
         {
             return new bool4(weaponSlotList[0].IsMeleeWeapon, weaponSlotList[1].IsMeleeWeapon, weaponSlotList[2].IsMeleeWeapon, weaponSlotList[3].IsMeleeWeapon);

@@ -53,7 +53,7 @@ namespace ProjectGra
             hitBufferLookup.Update(ref state); 
             flashingComLookup.Update(ref state);
             attackCountLookup.Update(ref state);
-            var endFixedSimECB = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var beginSimECB = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = localTransformLookup[playerEntity];
             var normalSpawneeTriggerJob = new DetectNormalSpawneeTriggerJob
@@ -61,7 +61,7 @@ namespace ProjectGra
                 attackCountLookup = attackCountLookup,
                 PlayerEntity = playerEntity,
                 PlayerPosition = playerTransform.Position,
-                ecb = endFixedSimECB,
+                ecb = beginSimECB,
                 CurDamageLookup = spawneeCurDamageLookup,
                 EntityHealthPointLookup = entityHealthPointLookup,
                 EntityStateMachineLookup = entityStateMachineLookup,
@@ -81,7 +81,7 @@ namespace ProjectGra
                 attackCountLookup = attackCountLookup,
                 PlayerEntity = playerEntity,
                 PlayerPosition = playerTransform.Position,
-                ecb = endFixedSimECB,
+                ecb = beginSimECB,
                 CurDamageLookup = spawneeCurDamageLookup,
                 EntityHealthPointLookup = entityHealthPointLookup,
                 EntityStateMachineLookup = entityStateMachineLookup,
@@ -100,6 +100,7 @@ namespace ProjectGra
             EffectRequestSharedStaticBuffer.SharedValue.Data.SortPopupText();
             state.Dependency = normalSpawneeTriggerJob.Schedule(simulationSingleton, state.Dependency);
             state.Dependency = pierceSpawneeTriggerJob.Schedule(simulationSingleton, state.Dependency);
+            state.Dependency.Complete();
         }
     }
     

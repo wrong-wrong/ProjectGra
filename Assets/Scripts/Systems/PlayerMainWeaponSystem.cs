@@ -9,7 +9,7 @@ namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
     [UpdateAfter(typeof(CameraTargetFollowSystem))]
-    public partial struct PlayerAttackSystem : ISystem
+    public partial struct PlayerMainWeaponSystem : ISystem
     {
         private Random random;
         private CollisionFilter emptyCollisionFilter;
@@ -153,7 +153,7 @@ namespace ProjectGra
                 }
                 else if (inputState.ValueRO)
                 {
-                    var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+                    var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
                     mainWeaponState.ValueRW.RealCooldown = mainWeaponState.ValueRO.Cooldown;
                     var spawnee = ecb.Instantiate(mainWeaponState.ValueRO.SpawneePrefab);
                     ecb.SetComponent(spawnee, mainWeaponState.ValueRO.mainWeaponLocalTransform);

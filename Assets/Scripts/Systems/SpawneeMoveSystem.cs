@@ -4,7 +4,7 @@ using Unity.Transforms;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeVariableRate))]
     //[UpdateAfter(typeof(HandleTimeOutSpawneeSystem))]
     public partial struct SpawneeMoveSystem : ISystem
     {
@@ -28,7 +28,7 @@ namespace ProjectGra
             //state.Dependency.Complete();
             //ecb.Playback(state.EntityManager);
 
-            var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            //var ecb = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             state.Dependency = new SpawneeMoveJob
             {
                 deltatime = deltatime,

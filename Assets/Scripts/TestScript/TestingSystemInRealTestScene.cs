@@ -1,12 +1,11 @@
 using ProjectGra;
-using System.Net;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
-//[DisableAutoCreation]
+[DisableAutoCreation]
 //[UpdateInGroup(typeof(FixedStepSimulationSystemGroup),OrderLast = true)]
 //[UpdateAfter(typeof(EndFixedStepSimulationEntityCommandBufferSystem))]
 public partial struct TestingSystemInRealTestScene : ISystem
@@ -23,12 +22,13 @@ public partial struct TestingSystemInRealTestScene : ISystem
     {
 
         // effect request test
-        //EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(PopupTextManager.Instance.MaxPopupTextCount, AudioManager.Instance.MaxAudioSourceCount, ParticleManager.Instance.MaxParticleCount);
+        PopupTextManager.Instance.enabled = true;
+        EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(PopupTextManager.Instance.MaxPopupTextCount, PopupTextManager.Instance.MaxPopupTextCount, PopupTextManager.Instance.MaxPopupTextCount);
         random = Random.CreateFromIndex(0);
     }
     public void OnUpdate(ref SystemState state) 
     {
-        //if (!Input.GetKeyUp(KeyCode.Space)) return;
+        if (!Input.GetKeyUp(KeyCode.Space)) return;
 
 
         #region melee weapon sweep test
@@ -56,34 +56,44 @@ public partial struct TestingSystemInRealTestScene : ISystem
         //var testEntity2 = SystemAPI.GetSingletonEntity<TestingEntityTag>();
         //var transformRW2 = SystemAPI.GetComponentRW<LocalTransform>(testEntity2);
         //transformRW2.ValueRW.Rotation = quaternion.LookRotation(playerTransform.forward, math.up());
-        
+
         #endregion
 
 
         #region effect request test
-        //var popText_disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList;
-        //var popText_posList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList;
-        //var popText_valList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList;
+        var popText_disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList;
+        var popText_posList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList;
+        var popText_valList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList;
         //var audioPosList = EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList;
         //var audioEnumList = EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList;
         //var particlePosList = EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList;
         //var particleEnumList = EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList;
-        //foreach (var (transform, entity) in SystemAPI.Query<RefRO<LocalTransform>>().WithAll<TestingEntityTag>().WithEntityAccess())
-        //{
-        //    var pos = transform.ValueRO.Position;
-        //    var disSq = math.distancesq(transform.ValueRO.Position, float3.zero);
-        //    var randomInt = random.NextInt(77, 777);
-        //    popText_posList.Add(pos);
-        //    popText_disSqList.Add(disSq);
-        //    popText_valList.Add(randomInt);
-        //    //Debug.Log("Adding : " + disSq + " - "+ pos + " - " +  randomInt + "Entity Idx" + entity.Index);
-        //    audioPosList.Add(pos);
-        //    audioEnumList.Add(AudioEnum.NormalShoot);
-        //    particlePosList.Add(pos);
-        //    particleEnumList.Add(ParticleEnum.Default);
+        foreach (var (transform, entity) in SystemAPI.Query<RefRO<LocalTransform>>().WithAll<TestingEntityTag>().WithEntityAccess())
+        {
 
-        //}
-        //EffectRequestSharedStaticBuffer.SharedValue.Data.SortPopupText();
+            popText_posList.Add(1);
+            popText_disSqList.Add(-1);
+            popText_valList.Add(0);
+
+
+            popText_posList.Add(1);
+            popText_disSqList.Add(-2);
+            popText_valList.Add(0);
+            //var pos = transform.ValueRO.Position;
+            //var disSq = math.distancesq(transform.ValueRO.Position, float3.zero);
+            //var randomInt = random.NextInt(77, 777);
+            //popText_posList.Add(pos);
+            //popText_disSqList.Add(disSq);
+            //popText_valList.Add(randomInt);
+            //Debug.Log("Adding : " + disSq + " - "+ pos + " - " +  randomInt + "Entity Idx" + entity.Index);
+            //audioPosList.Add(pos);
+            //audioEnumList.Add(AudioEnum.NormalShoot);
+            //particlePosList.Add(pos);
+            //particleEnumList.Add(ParticleEnum.Default);
+
+        }
+        EffectRequestSharedStaticBuffer.SharedValue.Data.SortPopupText();
+        Debug.Log("TestingSystemExecute");
         #endregion
 
         #region flashing com multiple color test

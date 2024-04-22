@@ -11,15 +11,27 @@ namespace OOPExperiment
         public bool SpawnPalumonGameObject = false;
         public int NumberOfPalumon;
         //public List<GameObject> GOpalumonList;
-        //public List<PalumonBase> palumonList;
+        public List<PalumonBase> palumonList;
 
 
         void Start()
         {
-            for(int i = 0; i < NumberOfPalumon; ++i)
-            {
-                Instantiate(PalumonPrefab).GetComponent<PalumonBase>().Target = TargetTransform;
-            }
+            Debug.LogWarning("Spawner not working.");
+
+            //palumonList = new List<PalumonBase>(10000);
+            //for (int i = 0; i < NumberOfPalumon; ++i)
+            //{
+            //    var palu = Instantiate(PalumonPrefab).GetComponent<PalumonBase>();
+            //    //palu.Target = TargetTransform;
+            //    palumonList.Add(palu);
+            //}
+
+            //for(int i = 0; i < NumberOfPalumon; ++i)
+            //{
+            //    Instantiate(PalumonPrefab).GetComponent<PalumonBase>().Target = TargetTransform;
+            //}
+
+
             //if (SpawnPalumonGameObject)
             //{
             //    GOpalumonList = new List<GameObject>(NumberOfPalumon);
@@ -38,7 +50,13 @@ namespace OOPExperiment
             //}
         }
 
-
+        private void Update()
+        {
+            //for (int i = 0, n = 10000; i < n; ++i)
+            //{
+            //    palumonList[i].FollowTarget();
+            //}
+        }
 
         //void Update()
         //{

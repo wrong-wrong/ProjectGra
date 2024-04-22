@@ -8,7 +8,8 @@ using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(EnemySummonerSystem))]
     public partial struct EnemyNormalRangedSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
@@ -65,7 +66,7 @@ namespace ProjectGra
         {
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerLocalTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
             var deltatime = SystemAPI.Time.DeltaTime;
             var up = math.up();

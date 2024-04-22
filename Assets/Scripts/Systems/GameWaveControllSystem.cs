@@ -61,7 +61,7 @@ namespace ProjectGra
             UnpauseReal(ref state);
         }
 
-        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default, bool4 isMeleeWeapon = default)
+        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default, int4 weaponLevel = default, bool4 isMeleeWeapon = default)
         {
             //Get configBuffer info from 
             float tmpRange = 0;
@@ -93,12 +93,12 @@ namespace ProjectGra
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
                 var calculatedDamageAfterBonus = (int)((1f + playerAttibute.DamagePercentage)
-                    * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
-                var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
+                    * (config.BasicDamage[weaponLevel[0]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
+                var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance[weaponLevel[0]];
 
                 var cooldownModifier = math.clamp(1f - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
-                var calculatedCooldown = config.Cooldown * cooldownModifier;
-                var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
+                var calculatedCooldown = config.Cooldown[weaponLevel[0]] * cooldownModifier;
+                var calculatedRange = playerRange + config.Range[weaponLevel[0]];   //used to set spawnee's timer
                 Debug.Log("Attribute related - All Weapon Cooldown modified with : " + cooldownModifier);
                 if (!isMeleeWeapon[0]) // Ranged Weapon
                 {
@@ -113,7 +113,7 @@ namespace ProjectGra
                         Cooldown = calculatedCooldown,
                         DamageAfterBonus = calculatedDamageAfterBonus,
                         WeaponCriticalHitChance = calculatedCritHitChance,
-                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio[weaponLevel[0]],
                         SpawneePrefab = config.SpawneePrefab,
                         IsMeleeWeapon = config.IsMeleeWeapon,
                         Range = calculatedRange,
@@ -141,7 +141,7 @@ namespace ProjectGra
                         Cooldown = calculatedCooldown,
                         DamageAfterBonus = calculatedDamageAfterBonus, // setting to negtive to indicate its not targeting something
                         WeaponCriticalHitChance = calculatedCritHitChance,
-                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio[weaponLevel[0]],
                         MeleeShootingTimer = calculatedRange / config.MeleeForwardSpeed,
                         IsMeleeWeapon = config.IsMeleeWeapon,
                         IsMeleeSweep = config.IsMeleeSweep,
@@ -203,12 +203,12 @@ namespace ProjectGra
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
                 var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
-                    * (config.BasicDamage + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
-                var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance;
-                var calculatedCooldown = config.Cooldown * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
+                    * (config.BasicDamage[weaponLevel[i + 1]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
+                var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance[weaponLevel[i + 1]];
+                var calculatedCooldown = config.Cooldown[weaponLevel[i + 1]] * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 //Debug.Log("Attribute related - Auto wp " + i + 1 + "Cooldown modified with percentage:" + math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f));
-                var calculatedRange = playerRange + config.Range;   //used to set spawnee's timer
-                tmpRange = math.max(tmpRange, config.Range);
+                var calculatedRange = playerRange + config.Range[weaponLevel[i + 1]];   //used to set spawnee's timer
+                tmpRange = math.max(tmpRange, config.Range[weaponLevel[i + 1]]);
                 if (!isMeleeWeapon[i + 1]) // Ranged Weapon
                 {
                     autoWpEcb.Add(new AutoWeaponBuffer
@@ -221,7 +221,7 @@ namespace ProjectGra
                         Cooldown = calculatedCooldown,
                         DamageAfterBonus = calculatedDamageAfterBonus * -1, // setting to negtive to indicate its not targeting something
                         WeaponCriticalHitChance = calculatedCritHitChance,
-                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio[weaponLevel[i + 1]],
                         SpawneePrefab = config.SpawneePrefab,
                         Range = calculatedRange,
                         IsMeleeWeapon = config.IsMeleeWeapon,
@@ -247,7 +247,7 @@ namespace ProjectGra
                         Cooldown = calculatedCooldown,
                         DamageAfterBonus = calculatedDamageAfterBonus * -1, // setting to negtive to indicate its not targeting something
                         WeaponCriticalHitChance = calculatedCritHitChance,
-                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio,
+                        WeaponCriticalHitRatio = config.WeaponCriticalHitRatio[weaponLevel[i + 1]],
                         Range = calculatedRange,
                         MeleeShootingTimer = calculatedRange / config.MeleeForwardSpeed,
                         IsMeleeWeapon = config.IsMeleeWeapon,
@@ -289,11 +289,12 @@ namespace ProjectGra
             //Update weaponstate
             var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
             sysData.ValueRW.tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop();
+            sysData.ValueRW.tmpWpLevel = CanvasMonoSingleton.Instance.GetSlotWeaponLevelInShop();
             sysData.ValueRW.tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop();
 
             Debug.Log(sysData.ValueRW.tmpWpIdx);
             Debug.Log(sysData.ValueRW.tmpIsMeleeWp);
-            PopulateWeaponStateWithWeaponIdx(ref state, sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
+            PopulateWeaponStateWithWeaponIdx(ref state, sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpWpLevel, sysData.ValueRW.tmpIsMeleeWp);
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
@@ -448,6 +449,7 @@ namespace ProjectGra
         //public bool IsPause;
         //public NativeArray<int> idxList;
         public int4 tmpWpIdx;
+        public int4 tmpWpLevel;
         public bool4 tmpIsMeleeWp;
     }
     public struct GameControllNotPaused : IComponentData { }

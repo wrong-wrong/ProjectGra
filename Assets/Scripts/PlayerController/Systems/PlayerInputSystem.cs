@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
-    [UpdateAfter(typeof(GameWaveControllSystem))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    //[UpdateAfter(typeof(GameWaveControllSystem))]
     public partial struct PlayerInputSystem : ISystem
     {
         public class Singleton : IComponentData

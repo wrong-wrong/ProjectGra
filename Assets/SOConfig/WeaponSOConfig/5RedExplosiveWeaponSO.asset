@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: 5RedExplosiveWeaponSO
   m_EditorClassIdentifier: 
   IsMeleeWeapon: 0
+  IsMeleeSweep: 0
+  SweepHalfWidth: 0
+  MeleeForwardSpeed: 0
   WeaponName: Red
   BasePrice: 25
   color: {r: 0.98823535, g: 0.1764706, b: 0.25882354, a: 1}
   WeaponIndex: 5
+  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: 6236b3f27bd71cc46b3266884d53cdd7,
     type: 3}
   SpawneePrefabs: {fileID: 365588521010595200, guid: 9911dd1a4c55ec04983ab9728709487d,
@@ -25,11 +29,31 @@ MonoBehaviour:
   RangedBonus: 0
   ElementBonus: 0
   AttackSpeedBonus: 0
-  BasicDamage: 20
-  WeaponCriticalHitChance: 0.6
-  WeaponCriticalHitRatio: 2
-  Cooldown: 1.6
-  Range: 10
+  BasicDamage:
+    x: 9
+    y: 9
+    z: 9
+    w: 9
+  WeaponCriticalHitChance:
+    x: 0
+    y: 0
+    z: 0
+    w: 0
+  WeaponCriticalHitRatio:
+    x: 0
+    y: 0
+    z: 0
+    w: 0
+  Cooldown:
+    x: 2
+    y: 2
+    z: 2
+    w: 2
+  Range:
+    x: 8
+    y: 8
+    z: 8
+    w: 8
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0
     y: 0

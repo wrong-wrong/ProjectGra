@@ -4,6 +4,7 @@ using Unity.Rendering;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeVariableRate))]
     public partial struct FlashingSystem : ISystem
     {
         private float hitFlashCycleTime;

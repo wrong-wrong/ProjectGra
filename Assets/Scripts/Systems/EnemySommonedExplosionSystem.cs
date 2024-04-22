@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(EnemySummonerSystem))]
     public partial struct EnemySummonedExplosionSystem : ISystem, ISystemStartStop
     {
 
@@ -50,7 +51,7 @@ namespace ProjectGra
         public void OnUpdate(ref SystemState state)
         {
             //Debug.Log("SommonedExplosion System");
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             foreach (var (summon, scaling, transform, entity) in SystemAPI.Query<RefRW<SummonedExplosionCom>, RefRW<EntityScalingCom>, RefRW<LocalTransform>>().WithEntityAccess())
@@ -68,8 +69,8 @@ namespace ProjectGra
                             //set scaling
                             scaling.ValueRW.BasicScale = transform.ValueRW.Scale;
                             scaling.ValueRW.OffsetScale = -transform.ValueRO.Scale + ScaleToSetInLaterThreeState[0];    // offsetScale would be applied to the basic scale
-                            scaling.ValueRW.Timer = TimerToSetInLaterThreeState[0];
-                            scaling.ValueRW.RealTimer = 0f;
+                            scaling.ValueRW.ScalingTime = TimerToSetInLaterThreeState[0];
+                            scaling.ValueRW.AccumulateTimer = 0f;
                         }
                         else if(state.EntityManager.Exists(summon.ValueRO.FollowingEntity))
                         {
@@ -87,8 +88,8 @@ namespace ProjectGra
                             //set scaling
                             scaling.ValueRW.BasicScale = transform.ValueRW.Scale;
                             scaling.ValueRW.OffsetScale = -transform.ValueRO.Scale + ScaleToSetInLaterThreeState[1];
-                            scaling.ValueRW.Timer = TimerToSetInLaterThreeState[1];
-                            scaling.ValueRW.RealTimer = 0f;
+                            scaling.ValueRW.ScalingTime = TimerToSetInLaterThreeState[1];
+                            scaling.ValueRW.AccumulateTimer = 0f;
 
                         }
                         else
@@ -111,8 +112,8 @@ namespace ProjectGra
                             //set scaling
                             scaling.ValueRW.BasicScale = transform.ValueRW.Scale;
                             scaling.ValueRW.OffsetScale = -transform.ValueRO.Scale + ScaleToSetInLaterThreeState[2];
-                            scaling.ValueRW.Timer = TimerToSetInLaterThreeState[2];
-                            scaling.ValueRW.RealTimer = 0f;
+                            scaling.ValueRW.ScalingTime = TimerToSetInLaterThreeState[2];
+                            scaling.ValueRW.AccumulateTimer = 0f;
                         }
 
                         break;

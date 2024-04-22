@@ -8,15 +8,15 @@ namespace OOPExperiment
 {
     public partial struct ExperiFollowingSystem : ISystem
     {
-        private ComponentLookup<LocalTransform> localTransformLookup;
+        //private ComponentLookup<LocalTransform> localTransformLookup;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<ExperiExecuteTag>();
             //localTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(true);
 
             //false for using lookup in job
-            localTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(false);
-
+            //localTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(false);
+            state.RequireForUpdate<MovingTargetSpeed>();
         }
 
         //[BurstCompile]
@@ -26,13 +26,21 @@ namespace OOPExperiment
             //  2 ways to implement  : 1.fixed Transform for the single moving target // no , real game target should not be the one, target can be any one
             //                         2. ComponentLookup
 
+            //EntityQuery eq = SystemAPI.QueryBuilder<>
+
+            //10k simple moving job
+            //var deltatime = SystemAPI.Time.DeltaTime;
+            //var targetTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<MovingTargetSpeed>());
+            //var simpleMoveJob = new ExperiSimpleFollowingJob { deltatime = deltatime , targetTransform = targetTransform};
+            //simpleMoveJob.ScheduleParallel(state.Dependency).Complete();
+
             //10k 1.85ms   using fixed targetTransform outside the loop    no rotation
             //var deltaTime = SystemAPI.Time.DeltaTime;
-            //var targetTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<MovingTargetSpeed
+            //var targetTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<MovingTargetSpeed>());
             //foreach (var (palumonTransform, palumonSpeed) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ExperiPalumonSpeed>>())
             //{
             //    var tarDir = targetTransform.Position - palumonTransform.ValueRO.Position;
-            //    palumonTransform.ValueRW.Position += MyNormalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
+            //    palumonTransform.ValueRW.Position += math.normalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
             //}
 
             //10K  3.70ms              using localTransformLookup       no rotation
@@ -130,17 +138,17 @@ namespace OOPExperiment
             //state.Dependency = palumonFollowJob.ScheduleParallel(state.Dependency);
 
             //10k  0.17ms Bursted UpdateFunction  
-            var deltaTime = SystemAPI.Time.DeltaTime;
-            localTransformLookup.Update(ref state);
-            foreach (var (palumonTransform, palumonSpeed, palumonTarget) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ExperiPalumonSpeed>, RefRO<ExperiPalumonTargetEntity>>())
-            {
-                var tarDir = localTransformLookup[palumonTarget.ValueRO.targetEntity].Position - palumonTransform.ValueRO.Position;
-                if (math.any(tarDir!=float3.zero))
-                {
-                    palumonTransform.ValueRW.Position += math.normalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
-                    palumonTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
-                }
-            }
+            //var deltaTime = SystemAPI.Time.DeltaTime;
+            //localTransformLookup.Update(ref state);
+            //foreach (var (palumonTransform, palumonSpeed, palumonTarget) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ExperiPalumonSpeed>, RefRO<ExperiPalumonTargetEntity>>())
+            //{
+            //    var tarDir = localTransformLookup[palumonTarget.ValueRO.targetEntity].Position - palumonTransform.ValueRO.Position;
+            //    if (math.any(tarDir!=float3.zero))
+            //    {
+            //        palumonTransform.ValueRW.Position += math.normalize(tarDir) * palumonSpeed.ValueRO.MoveSpeed * deltaTime;
+            //        palumonTransform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
+            //    }
+            //}
         }
         public static float MyMagnitude(float3 vector)
         {
@@ -158,6 +166,16 @@ namespace OOPExperiment
         }
     }
 
+    public partial struct ExperiSimpleFollowingJob : IJobEntity
+    {
+        public float deltatime;
+        [ReadOnly]public LocalTransform targetTransform;
+        public void Execute(in ExperiPalumonSpeed speed, ref LocalTransform transform)
+        {
+            var tarDir = targetTransform.Position - transform.Position;
+            transform.Position += math.normalize(tarDir) * speed.MoveSpeed * deltatime;
+        }
+    }
 
     [BurstCompile]
     public partial struct ExperiPalumonFollowJob : IJobEntity

@@ -141,6 +141,10 @@ namespace ProjectGra
         {
             return shopUIManager.GetSlotWeaponIdx();
         }
+        public int4 GetSlotWeaponLevelInShop()
+        {
+            return shopUIManager.GetSlotWeaponLevelInShop();
+        }
         internal bool4 GetSlowWeaponIsMeleeInShop()
         {
             return shopUIManager.GetSlotWeaponIsMelee();

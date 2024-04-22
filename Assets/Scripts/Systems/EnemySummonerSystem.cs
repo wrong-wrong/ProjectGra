@@ -7,7 +7,8 @@ using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp))]
+    [UpdateAfter(typeof(EnemyEliteSprintAndShootSystem))]
     public partial struct EnemySummonerSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
@@ -65,7 +66,7 @@ namespace ProjectGra
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             var deltatime = SystemAPI.Time.DeltaTime;
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
             foreach (var (spawnTimer, spawnTimerBit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
                 , RefRW<MaterialMeshInfo>

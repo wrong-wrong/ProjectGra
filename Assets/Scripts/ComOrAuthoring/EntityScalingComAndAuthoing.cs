@@ -16,8 +16,8 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new EntityScalingCom
                 {
-                    RealTimer = 0f,
-                    Timer = authoring.Timer,
+                    AccumulateTimer = 0f,
+                    ScalingTime = authoring.Timer,
                     OffsetScale = authoring.OffsetScale,
                     BasicScale = authoring.BasicScale,
                 });
@@ -35,8 +35,8 @@ namespace ProjectGra
     public struct EntityScalingCom : IComponentData, IEnableableComponent
     {
         public float BasicScale;
-        public float RealTimer;
-        public float Timer;
+        public float AccumulateTimer;
+        public float ScalingTime;
         public float OffsetScale;
         
         public float Ratio;

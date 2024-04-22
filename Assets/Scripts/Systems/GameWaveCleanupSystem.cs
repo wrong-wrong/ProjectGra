@@ -4,7 +4,7 @@ using Unity.Transforms;
 
 namespace ProjectGra
 {
-    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeTransform))]
+    [UpdateInGroup(typeof(MySysGrpUpdateBeforeFixedStepSysGrp),OrderLast = true)]
     public partial struct GameWaveCleanupSystem : ISystem, ISystemStartStop
     {
         private float cleanupTimer;

@@ -3,6 +3,7 @@ using Unity.Transforms;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeVariableRate))]
     public partial struct EntityScalingSystem : ISystem
     {
         //private LocalTransform playerTmpTransform;
@@ -20,8 +21,8 @@ namespace ProjectGra
             var deltatime = SystemAPI.Time.DeltaTime;
             foreach(var (scaling,transform) in SystemAPI.Query<RefRW<EntityScalingCom>, RefRW<LocalTransform>>())
             {
-                var realtimer = scaling.ValueRW.RealTimer += deltatime;
-                scaling.ValueRW.Ratio = realtimer / scaling.ValueRO.Timer;
+                var realtimer = scaling.ValueRW.AccumulateTimer += deltatime;
+                scaling.ValueRW.Ratio = realtimer / scaling.ValueRO.ScalingTime;
                 if (scaling.ValueRO.Ratio < 1f)
                 {
                     transform.ValueRW.Scale = scaling.ValueRO.BasicScale +scaling.ValueRO.OffsetScale * scaling.ValueRO.Ratio;

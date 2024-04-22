@@ -181,10 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b949c215d2b5cc45baeb64fb9e8259e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ExperiPalumonPrefab: {fileID: 8682113802506604995, guid: 5c1260f2c96fd6a40995b45f99238b83,
-    type: 3}
-  count: 10000
-  ExperiMovingTargetPrefab: {fileID: 2395393490666986798, guid: 85c5fd3a11224c241a124094fc18f92e,
+  count: 10
+  ExperiSpawneePrefab: {fileID: 3062199670373568207, guid: cfb4462d495eb77468ec722dd6a21394,
     type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
