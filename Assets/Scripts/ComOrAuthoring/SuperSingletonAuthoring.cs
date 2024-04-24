@@ -11,6 +11,7 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.None);
                 AddComponent<SuperSingletonTag>(entity);
+                AddComponent<EnemyHpAndDmgModifierWithDifferentDifficulty>(entity);
             }
         }
     }

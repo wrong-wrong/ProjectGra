@@ -4752,6 +4752,7 @@ GameObject:
   - component: {fileID: 851757560}
   - component: {fileID: 851757562}
   - component: {fileID: 851757561}
+  - component: {fileID: 851757563}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -4834,6 +4835,23 @@ MonoBehaviour:
   audioSOList:
   - {fileID: 11400000, guid: 8da363625b402c149914a028751417b6, type: 2}
   - {fileID: 11400000, guid: d5aeefb2e57dcad469f7e10e5a484638, type: 2}
+--- !u!114 &851757563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851757557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0bb48f0bd4b83147983e7ee26a9d199, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentDifficulty: 0
+  SpawningSOList:
+  - {fileID: 11400000, guid: 8aa1a1f784393c349b7ad2a7b7e9c8f8, type: 2}
+  - {fileID: 11400000, guid: c49f44dee3b5700459da97a9e2899acf, type: 2}
+  - {fileID: 11400000, guid: 368aed644d897bf48b88072941de704b, type: 2}
 --- !u!1 &874655253
 GameObject:
   m_ObjectHideFlags: 0
@@ -8151,7 +8169,7 @@ MonoBehaviour:
   - AttackSpeed
   - LifeSteal
   - Dodge
-  WaveNumber: 0
+  CodingWave: 0
   shopWaveText: {fileID: 1229151091}
   inGameWaveText: {fileID: 1229346705}
   InGameUICanvasGroup: {fileID: 254717367}
@@ -11494,6 +11512,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1e20a3150f5795745946a9f1c0531c9d, type: 2}
   - {fileID: 11400000, guid: 394ec08cd0035a944846c2cfb8683035, type: 2}
   - {fileID: 11400000, guid: 9c7add2e402d6014daef7834d4d8c156, type: 2}
+  Wave: 0
   ItemSOList:
   - {fileID: 11400000, guid: eba521a11a85924438c1305ecc5c3b70, type: 2}
   - {fileID: 11400000, guid: 6cb94cfc6fe1e0446961009fbce17c4c, type: 2}

@@ -1,6 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
@@ -10,6 +11,7 @@ namespace ProjectGra
     {
         int _MaxEnemyBufferIdxExclusive;
         int _LastUpdateWave;
+        bool _IsInit;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -22,21 +24,66 @@ namespace ProjectGra
             });
             _MaxEnemyBufferIdxExclusive = 0;
             _LastUpdateWave = 0;
+            _IsInit = false;
         }
 
         public void OnStartRunning(ref SystemState state)
         {
-            var config = SystemAPI.GetSingleton<EnemySpawningConfig>();
-            var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
-            sysData.ValueRW.realCooldown = config.SpawningCooldown;
-            sysData.ValueRW.spawningCooldown = config.SpawningCooldown;
-            sysData.ValueRW.minRadius = config.minRadius;
-            sysData.ValueRW.maxRadius = config.maxRadius;
-            var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
             var updateEnemyCom = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
-            for(int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
+            if (!_IsInit)
             {
-                _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
+                _IsInit = true;
+                var config = SystemAPI.GetSingleton<EnemySpawningConfig>();
+                var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
+                sysData.ValueRW.minRadius = config.minRadius;
+                sysData.ValueRW.maxRadius = config.maxRadius;
+
+                var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>();
+                var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
+
+                var spawnConfigCd = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+                if (spawnConfigCd > 0)
+                {
+                    sysData.ValueRW.realCooldown = spawnConfigCd;
+                    sysData.ValueRW.IsHordeOrElite = false;
+                }
+                else
+                {
+                    sysData.ValueRW.realCooldown = -spawnConfigCd;
+                    sysData.ValueRW.IsHordeOrElite = true;
+                }
+                sysData.ValueRW.pointSpawnChance = spawningConfig[updateEnemyCom.CodingWave].PointSpawnChance;
+                sysData.ValueRW.spawningCooldown = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+
+                for (int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
+                {
+                    _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
+                }
+            }else if (updateEnemyCom.Value)
+            {
+                var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
+                var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>();
+                var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
+
+                var spawnConfigCd = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+                if (spawnConfigCd > 0)
+                {
+                    sysData.ValueRW.realCooldown = spawnConfigCd;
+                    sysData.ValueRW.IsHordeOrElite = false;
+                }
+                else
+                {
+                    sysData.ValueRW.realCooldown = -spawnConfigCd;
+                    sysData.ValueRW.IsHordeOrElite = true;
+                }
+                sysData.ValueRW.pointSpawnChance = spawningConfig[updateEnemyCom.CodingWave].PointSpawnChance;
+                sysData.ValueRW.spawningCooldown = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+
+                for (int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
+                {
+                    _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
+                }
+                Debug.Log("EnemySpawnSystem - SpawnCooldown : " + sysData.ValueRO.spawningCooldown +" - PointSpawnChance : " + sysData.ValueRO.pointSpawnChance);
             }
             Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
             Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
@@ -101,10 +148,12 @@ namespace ProjectGra
     public struct EnemySpawnSystemDataSingleton : IComponentData
     {
         public Random random;
-        public bool flip;
         public float realCooldown;
         public float spawningCooldown;
         public float minRadius;
         public float maxRadius;
+        public float pointSpawnChance;
+        public bool flip;
+        public bool IsHordeOrElite;
     }
 }

@@ -93,13 +93,12 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.HideShop();
             CanvasMonoSingleton.Instance.ShowInGameUI();
 
-            ecb.Playback(state.EntityManager);
-            ecb.Dispose();
+
 
             // Register meshes
             var entitesGraphicsSystem = World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<EntitiesGraphicsSystem>();
             var MeshContainer = SystemAPI.ManagedAPI.GetSingleton<MeshContainerCom>();
-            state.EntityManager.AddComponentData(superSingleton, new BatchMeshIDContainer
+            ecb.AddComponent(superSingleton, new BatchMeshIDContainer
             {
                 EnemyEggMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyEggMesh),
                 EnemyEliteEggAndShootMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyEliteEggAndShootMesh),
@@ -110,7 +109,8 @@ namespace ProjectGra
                 EnemyNormalSprintMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemyNormalSprintMesh),
                 EnemySummonerMeshID = entitesGraphicsSystem.RegisterMesh(MeshContainer.EnemySummonerMesh),
             });
-
+            ecb.Playback(state.EntityManager);
+            ecb.Dispose();
             // Create EffectRequestSharedStaticBuffer
             Debug.LogWarning("Using number to give native list in buffer a initial size won't limit the max number of element in native list");
             EffectRequestSharedStaticBuffer.SharedValue.Data = new EffectRequestSharedStaticBuffer(PopupTextManager.Instance.MaxPopupTextCount,AudioManager.Instance.MaxAudioSourceCount,ParticleManager.Instance.MaxParticleCount);
@@ -118,6 +118,34 @@ namespace ProjectGra
             PopupTextManager.Instance.enabled = true;
             AudioManager.Instance.enabled = true;
             ParticleManager.Instance.enabled = true;
+
+            // Setting Spawning Config
+            var SpawningConfigSO = MonoGameManagerSingleton.Instance.SpawningSOList[MonoGameManagerSingleton.Instance.CurrentDifficulty];
+            var spawnConfigBuffer = state.EntityManager.AddBuffer<SpawningConfigBuffer>(superSingleton);
+            for(int i = 0, n = SpawningConfigSO.IsHordeOrElite.Count; i < n; i++)
+            {
+                if (!SpawningConfigSO.IsHordeOrElite[i])
+                {
+                    spawnConfigBuffer.Add(new SpawningConfigBuffer
+                    {
+                        SpawnCooldown = SpawningConfigSO.SpawningCooldown[i],
+                        PointSpawnChance = SpawningConfigSO.PointSpawnChance[i]
+                    });
+                }
+                else
+                {
+                    spawnConfigBuffer.Add(new SpawningConfigBuffer
+                    {
+                        SpawnCooldown = -SpawningConfigSO.SpawningCooldown[i],
+                        PointSpawnChance = SpawningConfigSO.PointSpawnChance[i]
+                    });
+                }
+            }
+            Debug.Log("GameInitializeSystem - SpawningConfigBuffer.Length : " + spawnConfigBuffer.Length);
+            state.EntityManager.SetComponentData(superSingleton,
+                new EnemyHpAndDmgModifierWithDifferentDifficulty { DamageModifier = SpawningConfigSO.EnemyDamageModifier, HealthPointModifier = SpawningConfigSO.EnemyHealthPointModifier });
+
+
         }
 
 
