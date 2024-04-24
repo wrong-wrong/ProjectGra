@@ -112,6 +112,7 @@ namespace ProjectGra
         private void BeforeExitShopCallBack()
         {
             ++WaveNumber;
+            SOConfigSingleton.Instance.Wave++;
             ingameUIMaxHp = PlayerDataModel.Instance.GetMaxHealthPoint();
             ingameUIMaxExp = PlayerDataModel.Instance.GetMaxExp();
             HideShop();

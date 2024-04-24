@@ -87,7 +87,8 @@ public class ShopItem : MonoBehaviour
         itemInfoTextRect.localScale = Vector3.one;
         wpInfoTextRect.localScale = Vector3.zero;
         wpFixedTextRect.localScale = Vector3.zero;
-        itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdx();
+        var randomLevel = SOConfigSingleton.Instance.GetRandomLevel();
+        itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdxFromRarities(randomLevel);
         var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
 
         currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(currentItem.ItemBasePrice);

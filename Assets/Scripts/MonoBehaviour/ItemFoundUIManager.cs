@@ -48,7 +48,8 @@ namespace ProjectGra
         public void Reroll()
         {
             //currrentItem = SOConfigSingleton.Instance.GetRandomItemConfig();
-            itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdx();
+            var itemRarities = SOConfigSingleton.Instance.GetRandomLevel();
+            itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdxFromRarities(itemRarities);
             InitAfterSetConfig();
         }
         public void Take()

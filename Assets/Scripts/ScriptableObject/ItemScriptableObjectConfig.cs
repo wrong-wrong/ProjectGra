@@ -16,13 +16,15 @@ namespace ProjectGra
         //1HpRegain
         //2Armor
         //3Speed %
-        //4Range %
+        //4Range 
         //5CriticalHitChance %
         //6Damage %
         //7Melee %
         //8Ranged %
         //9Element %
         //10AttackSpeed %
+        //11 life steal %
+        //12 dodge %
         public List<int> BonusedValueList;
     }
 }

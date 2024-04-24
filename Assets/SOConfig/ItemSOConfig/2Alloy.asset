@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7526659ae099090408ddb1dec6a37b15, type: 3}
-  m_Name: Cake
+  m_Name: 2Alloy
   m_EditorClassIdentifier: 
-  ItemIdx: 1
-  ItemLevel: 0
-  ItemBasePrice: 15
-  ItemName: Cake
-  ItemSprite: {fileID: 21300000, guid: dc49838ffd81ed6488854c0b4e7bc006, type: 3}
-  AffectedAttributeIdx: 0000000006000000
-  BonusedValueList: 03000000ffffffff
+  ItemIdx: 2
+  ItemLevel: 2
+  ItemBasePrice: 80
+  ItemName: Alloy
+  ItemSprite: {fileID: 21300000, guid: 51adf96fe385c2a4fb922a96f82620fe, type: 3}
+  AffectedAttributeIdx: 070000000800000009000000050000000c000000
+  BonusedValueList: 03000000030000000300000005000000faffffff
