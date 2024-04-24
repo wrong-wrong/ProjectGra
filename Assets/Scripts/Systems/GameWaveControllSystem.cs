@@ -29,6 +29,8 @@ namespace ProjectGra
             state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData { tmpIsMeleeWp = default, tmpWpIdx = default });
             state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
+            state.EntityManager.AddComponent<GameControllShouldUpdateEnemy>(state.SystemHandle);
+            state.EntityManager.SetComponentData(state.SystemHandle, new GameControllShouldUpdateEnemy { Value = true });
             timer = 3f;
         }
         public void OnStartRunning(ref SystemState state)
@@ -277,24 +279,29 @@ namespace ProjectGra
     
             //Setting player data in ECS
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
-            var playerMaterialsCount = SystemAPI.GetComponentRW<PlayerMaterialCount>(playerEntity);
-            var playerHp = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
-            playerMaterialsCount.ValueRW.Count = PlayerDataModel.Instance.playerMaterialCount;
-            playerHp.ValueRW.HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint();
+            //var playerMaterialsCount = SystemAPI.GetComponentRW<PlayerMaterialCount>(playerEntity);
+            //var playerHp = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
+            //playerMaterialsCount.ValueRW.Count = PlayerDataModel.Instance.playerMaterialCount;
+            //playerHp.ValueRW.HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint();
+            SystemAPI.SetComponent(playerEntity, new PlayerMaterialCount { Count = PlayerDataModel.Instance.playerMaterialCount });
+            SystemAPI.SetComponent(playerEntity, new EntityHealthPoint { HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint() });
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
             state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab));
 
 
             //Update weaponstate
-            var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
-            sysData.ValueRW.tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop();
-            sysData.ValueRW.tmpWpLevel = CanvasMonoSingleton.Instance.GetSlotWeaponLevelInShop();
-            sysData.ValueRW.tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop();
+            var newSysData = new WaveControllSystemData
+            {
+                tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop(),
+                tmpWpLevel = CanvasMonoSingleton.Instance.GetSlotWeaponLevelInShop(),
+                tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop(),
+            };
+            SystemAPI.SetComponent(state.SystemHandle, newSysData);
 
-            Debug.Log(sysData.ValueRW.tmpWpIdx);
-            Debug.Log(sysData.ValueRW.tmpIsMeleeWp);
-            PopulateWeaponStateWithWeaponIdx(ref state, sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpWpLevel, sysData.ValueRW.tmpIsMeleeWp);
+            Debug.Log(newSysData.tmpWpIdx);
+            Debug.Log(newSysData.tmpIsMeleeWp);
+            PopulateWeaponStateWithWeaponIdx(ref state, newSysData.tmpWpIdx, newSysData.tmpWpLevel, newSysData.tmpIsMeleeWp);
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
@@ -303,11 +310,16 @@ namespace ProjectGra
             //set spawning system
             var spawningConfig = SystemAPI.GetSingletonRW<EnemySpawningConfig>();
             spawningConfig.ValueRW.SpawningCooldown = 1f;
-            //Debug.Log("spawningCooldown after set" + spawningConfig.ValueRO.spawningCooldown);
+            Debug.Log("spawningCooldown after set" + spawningConfig.ValueRO.SpawningCooldown);
             //set gamestate
-            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
             Debug.Log("InShop to BeforeWave!");
+
+            //set should enemy update
+            var updateEnemyCom = SystemAPI.GetSingletonRW<GameControllShouldUpdateEnemy>();
+            updateEnemyCom.ValueRW.Value = true;
+            updateEnemyCom.ValueRW.Wave = CanvasMonoSingleton.Instance.WaveNumber;
         }
         private void EnterShopState(ref SystemState state)
         {
@@ -344,10 +356,13 @@ namespace ProjectGra
 
             CanvasMonoSingleton.Instance.ShowPauseCanvasGroup();
             Cursor.lockState = CursorLockMode.None;
-            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
             gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
             gameState.ValueRW.CurrentState = GameControllState.Paused;
+
+            SystemAPI.GetSingletonRW<GameControllShouldUpdateEnemy>().ValueRW.Value = false;
+
         }
         private void UnpauseReal(ref SystemState state)
         {
@@ -357,7 +372,7 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.HidePauseCanvasGroup();
             Cursor.lockState = CursorLockMode.Locked;
             //set gamestate
-            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             gameState.ValueRW.CurrentState = gameState.ValueRO.PreviousState;
         }
         public void OnUpdate(ref SystemState state)
@@ -472,6 +487,11 @@ namespace ProjectGra
         Gameover,
         Uninitialized,
         Paused,
+    }
+    public struct GameControllShouldUpdateEnemy : IComponentData
+    {
+        public bool Value;
+        public int Wave;
     }
 }
 

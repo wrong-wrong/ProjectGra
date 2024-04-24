@@ -17,7 +17,11 @@ MonoBehaviour:
   SweepHalfWidth: 0
   MeleeForwardSpeed: 20
   WeaponName: FirstMeleeWeapon
-  BasePrice: 7
+  BasePrice:
+    x: 1
+    y: 2
+    z: 3
+    w: 4
   color: {r: 0.6509804, g: 0.7960785, b: 0.5529412, a: 1}
   WeaponIndex: 7
   WeaponLevel: 0

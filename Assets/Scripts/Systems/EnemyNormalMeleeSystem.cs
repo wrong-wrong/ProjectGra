@@ -14,13 +14,22 @@ namespace ProjectGra
     {
         private Entity ColliderPrefab;
         private BatchMeshID RealMeshId;
-        float followSpeed;
+
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        float _LootCrateDropRate;
+        float _ConsumableDropate;
+
         float attackDistanceSq;
         float cooldown;
         float deathCountDown;
         int attackVal;
-
-        float lootChance;
+        bool isInit;
         Random random;
         Entity MaterialPrefab;
         Entity ItemPrefab;
@@ -31,23 +40,50 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<NormalMeleeConfigCom>();
             random = Random.CreateFromIndex(0);
-
+            isInit = false;
         }
         public void OnStartRunning(ref SystemState state)
         {
-            var config = SystemAPI.GetSingleton<NormalMeleeConfigCom>();
+            // Initialization
+            if (!isInit)
+            {
+                isInit = true;
+                var config = SystemAPI.GetSingleton<NormalMeleeConfigCom>();
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+                _LootCrateDropRate = basicAttribute.LootCrateDropRate;
+                _ConsumableDropate = basicAttribute.ConsumableDropate;
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemyNormalMeleeMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalMeleeCollider;
 
-            followSpeed = config.FollowSpeed;
-            attackDistanceSq = config.AttackDistance * config.AttackDistance;
-            cooldown = config.AttackCooldown;
-            deathCountDown = config.DeathCountdown;
-            attackVal = config.AttackVal;
-            var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
-            MaterialPrefab = prefabContainer.MaterialPrefab;
-            ItemPrefab = prefabContainer.ItemPrefab;
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemyNormalMeleeMeshID;
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalMeleeCollider;
+                // Enemy Specific Initialization
+                attackDistanceSq = config.AttackDistance * config.AttackDistance;
+                cooldown = config.AttackCooldown;
+                deathCountDown = config.DeathCountdown;
+
+                // Might put aside
+                var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
+                MaterialPrefab = prefabContainer.MaterialPrefab;
+                ItemPrefab = prefabContainer.ItemPrefab;
+            }
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.Wave * _DmgIncreasePerWave);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[0].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+            }
+            
+
         }
         public void OnStopRunning(ref SystemState state)
         {
@@ -108,7 +144,7 @@ namespace ProjectGra
                         {
                             transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             if (disSq < 4f) continue;
-                            transform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
+                            transform.ValueRW.Position += normalizedDir * _Speed * deltatime;
                         }
                         break;
 
@@ -125,7 +161,7 @@ namespace ProjectGra
                         }
                         else
                         {
-                            if (random.NextFloat() < lootChance)
+                            if (random.NextFloat() < _LootCrateDropRate)
                             {
                                 var material = ecb.Instantiate(MaterialPrefab);
                                 ecb.SetComponent<LocalTransform>(material

@@ -8,7 +8,7 @@ namespace ProjectGra
     public struct EffectRequestSharedStaticBuffer
     {
         public static readonly SharedStatic<EffectRequestSharedStaticBuffer> SharedValue = SharedStatic<EffectRequestSharedStaticBuffer>.GetOrCreate<EffectRequestSharedStaticBuffer>();
-        public NativeList<int> PopupTextRequestEntityIdxList;
+        //public NativeList<int> PopupTextRequestEntityIdxList;
         public NativeList<float> PopupTextDistanceSqList;
         public NativeList<float3> PopupTextWorldPosList;
         public NativeList<int> PopupTextValueList;
@@ -22,7 +22,7 @@ namespace ProjectGra
             PopupTextDistanceSqList = new NativeList<float>(popupTextCapacity,Allocator.Persistent);
             PopupTextWorldPosList = new NativeList<float3>(popupTextCapacity,Allocator.Persistent);
             PopupTextValueList = new NativeList<int>(popupTextCapacity,Allocator.Persistent);
-            PopupTextRequestEntityIdxList = new NativeList<int>(popupTextCapacity, Allocator.Persistent);
+            //PopupTextRequestEntityIdxList = new NativeList<int>(popupTextCapacity, Allocator.Persistent);
 
             AudioPosList = new NativeList<float3>(audioSourceCapacity,Allocator.Persistent);
             AudioEnumList = new NativeList<AudioEnum>(audioSourceCapacity,Allocator.Persistent);

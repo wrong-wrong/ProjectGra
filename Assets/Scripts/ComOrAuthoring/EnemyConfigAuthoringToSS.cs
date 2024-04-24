@@ -29,12 +29,11 @@ namespace ProjectGra
 
         [Header("NormalMeleeConfig")]
         public GameObject NormalMeleePrefab;
-        public int NormalMeleeAttackVal;
-        public float NormalMeleeFollowSpeed;
+        public EnemyBasicAttributeScriptableObjectConfig NormalMeleeAttributeSO;
         public float NormalMeleeAttackDistance;
         public float NormalMeleeAttackCooldown;
         public float NormalMeleeDeathCountdown;
-        public float NormalMeleeLootChance;
+
 
         [Header("NormalSprintConfig")]
         public GameObject NormalSprintPrefab;
@@ -103,15 +102,25 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.None);
                 var buffer = AddBuffer<AllEnemyPrefabBuffer>(entity);
+                EnemyBasicAttributeScriptableObjectConfig SO;
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic) });
+                SO = authoring.NormalMeleeAttributeSO;
                 AddComponent(entity, new NormalMeleeConfigCom
                 {
-                    AttackVal = authoring.NormalMeleeAttackVal,
-                    FollowSpeed = authoring.NormalMeleeFollowSpeed,
                     AttackDistance = authoring.NormalMeleeAttackDistance,
                     AttackCooldown = authoring.NormalMeleeAttackCooldown,
                     DeathCountdown = authoring.NormalMeleeDeathCountdown,
-                    LootChance = authoring.NormalMeleeLootChance,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalSprintConfigCom
@@ -285,15 +294,11 @@ namespace ProjectGra
     public struct NormalMeleeConfigCom : IComponentData
     {
         //public Entity EnemyPrefab;
-        public int AttackVal;
-        public float FollowSpeed;
         public float AttackCooldown;
         public float DeathCountdown;
-        public float LootChance;
-
         public float AttackDistance;
         public float SprintSpeed;
-
+        public EnemyBasicAttribute BasicAttribute;
     }
 
     public struct EliteShooterConfigCom : IComponentData
@@ -332,5 +337,17 @@ namespace ProjectGra
         public float EliteSprintAndShootSprintSpeed;
         public float EliteSprintAndShootCollideDistance;
         public int EliteSprintAndShootSprintDamage;
+    }
+
+    public struct EnemyBasicAttribute
+    {
+        public int HealthPoint;
+        public int HpIncreasePerWave;
+        public int Damage;
+        public float DmgIncreasePerWave;
+        public float Speed;
+        public int MaterialsDropped;
+        public float LootCrateDropRate;
+        public float ConsumableDropate;
     }
 }

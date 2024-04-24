@@ -64,7 +64,7 @@ namespace ProjectGra
                         Debug.Log("Attribute related - Dodged!");
                         EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Add(0);
                         EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList.Add(-2);
-                        EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Add(0);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList.Add(0);
                     }
                 }
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
@@ -86,7 +86,7 @@ namespace ProjectGra
                         Debug.Log("Attribute related - Life Steal!");
                         EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Add(0);
                         EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList.Add(-1);
-                        EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList.Add(0);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList.Add(0);
                     }
                 }
                 playerSuccessHitCount.ValueRW.Value = 0;

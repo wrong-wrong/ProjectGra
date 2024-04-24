@@ -17,7 +17,11 @@ MonoBehaviour:
   SweepHalfWidth: 3
   MeleeForwardSpeed: 12
   WeaponName: SecondSweepMelee
-  BasePrice: 10
+  BasePrice:
+    x: 1
+    y: 2
+    z: 3
+    w: 4
   color: {r: 0.6901961, g: 0.55816, b: 0.18823528, a: 1}
   WeaponIndex: 8
   WeaponLevel: 0

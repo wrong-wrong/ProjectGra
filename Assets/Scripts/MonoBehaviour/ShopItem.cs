@@ -88,13 +88,14 @@ public class ShopItem : MonoBehaviour
         wpInfoTextRect.localScale = Vector3.zero;
         wpFixedTextRect.localScale = Vector3.zero;
         itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdx();
-        currentPrice = SOConfigSingleton.Instance.GetItemCurrentPrice(itemIdx);
+        var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+
+        currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(currentItem.ItemBasePrice);
         var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
 
         priceText.text = strBuilder.Append(currentPrice).ToString();
         strBuilder.Clear();
         //Init after set config
-        var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
         contentLevel = currentItem.ItemLevel;
         itemIdx = currentItem.ItemIdx;
         icon.sprite = currentItem.ItemSprite;
@@ -124,7 +125,8 @@ public class ShopItem : MonoBehaviour
         isMeleeWp = config.IsMeleeWeapon;
         weaponIdx = config.WeaponIndex;
         var managedConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
-        currentPrice = managedConfig.weaponBasePriceMap[weaponIdx];
+        var basePrice = managedConfig.weaponBasePriceMap[weaponIdx][contentLevel];
+        currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(basePrice);
         priceText.text = currentPrice.ToString();
         nameText.text = managedConfig.weaponNameMap[weaponIdx].ToString();
         //Setting Text

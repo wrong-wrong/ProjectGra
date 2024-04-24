@@ -11,12 +11,17 @@ namespace ProjectGra
 {
     public class CanvasMonoSingleton : MonoBehaviour
     {
+        [SerializeField] List<int> rerollBasePrice;
+        [SerializeField] List<int> rerollPriceIncreasePerReroll;
         public StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
         public List<string> IdxToAttributeName;
 
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
+        public int WaveNumber;
+        [SerializeField] TextMeshProUGUI shopWaveText;
+        [SerializeField] TextMeshProUGUI inGameWaveText;
 
         [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] CanvasGroup PauseCanvasGroup;
@@ -87,7 +92,10 @@ namespace ProjectGra
             itemFoundUIRect.localScale = Vector3.zero;
             upgradeUIRect.localScale = Vector3.zero;
         }
-
+        public void Start()
+        {
+            UpdateWaveNumberText();
+        }
         public void OnDestroy()
         {
             pauseContinueButton.onClick.RemoveAllListeners();
@@ -103,15 +111,27 @@ namespace ProjectGra
 
         private void BeforeExitShopCallBack()
         {
+            ++WaveNumber;
             ingameUIMaxHp = PlayerDataModel.Instance.GetMaxHealthPoint();
             ingameUIMaxExp = PlayerDataModel.Instance.GetMaxExp();
             HideShop();
+            UpdateWaveNumberText();
             ShowInGameUI();
         }
 
         public int GetCategoryActivatedCount(int categoryIdx)
         {
             return weaponCategoryManager.GetCategoryActivatedCount(categoryIdx);
+        }
+
+        public int CalculateFinalPrice(float basePrice)
+        {
+            return (int)(basePrice + WaveNumber + (basePrice * WaveNumber * 0.1));
+        }
+
+        public int GetRerollPrice(int rerollTimes)
+        {
+            return rerollBasePrice[WaveNumber] + rerollPriceIncreasePerReroll[WaveNumber] * rerollTimes;
         }
 
         #region Shop UI
@@ -148,6 +168,14 @@ namespace ProjectGra
         internal bool4 GetSlowWeaponIsMeleeInShop()
         {
             return shopUIManager.GetSlotWeaponIsMelee();
+        }
+        private void UpdateWaveNumberText()
+        {
+            stringBuilder.Append("Wave ");
+            stringBuilder.Append(WaveNumber + 1);
+            shopWaveText.text = stringBuilder.ToString();
+            inGameWaveText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
         }
         public void ShowShopAndOtherUI(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, int playerItemCountThisWave, int playerLevelupThisWave, int MaterialCount)
         {
@@ -256,10 +284,10 @@ namespace ProjectGra
         #endregion
 
         #region InfoMiniWindow
-        public void ShowAndInitInfoWindowWithWeapon(int WeaponIdx, int WeaponLevel, bool showCombine, int combineSlotIdx, int calledSlotIdx, Vector3 position)
+        public void ShowAndInitInfoWindowWithWeapon(int WeaponIdx, int WeaponLevel, int currentPrice, bool showCombine, int combineSlotIdx, int calledSlotIdx, Vector3 position)
         {
             infoMiniWindow.gameObject.SetActive(true);
-            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx, position);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, currentPrice, showCombine, combineSlotIdx, calledSlotIdx, position);
         }
         public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel,int currentPrice, GameObject itemSlotGO, Vector3 showPos)
         {
@@ -308,7 +336,7 @@ namespace ProjectGra
             if (upgradeThisWave > 0)
             {
                 upgradeUIRect.localScale = Vector3.one;
-                upgradeUIManager.Reroll();
+                upgradeUIManager.ResetReroll();
             }
             else
             {

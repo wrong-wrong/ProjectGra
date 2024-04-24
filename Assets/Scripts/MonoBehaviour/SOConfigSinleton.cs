@@ -60,7 +60,7 @@ namespace ProjectGra
         {
             return random.NextInt(ItemSOList.Count);
         }
-        public int GetItemCurrentPrice(int ItemIdx)
+        public int GetItemBasePrice(int ItemIdx)
         {
             return ItemSOList[ItemIdx].ItemBasePrice;
         }

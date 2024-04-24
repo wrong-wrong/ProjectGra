@@ -49,7 +49,6 @@ namespace ProjectGra
         {
             //currrentItem = SOConfigSingleton.Instance.GetRandomItemConfig();
             itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdx();
-            CurrentPrice = SOConfigSingleton.Instance.GetItemCurrentPrice(itemIdx);
             InitAfterSetConfig();
         }
         public void Take()
@@ -67,6 +66,7 @@ namespace ProjectGra
         private void InitAfterSetConfig()
         {
             var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            CurrentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(currentItem.ItemBasePrice);
             itemLevel = currentItem.ItemLevel;
             itemIdx = currentItem.ItemIdx;
             //CurrentPrice = currentItem.ItemBasePrice;
@@ -75,13 +75,24 @@ namespace ProjectGra
             icon.sprite = currentItem.ItemSprite;
             NameText.text = currentItem.ItemName;
             RecycleText.text = "Recycle (+" + CurrentPrice + ")";
-            SetItemInfoText();
+            //SetItemInfoText();
+            var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
+            for (int i = 0, n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
+            {
+                if (currentItem.BonusedValueList[i] > 0) strBuilder.Append("+");
+                strBuilder.Append(currentItem.BonusedValueList[i]);
+                strBuilder.Append(CanvasMonoSingleton.Instance.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
+                strBuilder.AppendLine();
+            }
+            InfoText.text = strBuilder.ToString();
+            strBuilder.Clear();
+
         }
 
         private void SetItemInfoText()
         {
-            var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             for(int i = 0,n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
             {
                 if (currentItem.BonusedValueList[i] > 0)strBuilder.Append("+");

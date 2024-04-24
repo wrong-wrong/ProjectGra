@@ -14,7 +14,7 @@ namespace ProjectGra
 
         [Header("UI only field")]
         public string WeaponName;
-        public int BasePrice;
+        public int4 BasePrice;
         //TODO : ImageIcon for Shop Display
         public Color color; // to temporarily replace Icon
 

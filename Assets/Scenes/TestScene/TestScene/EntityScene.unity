@@ -958,6 +958,8 @@ MonoBehaviour:
   DamagePercentage: 0
   CriticalHitChance: 0
   Range: 0
+  LifeSteal: 0
+  Dodge: 0
   SpawningCooldown: 1
   minRadius: 6
   maxRadius: 13
@@ -994,12 +996,11 @@ MonoBehaviour:
   EliteEggAndShootSpawnEggSkillspawnCount: 7
   NormalMeleePrefab: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
     type: 3}
-  NormalMeleeAttackVal: 10
-  NormalMeleeFollowSpeed: 3
+  NormalMeleeAttributeSO: {fileID: 11400000, guid: e864bcfbf1f8bd34fbe30ece24bd366e,
+    type: 2}
   NormalMeleeAttackDistance: 2.5
   NormalMeleeAttackCooldown: 1.5
   NormalMeleeDeathCountdown: 3
-  NormalMeleeLootChance: 0.5
   NormalSprintPrefab: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
     type: 3}
   NormalSprintAttackVal: 20

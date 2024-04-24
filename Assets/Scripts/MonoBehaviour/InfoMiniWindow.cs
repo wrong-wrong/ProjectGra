@@ -81,7 +81,7 @@ namespace ProjectGra
         }
         private int combineSlotIdx;
         private int calledSlotIdx;
-        public void InitInfoMimiWindowAndShowAtPositionWithWeapon(int weaponIdx, int weaponLevel, bool isCanCombine, int combineSlotIdx, int calledSlotIdx, Vector3 showPos)
+        public void InitInfoMimiWindowAndShowAtPositionWithWeapon(int weaponIdx, int weaponLevel, int currentPrice, bool isCanCombine, int combineSlotIdx, int calledSlotIdx, Vector3 showPos)
         {
             WeaponFixedTextRect.localScale = Vector3.one;
             WeaponInfoTextRect.localScale = Vector3.one;
@@ -113,7 +113,7 @@ namespace ProjectGra
             }
 
             var monoOnlyConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
-            currentPrice = monoOnlyConfig.weaponBasePriceMap[weaponIdx];
+            this.currentPrice = currentPrice;
             Icon.sprite = null;
             NameText.text = monoOnlyConfig.weaponNameMap[weaponIdx];
             strBuilder.Append("Recycle (");

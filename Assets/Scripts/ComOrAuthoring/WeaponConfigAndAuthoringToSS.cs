@@ -19,7 +19,7 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.None);
                 var normalConfigBuffer = AddBuffer<WeaponConfigInfoCom>(entity);
                 var wpNameMap = new Dictionary<int, string>();
-                var wpBasePriceMap = new Dictionary<int, int>();
+                var wpBasePriceMap = new Dictionary<int, int4>();
                 var wpColorMap = new Dictionary<int, Color>();
                 var wpCategoryMap = new Dictionary<int, List<int>>();
                 for (int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
@@ -125,7 +125,7 @@ namespace ProjectGra
     {
         public Dictionary<int, Color> weaponColorInsteadOfIconMap; 
         public Dictionary<int, string> weaponNameMap;
-        public Dictionary<int, int> weaponBasePriceMap;
+        public Dictionary<int, int4> weaponBasePriceMap;
         public Dictionary<int, List<int>> weaponCategoryIdxListMap;
         //public Dictionary<int, List<int4>> weaponCategoryBonusListMap;
     }

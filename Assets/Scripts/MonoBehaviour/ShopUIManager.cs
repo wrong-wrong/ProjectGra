@@ -10,6 +10,10 @@ namespace ProjectGra
     public class ShopUIManager : MonoBehaviour
     {
         [SerializeField] GameObject gameItemPrefab;
+        [SerializeField] string RerollString;
+        [SerializeField] TextMeshProUGUI RerollPriceText;
+        [SerializeField] int rerollPrice;
+        private int rerollTimes;
         [Header("WeaponSlot")]
         [SerializeField] List<WeaponSlot> weaponSlotList;
         [Header("ShopItem")]
@@ -28,11 +32,12 @@ namespace ProjectGra
 
         private Vector3 tmpShopItemPosition; // for swap;
         private ShopItem tmpShopItem;
-        private void Start()
+        private void Awake()
         {
+            Debug.LogWarning("Current reroll is adding player's material");
             weaponSlotList[0].isMainSlot = true;
             ShopContinueButton.onClick.AddListener(CanvasMonoSingleton.Instance.ShopContinueButtonActionWrapper);
-            ShopRerollButton.onClick.AddListener(Reroll);
+            ShopRerollButton.onClick.AddListener(RerollButtonClicked);
             PlayerDataModel.Instance.OnMaterialChanged += UpdateMaterialCount;
             PlayerDataModel.Instance.OnPlayerAttributeChanged += UpdateShopPlayerAttribute;
             for (int i = 0, n = shopItemList.Count; i < n; i++)
@@ -55,7 +60,7 @@ namespace ProjectGra
         public void ShowShop()
         {
             UpdateMainWeaponInfo();
-            Reroll();
+            ResetReroll();
             UpdateAllShopItemBuyState();
         }
         public void SetSlotWeaponIdx(int4 wpIdx, bool4 isMeleeWp)
@@ -144,7 +149,7 @@ namespace ProjectGra
                 }
             }
 
-            CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithWeapon(slot.WeaponIdx, slot.WeaponLevel, showCombine, combineSlotIdx, calledSlotIdx, slot.gameObject.transform.position);
+            CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithWeapon(slot.WeaponIdx, slot.WeaponLevel, slot.CurrentPrice,showCombine, combineSlotIdx, calledSlotIdx, slot.gameObject.transform.position);
         }
 
         private void UpdateAllShopItemBuyState()
@@ -204,6 +209,27 @@ namespace ProjectGra
             tmpShopItemPosition = shopItemList[idx1].transform.localPosition;
             shopItemList[idx1].transform.localPosition = shopItemList[idx2].transform.localPosition;
             shopItemList[idx2].transform.localPosition = tmpShopItemPosition;
+        }
+        private void ResetReroll()
+        {
+            rerollTimes = 0;
+            UpdateRerollButton();
+            Reroll();
+        }
+        private void UpdateRerollButton()
+        {
+            rerollPrice = CanvasMonoSingleton.Instance.GetRerollPrice(rerollTimes);
+            var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
+            strBuilder.Append(rerollPrice);
+            RerollPriceText.text = RerollString + strBuilder.ToString();
+            strBuilder.Clear();
+        }
+        private void RerollButtonClicked()
+        {
+            PlayerDataModel.Instance.AddMaterialValWith(rerollPrice);
+            ++rerollTimes;
+            UpdateRerollButton();
+            Reroll();
         }
         private void Reroll()
         {
