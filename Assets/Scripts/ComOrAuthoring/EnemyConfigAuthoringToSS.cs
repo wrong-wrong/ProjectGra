@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -6,6 +8,8 @@ namespace ProjectGra
 {
     public class EnemyConfigAuthoringToSS : MonoBehaviour
     {
+        [SerializeField] List<EnemyBasicAttributeScriptableObjectConfig> EnemySOList;
+        #region elite config
         [Header("ElitePrefab")]
         public GameObject EliteSprintAndShootPrefab;
         public GameObject EliteEggAndShootPrefab;
@@ -27,62 +31,6 @@ namespace ProjectGra
         public int EliteEggAndShootStageOneSkillShootCount;
         public int EliteEggAndShootSpawnEggSkillspawnCount;
 
-        [Header("NormalMeleeConfig")]
-        public GameObject NormalMeleePrefab;
-        public EnemyBasicAttributeScriptableObjectConfig NormalMeleeAttributeSO;
-        public float NormalMeleeAttackDistance;
-        public float NormalMeleeAttackCooldown;
-        public float NormalMeleeDeathCountdown;
-
-
-        [Header("NormalSprintConfig")]
-        public GameObject NormalSprintPrefab;
-        public int NormalSprintAttackVal;
-        public float NormalSprintFollowSpeed;
-        public float NormalSprintAttackDistance;
-        public float NormalSprintDeathCountdown;
-        public float NormalSprintAttackCooldown;
-        public float NormalSprintSprintSpeed;
-        public float NormalSprintHitDistanceDuringSprint;
-        public float NormalSprintLootChance;
-        public Color NormalSprintFlashColor;
-        public float NormalSprintSprintWaitTimerSetting;
-
-
-        [Header("NormalRangedConfig")]
-        public GameObject NormalRangedPrefab;
-        public int NormalRangedAttackVal;
-        public float NormalRangedFollowSpeed;
-        public float NormalRangedAttackCooldown;
-        public float NormalRangedDeathCountdown;
-        public float NormalRangedLootChance;
-        public float NormalRangedAttackDistance;
-        public float NormalRangedFleeDistance;
-        public float NormalRangedFleeSpeed;
-        //public GameObject NormalSpawneePrefab;
-        public float SpawneeSpeed;
-        public float SpawneeTimer;
-        [Header("EnemyEggConfig")]
-        public GameObject EggPrefab;
-
-        [Header("EnemySummonerConfig")]
-        //public float EnemySummonerDeathCountdown;
-        public GameObject EnemySummonerPrefab;
-        public float EnemySummonerSpeed;
-        public float EnemySummonerAttackCooldown;
-        public float EnemySummonerFloatingRange;
-        public float EnemySummonerFloatingCycleSpeed;
-        public float EnemySummonerChasingSpeed;
-        public float EnemySummonerFleeDistance;
-        public float EnemySummonerChasingDistance;
-        public float EnemySummonerExplodeDistance;
-        public float EnemySummonerSummonDistance;
-        [Header("Summoned Explosion System Config")]
-
-        //scaling to set in every state,  basic scale should be previous scale,
-        public float3 ScaleToSetInLaterThreeState;
-        public float3 TimerToSetInLaterThreeState;
-
         [Header("EliteSprintAndShootConfig")]
         public float3 EliteSprintAndShootRightSpawnPosOffset;
         public float3 EliteSprintAndShootLeftSpawnPosOffset;
@@ -95,16 +43,125 @@ namespace ProjectGra
         public float EliteSprintAndShootSprintDistance;
         public float EliteSprintAndShootCollideDistance;
         public int EliteSprintAndShootSprintDamage;
+        #endregion
 
+        [Header("NormalMeleeConfig")]
+        //public GameObject NormalMeleePrefab;
+        //public EnemyBasicAttributeScriptableObjectConfig NormalMeleeAttributeSO;
+        public float NormalMeleeAttackDistance;
+        public float NormalMeleeAttackCooldown;
+        public float NormalMeleeDeathCountdown;
+
+        [Header("NormalRangedConfig")]
+        //public GameObject NormalRangedPrefab;
+        public int NormalRangedAttackVal;
+        public float NormalRangedFollowSpeed;
+        public float NormalRangedAttackCooldown;
+        public float NormalRangedDeathCountdown;
+        public float NormalRangedLootChance;
+        public float NormalRangedAttackDistance;
+        public float NormalRangedFleeDistance;
+        public float NormalRangedFleeSpeed;
+        //public GameObject NormalSpawneePrefab;
+        public float SpawneeSpeed;
+        public float SpawneeTimer;
+
+        [Header("NormalSprintConfig")]
+        //public GameObject NormalSprintPrefab;
+        public int NormalSprintAttackVal;
+        public float NormalSprintFollowSpeed;
+        public float NormalSprintAttackDistance;
+        public float NormalSprintDeathCountdown;
+        public float NormalSprintAttackCooldown;
+        public float NormalSprintSprintSpeed;
+        public float NormalSprintHitDistanceDuringSprint;
+        public float NormalSprintLootChance;
+        public Color NormalSprintFlashColor;
+        public float NormalSprintSprintWaitTimerSetting;
+
+        [Header("EnemyEggConfig")]
+        //public GameObject EggPrefab;
+
+        [Header("EnemySummonerConfig")]
+        //public float EnemySummonerDeathCountdown;
+        //public GameObject EnemySummonerPrefab;
+        public float EnemySummonerSpeed;
+        public float EnemySummonerAttackCooldown;
+        public float EnemySummonerFloatingRange;
+        public float EnemySummonerFloatingCycleSpeed;
+        public float EnemySummonerChasingSpeed;
+        public float EnemySummonerFleeDistance;
+        public float EnemySummonerChasingDistance;
+        public float EnemySummonerExplodeDistance;
+        public float EnemySummonerSummonDistance;
+
+        [Header("Summoned Explosion System Config")]
+
+        //scaling to set in every state,  basic scale should be previous scale,
+        public float3 ScaleToSetInLaterThreeState;
+        public float3 TimerToSetInLaterThreeState;
+
+
+        public void Reset()
+        {
+            Debug.Log("Unity function Reset called");
+        }
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
             public override void Bake(EnemyConfigAuthoringToSS authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
                 var buffer = AddBuffer<AllEnemyPrefabBuffer>(entity);
+                var SOList = authoring.EnemySOList;
+                Debug.Log("Baking SOList.Count : " + SOList.Count);
+                var waveNewEnemyBuffer = AddBuffer<WaveNewEnemyBuffer>(entity);
+                for(int i = 0; i < 19; ++i)
+                {
+                    waveNewEnemyBuffer.Add(new WaveNewEnemyBuffer { Value = 0 });
+                }
+                int[] tmpArr = new int[SOList.Count];
+                // create a tmp list;
+                // process EnemySO
+                //      Add to AllEnemyBuffer;  ++WaveNewEnemyList[AppearCodingWave];   tmpList.Add(AppCodingWave)
+                for (int i = 0, n = SOList.Count; i < n; i++)
+                {
+                    buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(SOList[i].EnemyPrefab, TransformUsageFlags.Dynamic) });
+                    tmpArr[i] = SOList[i].AppearCodingWave;
+                    ++waveNewEnemyBuffer.ElementAt(SOList[i].AppearCodingWave).Value;
+                }
+                // sort AllEnemyBuffer According to AppearingCodingWave according to tmpList
+
+                for(int i = 1; i < SOList.Count; ++i)
+                {
+                    int baseValue = tmpArr[i];
+                    Entity baseEntity = buffer[i].Prefab;
+                    int j = i - 1;
+                    while(j >= 0 && baseValue < tmpArr[j] )
+                    {
+                        buffer.ElementAt(j + 1).Prefab = buffer[j].Prefab;
+                        tmpArr[j + 1] = tmpArr[j];
+                        --j;
+                    }
+                    buffer.ElementAt(j + 1).Prefab = baseEntity;
+                    tmpArr[j + 1] = baseValue;
+                }
+
+
+
+
+                //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic) });
+                //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic) });
+                //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic) });
+                //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
+                //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EnemySummonerPrefab, TransformUsageFlags.Dynamic) });
+
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterPrefab, TransformUsageFlags.Dynamic) });
+                Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
+
                 EnemyBasicAttributeScriptableObjectConfig SO;
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic) });
-                SO = authoring.NormalMeleeAttributeSO;
+                SO = SOList[0];
                 AddComponent(entity, new NormalMeleeConfigCom
                 {
                     AttackDistance = authoring.NormalMeleeAttackDistance,
@@ -122,7 +179,6 @@ namespace ProjectGra
                         ConsumableDropate = SO.ConsumableDropRate
                     }
                 });
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalSprintPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalSprintConfigCom
                 {
                     AttackVal = authoring.NormalRangedAttackVal,
@@ -136,7 +192,6 @@ namespace ProjectGra
                     FlashColorDifference = new float3(1 - authoring.NormalSprintFlashColor.r, 1 - authoring.NormalSprintFlashColor.g, 1 - authoring.NormalSprintFlashColor.b),
                     SprintWaitTimerSetting = authoring.NormalSprintSprintWaitTimerSetting,
                 });
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new NormalRangedConfigCom
                 {
                     //EnemyPrefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic),
@@ -163,7 +218,6 @@ namespace ProjectGra
                 });
 
                 // For summoner
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EnemySummonerPrefab, TransformUsageFlags.Dynamic) });
                 AddComponent(entity, new EnemySummonerConfigCom
                 {
                     EnemySummonerAttackCooldown = authoring.EnemySummonerAttackCooldown,
@@ -180,7 +234,6 @@ namespace ProjectGra
 
 
                 //because no data need to set to the EggSystem, there is no need to creat a component
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
 
                 // For EliteSprintAndShoot
                 AddComponent(entity, new EliteSprintAndShootConfigCom
@@ -221,13 +274,14 @@ namespace ProjectGra
                     StageTwoSkillShootCount = authoring.EliteShooterStageTwoSkillShootCount,
                 });
 
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootPrefab, TransformUsageFlags.Dynamic) });
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootPrefab, TransformUsageFlags.Dynamic) });
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterPrefab, TransformUsageFlags.Dynamic) });
-                Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
 
             }
         }
+    }
+    [InternalBufferCapacity(0)]
+    public struct WaveNewEnemyBuffer : IBufferElementData
+    {
+        public int Value;
     }
     public struct EliteEggAndShootConfig : IComponentData
     {

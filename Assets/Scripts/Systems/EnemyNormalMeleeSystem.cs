@@ -74,11 +74,11 @@ namespace ProjectGra
             }
             var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
             // Per Wave Update
-            //      Needs to set EnemyPrefab's HealthPoint, update System's damage
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
             if (shouldUpdate.Value)
             {
                 _HealthPoint += _HpIncreasePerWave;
-                _Damage = _BasicDamage + (int)(shouldUpdate.Wave * _DmgIncreasePerWave);
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[0].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
             }

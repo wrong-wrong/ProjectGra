@@ -19,7 +19,7 @@ namespace ProjectGra
 
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
-        public int WaveNumber;
+        public int CodingWave;
         [SerializeField] TextMeshProUGUI shopWaveText;
         [SerializeField] TextMeshProUGUI inGameWaveText;
 
@@ -111,7 +111,7 @@ namespace ProjectGra
 
         private void BeforeExitShopCallBack()
         {
-            ++WaveNumber;
+            ++CodingWave;
             SOConfigSingleton.Instance.Wave++;
             ingameUIMaxHp = PlayerDataModel.Instance.GetMaxHealthPoint();
             ingameUIMaxExp = PlayerDataModel.Instance.GetMaxExp();
@@ -127,12 +127,12 @@ namespace ProjectGra
 
         public int CalculateFinalPrice(float basePrice)
         {
-            return (int)(basePrice + WaveNumber + (basePrice * WaveNumber * 0.1));
+            return (int)(basePrice + CodingWave + (basePrice * CodingWave * 0.1));
         }
 
         public int GetRerollPrice(int rerollTimes)
         {
-            return rerollBasePrice[WaveNumber] + rerollPriceIncreasePerReroll[WaveNumber] * rerollTimes;
+            return rerollBasePrice[CodingWave] + rerollPriceIncreasePerReroll[CodingWave] * rerollTimes;
         }
 
         #region Shop UI
@@ -173,7 +173,7 @@ namespace ProjectGra
         private void UpdateWaveNumberText()
         {
             stringBuilder.Append("Wave ");
-            stringBuilder.Append(WaveNumber + 1);
+            stringBuilder.Append(CodingWave + 1);
             shopWaveText.text = stringBuilder.ToString();
             inGameWaveText.text = stringBuilder.ToString();
             stringBuilder.Clear();

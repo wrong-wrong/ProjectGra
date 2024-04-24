@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1050c6646d80ae349b477798f2e5ea30, type: 3}
+  m_Name: 4Summoner
+  m_EditorClassIdentifier: 
+  EnemyPrefab: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
+    type: 3}
+  AppearCodingWave: 9
+  HealthPoint: 10
+  HPIncreasePerWave: 10
+  Damage: 1
+  DmgIncreasePerWave: 1.15
+  Speed: 3
+  MaterialsDropped: 3
+  LootCrateDropRate: 0.01
+  ConsumableDropRate: 0.01

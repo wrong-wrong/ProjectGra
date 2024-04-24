@@ -8,6 +8,8 @@ namespace ProjectGra
     [UpdateInGroup(typeof(MySysGrpUpdateAfterPhysicsSysGrp))]
     public partial struct EnemySpawnSystem : ISystem, ISystemStartStop
     {
+        int _MaxEnemyBufferIdxExclusive;
+        int _LastUpdateWave;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -18,16 +20,26 @@ namespace ProjectGra
             {
                 random = Random.CreateFromIndex(0)
             });
+            _MaxEnemyBufferIdxExclusive = 0;
+            _LastUpdateWave = 0;
         }
 
         public void OnStartRunning(ref SystemState state)
         {
             var config = SystemAPI.GetSingleton<EnemySpawningConfig>();
-            var sysData = SystemAPI.GetComponentRW<EnemySpawnSystemDataSingleton>(state.SystemHandle);
+            var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
             sysData.ValueRW.realCooldown = config.SpawningCooldown;
             sysData.ValueRW.spawningCooldown = config.SpawningCooldown;
             sysData.ValueRW.minRadius = config.minRadius;
             sysData.ValueRW.maxRadius = config.maxRadius;
+            var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
+            var updateEnemyCom = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            for(int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
+            {
+                _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
+            }
+            Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
+            Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
             //Debug.Log("EnemySpawnSystem start running"); 
         }
 
@@ -39,7 +51,7 @@ namespace ProjectGra
             //{
             //    //state.EntityManager.Instantiate()
             //}
-            var sysData = SystemAPI.GetComponentRW<EnemySpawnSystemDataSingleton>(state.SystemHandle);
+            var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
             //Debug.Log("SpawningCooldown" + sysData.ValueRO.spawningCooldown);
             //Debug.Log("realCooldown" + sysData.ValueRO.realCooldown);
             //Debug.Log("After substract deltatime" + sysData.ValueRO.realCooldown);
@@ -52,7 +64,7 @@ namespace ProjectGra
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
                 var playerPosition = SystemAPI.GetComponent<LocalTransform>(playerEntity).Position;
                 var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-                var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(allEnemyPrefabBuffer.Length)].Prefab);
+                var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
                 float2 f2pos;
                 f2pos.x = sysData.ValueRW.random.NextFloat(playerPosition.x - sysData.ValueRO.minRadius, playerPosition.x + sysData.ValueRO.minRadius);
                 f2pos.y = playerPosition.z + math.sqrt((sysData.ValueRO.minRadius + f2pos.x - playerPosition.x) * (sysData.ValueRO.minRadius - f2pos.x + playerPosition.x)) * (sysData.ValueRW.random.NextBool() ? -1 : 1);

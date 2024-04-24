@@ -69,6 +69,7 @@ namespace ProjectGra
             }
             Debug.LogWarning("RaritiesList only have 19 elements, be cautious about waves");
 
+
         }
         public void InitWeaponSOSingleton()
         {

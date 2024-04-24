@@ -319,7 +319,7 @@ namespace ProjectGra
             //set should enemy update
             var updateEnemyCom = SystemAPI.GetSingletonRW<GameControllShouldUpdateEnemy>();
             updateEnemyCom.ValueRW.Value = true;
-            updateEnemyCom.ValueRW.Wave = CanvasMonoSingleton.Instance.WaveNumber;
+            updateEnemyCom.ValueRW.CodingWave = CanvasMonoSingleton.Instance.CodingWave;
         }
         private void EnterShopState(ref SystemState state)
         {
@@ -334,7 +334,7 @@ namespace ProjectGra
             var mainWpstate = SystemAPI.GetSingleton<MainWeapon>();
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
-            var sysData = SystemAPI.GetComponentRW<WaveControllSystemData>(state.SystemHandle);
+            var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
             CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
             CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, 1, materialCount.Count);
@@ -344,7 +344,7 @@ namespace ProjectGra
             //show Cursor
             Cursor.lockState = CursorLockMode.None;
             //set gamestate
-            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
             gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
             gameState.ValueRW.CurrentState = GameControllState.InShop;
@@ -378,7 +378,7 @@ namespace ProjectGra
         public void OnUpdate(ref SystemState state)
         {
 
-            var gameState = SystemAPI.GetComponentRW<GameStateCom>(state.SystemHandle);
+            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             var deltatime = SystemAPI.Time.DeltaTime;
             switch (gameState.ValueRO.CurrentState)
             {
@@ -491,7 +491,7 @@ namespace ProjectGra
     public struct GameControllShouldUpdateEnemy : IComponentData
     {
         public bool Value;
-        public int Wave;
+        public int CodingWave;
     }
 }
 

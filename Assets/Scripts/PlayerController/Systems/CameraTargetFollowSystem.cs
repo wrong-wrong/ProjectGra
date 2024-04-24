@@ -46,9 +46,9 @@ namespace ProjectGra.PlayerController
 
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponentRO<LocalTransform>(playerEntity);
-            var moveandlook = SystemAPI.GetComponentRO<MoveAndLookInput>(playerEntity);
-            var mainWpState = SystemAPI.GetComponentRW<MainWeapon>(playerEntity);
-            var autoWpBuffer = SystemAPI.GetBuffer<AutoWeaponBuffer>(playerEntity);
+            var moveandlook = SystemAPI.GetSingletonRW<MoveAndLookInput>();
+            var mainWpState = SystemAPI.GetSingletonRW<MainWeapon>();
+            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
 
             _cameraPitch -= moveandlook.ValueRO.lookVal.y * CamYSensitivity;
             _cameraPitch = clampAngle(_cameraPitch);

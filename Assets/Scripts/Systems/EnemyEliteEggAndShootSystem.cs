@@ -53,7 +53,7 @@ namespace ProjectGra
             var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
             NormalSpawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
 
-            EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[4].Prefab;
+            EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[3].Prefab;
             
             var config = SystemAPI.GetSingleton<EliteEggAndShootConfig>();
             Speed = config.Speed;

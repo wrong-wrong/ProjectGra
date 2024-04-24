@@ -977,6 +977,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77b2d4aeac3e59a4f915fd7c4def009a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnemySOList:
+  - {fileID: 11400000, guid: e864bcfbf1f8bd34fbe30ece24bd366e, type: 2}
+  - {fileID: 11400000, guid: 67d74687917e66e46a30b1d2ce10117a, type: 2}
+  - {fileID: 11400000, guid: 8292955bf1311394e95d89599cf3e887, type: 2}
+  - {fileID: 11400000, guid: c6041c8264bd34a4dad44a4d61f08ff7, type: 2}
+  - {fileID: 11400000, guid: e52e29dbda053a544afd947d2565cec9, type: 2}
   EliteSprintAndShootPrefab: {fileID: 516433283474445698, guid: 6e40a9975c7605844abd7414fb3ac8b6,
     type: 3}
   EliteEggAndShootPrefab: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
@@ -994,58 +1000,6 @@ MonoBehaviour:
   EliteEggAndShootSpawnEggSkillSpawningInterval: 0.5
   EliteEggAndShootStageOneSkillShootCount: 4
   EliteEggAndShootSpawnEggSkillspawnCount: 7
-  NormalMeleePrefab: {fileID: 7888725254493739217, guid: 1df3a143e78faa24c8b93a5c449580b0,
-    type: 3}
-  NormalMeleeAttributeSO: {fileID: 11400000, guid: e864bcfbf1f8bd34fbe30ece24bd366e,
-    type: 2}
-  NormalMeleeAttackDistance: 2.5
-  NormalMeleeAttackCooldown: 1.5
-  NormalMeleeDeathCountdown: 3
-  NormalSprintPrefab: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
-    type: 3}
-  NormalSprintAttackVal: 20
-  NormalSprintFollowSpeed: 2
-  NormalSprintAttackDistance: 12
-  NormalSprintDeathCountdown: 1
-  NormalSprintAttackCooldown: 3
-  NormalSprintSprintSpeed: 8
-  NormalSprintHitDistanceDuringSprint: 2
-  NormalSprintLootChance: 1
-  NormalSprintFlashColor: {r: 1, g: 0.7844215, b: 0, a: 1}
-  NormalSprintSprintWaitTimerSetting: 1
-  NormalRangedPrefab: {fileID: 4558332914012663045, guid: 4e472d916b3157a48945b8eb855d2d8b,
-    type: 3}
-  NormalRangedAttackVal: 15
-  NormalRangedFollowSpeed: 1
-  NormalRangedAttackCooldown: 3
-  NormalRangedDeathCountdown: 1
-  NormalRangedLootChance: 0.8
-  NormalRangedAttackDistance: 18
-  NormalRangedFleeDistance: 10
-  NormalRangedFleeSpeed: 5
-  SpawneeSpeed: 10
-  SpawneeTimer: 4
-  EggPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
-    type: 3}
-  EnemySummonerPrefab: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
-    type: 3}
-  EnemySummonerSpeed: 3
-  EnemySummonerAttackCooldown: 3
-  EnemySummonerFloatingRange: 3
-  EnemySummonerFloatingCycleSpeed: 3
-  EnemySummonerChasingSpeed: 5
-  EnemySummonerFleeDistance: 12
-  EnemySummonerChasingDistance: 9
-  EnemySummonerExplodeDistance: 4
-  EnemySummonerSummonDistance: 16
-  ScaleToSetInLaterThreeState:
-    x: 1
-    y: 5
-    z: 0.5
-  TimerToSetInLaterThreeState:
-    x: 1
-    y: 1
-    z: 4
   EliteSprintAndShootRightSpawnPosOffset:
     x: 1
     y: 0.5
@@ -1063,6 +1017,46 @@ MonoBehaviour:
   EliteSprintAndShootSprintDistance: 16
   EliteSprintAndShootCollideDistance: 3
   EliteSprintAndShootSprintDamage: 30
+  NormalMeleeAttackDistance: 2.5
+  NormalMeleeAttackCooldown: 1.5
+  NormalMeleeDeathCountdown: 3
+  NormalRangedAttackVal: 15
+  NormalRangedFollowSpeed: 1
+  NormalRangedAttackCooldown: 3
+  NormalRangedDeathCountdown: 1
+  NormalRangedLootChance: 0.8
+  NormalRangedAttackDistance: 18
+  NormalRangedFleeDistance: 10
+  NormalRangedFleeSpeed: 5
+  SpawneeSpeed: 10
+  SpawneeTimer: 4
+  NormalSprintAttackVal: 20
+  NormalSprintFollowSpeed: 2
+  NormalSprintAttackDistance: 12
+  NormalSprintDeathCountdown: 1
+  NormalSprintAttackCooldown: 3
+  NormalSprintSprintSpeed: 8
+  NormalSprintHitDistanceDuringSprint: 2
+  NormalSprintLootChance: 1
+  NormalSprintFlashColor: {r: 1, g: 0.7844215, b: 0, a: 1}
+  NormalSprintSprintWaitTimerSetting: 1
+  EnemySummonerSpeed: 3
+  EnemySummonerAttackCooldown: 3
+  EnemySummonerFloatingRange: 3
+  EnemySummonerFloatingCycleSpeed: 3
+  EnemySummonerChasingSpeed: 5
+  EnemySummonerFleeDistance: 12
+  EnemySummonerChasingDistance: 9
+  EnemySummonerExplodeDistance: 4
+  EnemySummonerSummonDistance: 16
+  ScaleToSetInLaterThreeState:
+    x: 1
+    y: 5
+    z: 0.5
+  TimerToSetInLaterThreeState:
+    x: 1
+    y: 1
+    z: 4
 --- !u!114 &1829473142
 MonoBehaviour:
   m_ObjectHideFlags: 0
