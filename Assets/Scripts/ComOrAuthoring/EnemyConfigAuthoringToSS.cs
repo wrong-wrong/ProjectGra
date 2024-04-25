@@ -234,11 +234,21 @@ namespace ProjectGra
                         ConsumableDropate = SO.ConsumableDropRate
                     }
                 });
-                // For summoned explosion
-                AddComponent(entity, new SummonedExplosionSystemConfigCom
+                // For egg
+                SO = SOList[3];
+                AddComponent(entity, new EnemyEggConfigCom
                 {
-                    ScaleToSetInLaterThreeState = authoring.ScaleToSetInLaterThreeState,
-                    TimerToSetInLaterThreeState = authoring.TimerToSetInLaterThreeState,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
 
                 SO = SOList[4];
@@ -266,7 +276,12 @@ namespace ProjectGra
                     }
                 });
 
-
+                // For summoned explosion
+                AddComponent(entity, new SummonedExplosionSystemConfigCom
+                {
+                    ScaleToSetInLaterThreeState = authoring.ScaleToSetInLaterThreeState,
+                    TimerToSetInLaterThreeState = authoring.TimerToSetInLaterThreeState,
+                });
 
                 //because no data need to set to the EggSystem, there is no need to creat a component
 
@@ -352,7 +367,10 @@ namespace ProjectGra
         public float3 FlashColorDifference;
         public EnemyBasicAttribute BasicAttribute;
     }
-
+    public struct EnemyEggConfigCom : IComponentData
+    {
+        public EnemyBasicAttribute BasicAttribute;
+    }
     public struct EnemySummonerConfigCom : IComponentData
     {
         public float EnemySummonerAttackCooldown;

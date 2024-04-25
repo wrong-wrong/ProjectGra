@@ -24,11 +24,12 @@ namespace ProjectGra
         int _MaterialsDropped;
         float _LootCrateDropRate;
         float _ConsumableDropate;
+        bool isInit;
 
         float attackDistanceSq;
         float cooldown;
         float deathCountDown;
-        bool isInit;
+
         Random random;
         Entity MaterialPrefab;
         Entity ItemPrefab;
@@ -78,6 +79,9 @@ namespace ProjectGra
             {
                 _HealthPoint += _HpIncreasePerWave;
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
+                _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
+                _Damage = (int)(_Damage * attModifier.DamageModifier);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[0].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
             }

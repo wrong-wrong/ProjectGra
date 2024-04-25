@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dfec14e75c18ab459fb16971979f4de, type: 3}
   m_Name: 10AttackSpeed
   m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: 82958bc7ffc95224ea59845f8ee2f797, type: 3}
   UpgradeName: AttackSpeed
   BonusValueInFourLevel:
     x: 3

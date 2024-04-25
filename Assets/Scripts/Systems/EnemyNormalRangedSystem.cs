@@ -87,6 +87,9 @@ namespace ProjectGra
             {
                 _HealthPoint += _HpIncreasePerWave;
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
+                _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
+                _Damage = (int)(_Damage * attModifier.DamageModifier);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[1].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
                 SystemAPI.SetComponent(spawneePrefab, new AttackCurDamage { damage = _Damage });

@@ -3,8 +3,6 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Rendering;
 using Unity.Transforms;
-using UnityEditor.Search;
-using UnityEngine;
 using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
@@ -89,6 +87,9 @@ namespace ProjectGra
             {
                 _HealthPoint += _HpIncreasePerWave;
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
+                _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
+                _Damage = (int)(_Damage * attModifier.DamageModifier);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[2].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
             }
@@ -143,7 +144,7 @@ namespace ProjectGra
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.Follow:
-                        if(attack.ValueRO.SprintTimer > 0f)
+                        if (attack.ValueRO.SprintTimer > 0f)
                         {
                             attack.ValueRW.SprintTimer -= deltatime;
                             transform.ValueRW.Position += attack.ValueRO.SprintDirNormalizedMulSpeed * deltatime;
@@ -157,7 +158,7 @@ namespace ProjectGra
                             attack.ValueRW.AttackCooldown = attackCoolDown;
                             attack.ValueRW.SprintTimer = 1.5f * sprintDistance / sprintSpeed; // magic number trying to let the enemy sprint for a longer distance
                             attack.ValueRW.SprintWaitTimer = sprintWaitTimerSetting;
-                            ecb.SetComponentEnabled<FlashingCom>(entity,true);
+                            ecb.SetComponentEnabled<FlashingCom>(entity, true);
                             flashCom.ValueRW.FlashColorDifference = flashColorDifference;
                             flashCom.ValueRW.Duration = 1f;
                             flashCom.ValueRW.CycleTime = 0.2f;

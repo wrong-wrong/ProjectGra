@@ -385,7 +385,9 @@ namespace ProjectGra
                 case GameControllState.BeforeWave:
                     if ((timer -= deltatime) < 0f)   //state change
                     {
-                        timer = inWaveTimeSet; // setting in wave time;
+                        var wave = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>().CodingWave;
+
+                        timer = math.clamp(20 + wave * 5, 20, 60) + 1; // setting in wave time;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
 
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);

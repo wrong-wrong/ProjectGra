@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dfec14e75c18ab459fb16971979f4de, type: 3}
   m_Name: 12Dodge
   m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: e7b30d23db97c5345a83af91054caa0a, type: 3}
   UpgradeName: Dodge
   BonusValueInFourLevel:
     x: 3

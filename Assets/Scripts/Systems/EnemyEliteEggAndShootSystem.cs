@@ -219,7 +219,7 @@ namespace ProjectGra
 
                                 var egg = ecb.Instantiate(EggPrefab);
                                 ecb.SetComponent(egg, new LocalTransform { Position = originalPos, Scale = 1f, Rotation = quaternion.identity });
-                                ecb.SetComponent(egg, new EnemyEggToBeHatched { PrefabIdx = random.NextInt(4) });
+                                //ecb.SetComponent(egg, new EnemyEggToBeHatched { PrefabIdx = random.NextInt(4) });
                                 ecb.AppendToBuffer<EnemyEliteFlyingEggBuffer>(entity, new EnemyEliteFlyingEggBuffer
                                 {
                                     EggInstance = egg,

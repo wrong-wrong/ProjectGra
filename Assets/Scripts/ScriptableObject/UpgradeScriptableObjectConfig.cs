@@ -8,7 +8,7 @@ namespace ProjectGra
     {
         //public int AffectedAttributeIdx;   
         //First SO in the config list should be affecting first attribute
-
+        public Sprite Icon;
         public string UpgradeName;
         public int4 BonusValueInFourLevel;
     }

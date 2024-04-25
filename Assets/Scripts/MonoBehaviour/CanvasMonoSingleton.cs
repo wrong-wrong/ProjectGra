@@ -369,6 +369,8 @@ namespace ProjectGra
             ShowIngameUIBackground();
             ShowItemFoundAndUpgradeCanvasGroup();
             ShowSingleAttributeUI();
+            ++upgradeThisWave;
+            Debug.LogWarning("adding upgrade times for test");
             if (itemCountThisWave > 0)
             {
                 itemFoundUIRect.localScale = Vector3.one;

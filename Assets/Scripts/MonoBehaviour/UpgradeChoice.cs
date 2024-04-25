@@ -61,6 +61,7 @@ namespace ProjectGra
             strBuilder.Append(config.UpgradeName);
             infoText.text = strBuilder.ToString();
             strBuilder.Clear();
+            icon.sprite = config.Icon;
         }
     }
 }
