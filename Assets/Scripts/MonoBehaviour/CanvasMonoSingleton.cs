@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Text;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+//using UnityEngine.UIElements;
 
 namespace ProjectGra
 {
@@ -19,15 +19,16 @@ namespace ProjectGra
 
         public Action OnShopContinueButtonClicked;
         public Action OnPauseContinueButtonClicked;
+        public Action<bool> OnWeaponCanvasGroupShowIsCurrentShopUI;
         public int CodingWave;
         [SerializeField] TextMeshProUGUI shopWaveText;
-        [SerializeField] TextMeshProUGUI inGameWaveText;
 
         [SerializeField] CanvasGroup InGameUICanvasGroup;
         [SerializeField] CanvasGroup PauseCanvasGroup;
         [SerializeField] CanvasGroup SingleAttributeCanvasGroup;
         [SerializeField] CanvasGroup ItemFoundAndUpgradeCanvasGroup;
         [SerializeField] CanvasGroup ShopCanvasGroup;
+        [SerializeField] CanvasGroup WeaponAndItemCanvasGroup;
         [Header("InfoMiniWindow")]
         [SerializeField] InfoMiniWindow infoMiniWindow;
         //[Header("AttributeTextInItsCanvas")]
@@ -43,6 +44,8 @@ namespace ProjectGra
         [SerializeField] RectTransform ingameUIBackground;
         [SerializeField] TextMeshProUGUI healthBarText;
         [SerializeField] TextMeshProUGUI countDownText;
+        [SerializeField] TextMeshProUGUI inGameWaveText;
+
         [Header("Pause Canvas")]
         [SerializeField] Button pauseContinueButton;
 
@@ -68,22 +71,6 @@ namespace ProjectGra
                 Destroy(gameObject);
                 return;
             }
-            //IdxToAttributeName = new List<string>(11);
-            //for(int i = 0; i < 11; i++)
-            //{
-            //    IdxToAttributeName.Add("");
-            //}
-            //IdxToAttributeName[0] = "MaxHealthPoint";
-            //IdxToAttributeName[1] = "HealthRegain";
-            //IdxToAttributeName[2] = "Armor";
-            //IdxToAttributeName[3] = "Speed";
-            //IdxToAttributeName[4] = "Range";
-            //IdxToAttributeName[5] = "CritHitChance";
-            //IdxToAttributeName[6] = "Damage";
-            //IdxToAttributeName[7] = "MeleeDamage";
-            //IdxToAttributeName[8] = "RangeDamage";
-            //IdxToAttributeName[9] = "ElementDamage";
-            //IdxToAttributeName[10] = "AttackSpeed";
             stringBuilder = new StringBuilder(100);
             Instance = this;
             InGameUICanvasGroup.interactable = false;
@@ -103,7 +90,7 @@ namespace ProjectGra
             if (updateCountdown)
             {
                 var deltatime = Time.deltaTime;
-                if((countdownTimer -= deltatime) < lastCountdown)
+                if ((countdownTimer -= deltatime) < lastCountdown)
                 {
                     lastCountdown = (int)countdownTimer;
                     stringBuilder.Append(lastCountdown);
@@ -135,6 +122,22 @@ namespace ProjectGra
             UpdateWaveNumberText();
             ShowInGameUI();
         }
+        //private void SetWeaponAndItemIsCurrentShopUI(bool isCanvasShop)
+        //{
+        //    shopUIManager.SetWeaponAndItemInCanvas(isCanvasShop);
+        //}
+        private void ShowWeaponAndItemCanvas()
+        {
+            WeaponAndItemCanvasGroup.alpha = 1f;
+            WeaponAndItemCanvasGroup.interactable = true;
+            WeaponAndItemCanvasGroup.blocksRaycasts = true;
+        }
+        private void HideWeaponAndItemCanvas()
+        {
+            WeaponAndItemCanvasGroup.alpha = 0f;
+            WeaponAndItemCanvasGroup.interactable = false;
+            WeaponAndItemCanvasGroup.blocksRaycasts = false;
+        }
 
         public int GetCategoryActivatedCount(int categoryIdx)
         {
@@ -154,8 +157,8 @@ namespace ProjectGra
         #region Shop UI
         public void OnWeaponAddOrDelete(int weaponIdx, bool isAddingWeapon)
         {
-                    //For Weapon
-            if(weaponIdx != -1)OnWeaponAddOrDeleteAction?.Invoke(weaponIdx,isAddingWeapon);
+            //For Weapon
+            if (weaponIdx != -1) OnWeaponAddOrDeleteAction?.Invoke(weaponIdx, isAddingWeapon);
         }
         internal void CombineWeaponFromTo(int combineSlotIdx, int calledSlotIdx)
         {
@@ -166,13 +169,13 @@ namespace ProjectGra
         {
             shopUIManager.RecycleWeaponFromSlot(calledSlotIdx);
         }
-        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice, int costMaterialCount)
+        public void AddGameItem(int itemIdx, int itemLevel, int currentPrice, int costMaterialCount)
         {
-            shopUIManager.AddGameItem(itemIdx, itemLevel,currentPrice, costMaterialCount);
+            shopUIManager.AddGameItem(itemIdx, itemLevel, currentPrice, costMaterialCount);
         }
         public void SetSlotWeaponIdxInShop(int4 wpIdxInt4, bool4 isMeleeWp)
         {
-            shopUIManager.SetSlotWeaponIdx(wpIdxInt4,isMeleeWp);
+            shopUIManager.SetSlotWeaponIdx(wpIdxInt4, isMeleeWp);
         }
         public int4 GetSlotWeaponIdxInShop()
         {
@@ -203,20 +206,24 @@ namespace ProjectGra
         }
         public void ShowShopUI()
         {
-            
+
             HideInGameUI();
             HideItemFoundAndUpgradeCanvasGroup();
             HideSingleAttributeUI();
             ShopCanvasGroup.alpha = 1;
             ShopCanvasGroup.interactable = true;
             ShopCanvasGroup.blocksRaycasts = true;
-            shopUIManager.ShowShop();
+            shopUIManager.ShowShopReset();
+            //SetWeaponAndItemIsCurrentShopUI(true);
+            OnWeaponCanvasGroupShowIsCurrentShopUI?.Invoke(true);
+            ShowWeaponAndItemCanvas();
         }
         public void HideShop()
         {
             ShopCanvasGroup.alpha = 0;
             ShopCanvasGroup.interactable = false;
             ShopCanvasGroup.blocksRaycasts = false;
+            HideWeaponAndItemCanvas();
         }
         #endregion
 
@@ -237,6 +244,9 @@ namespace ProjectGra
             PauseCanvasGroup.interactable = true;
             PauseCanvasGroup.blocksRaycasts = true;
             ShowSingleAttributeUI();
+            //SetWeaponAndItemIsCurrentShopUI(false);
+            OnWeaponCanvasGroupShowIsCurrentShopUI?.Invoke(false);
+            ShowWeaponAndItemCanvas();
         }
         public void HidePauseCanvasGroup()
         {
@@ -244,10 +254,11 @@ namespace ProjectGra
             PauseCanvasGroup.interactable = false;
             PauseCanvasGroup.blocksRaycasts = false;
             HideSingleAttributeUI();
+            HideWeaponAndItemCanvas();
         }
         #endregion
 
-        
+
 
         #region In-game UI
         private int ingameUIMaxHp;
@@ -314,7 +325,7 @@ namespace ProjectGra
             healthBarText.text = stringBuilder.ToString();
             stringBuilder.Clear();
             currentExp += currentTotalExp - lastTotalExp;
-            if(currentExp > ingameUIMaxExp)
+            if (currentExp > ingameUIMaxExp)
             {
                 currentExp -= ingameUIMaxExp;
                 ++currentPlayerLevel;
@@ -336,15 +347,25 @@ namespace ProjectGra
         #endregion
 
         #region InfoMiniWindow
+        public void ShowAndInitInfoWindowWithWeapon(int WeaponIdx, int WeaponLevel, Vector3 position)
+        {
+            infoMiniWindow.gameObject.SetActive(true);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, position);
+        }
         public void ShowAndInitInfoWindowWithWeapon(int WeaponIdx, int WeaponLevel, int currentPrice, bool showCombine, int combineSlotIdx, int calledSlotIdx, Vector3 position)
         {
             infoMiniWindow.gameObject.SetActive(true);
             infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, currentPrice, showCombine, combineSlotIdx, calledSlotIdx, position);
         }
-        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel,int currentPrice, GameObject itemSlotGO, Vector3 showPos)
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlotGO, Vector3 showPos)
         {
             infoMiniWindow.gameObject.SetActive(true);
-            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx,itemLevel, currentPrice,itemSlotGO, showPos);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, itemSlotGO, showPos);
+        }
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, GameObject itemSlotGO, Vector3 showPos)
+        {
+            infoMiniWindow.gameObject.SetActive(true);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, itemSlotGO, showPos);
         }
         #endregion
 
@@ -431,12 +452,12 @@ namespace ProjectGra
             }
         }
 
-        public void RecycleGameItemWithGO(int itemIdx, int currentPrice,GameObject calledItemSlot)
+        public void RecycleGameItemWithGO(int itemIdx, int currentPrice, GameObject calledItemSlot)
         {
             shopUIManager.RecycleGameItemWithGO(itemIdx, currentPrice, calledItemSlot);
         }
 
-        
+
 
 
         #endregion

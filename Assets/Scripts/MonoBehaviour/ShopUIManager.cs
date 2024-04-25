@@ -57,7 +57,25 @@ namespace ProjectGra
             PlayerDataModel.Instance.OnMaterialChanged -= UpdateMaterialCount;
             PlayerDataModel.Instance.OnPlayerAttributeChanged -= UpdateShopPlayerAttribute;
         }
-        public void ShowShop()
+        //public void SetWeaponAndItemInCanvas(bool isCanvasShop)
+        //{
+        //    if(isCanvasShop)
+        //    {
+        //        for(int i = 0; i < weaponSlotList.Count; ++i)
+        //        {
+        //            weaponSlotList[i].SetStateAtShop();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        for (int i = 0; i < weaponSlotList.Count; ++i)
+        //        {
+        //            weaponSlotList[i].SetStateAtPause();
+        //        }
+        //    }
+        //}
+
+        public void ShowShopReset()
         {
             UpdateMainWeaponInfo();
             ResetReroll();
@@ -130,8 +148,13 @@ namespace ProjectGra
             weaponSlotList[callSlotIdx].InitSlot();
             weaponSlotList[combineSlotIdx].InitSlot(-1, false, 0);
         }
-        public void ShowInfoMiniWindow(WeaponSlot slot)
+        public void ShowInfoMiniWindow(WeaponSlot slot, bool isAtShopUI)
         {
+            if (!isAtShopUI)
+            {
+                CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithWeapon(slot.WeaponIdx, slot.WeaponLevel, slot.gameObject.transform.position);
+                return;
+            }
             var showCombine = false;
             var calledSlotIdx = -1;
             var combineSlotIdx = -1;

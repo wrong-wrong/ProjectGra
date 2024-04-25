@@ -2133,6 +2133,8 @@ MonoBehaviour:
   - {fileID: 5967454660922796249}
   - {fileID: 9013253889905590002}
   - {fileID: 4555046145026716015}
+  CateInfoXPosAtLeft: -365
+  CateInfoXPosAtRight: 315
   CombineButton: {fileID: 9089657056571497409}
   RecycleButton: {fileID: 1896008237656315387}
   CancelButton: {fileID: 1668333599963948531}
@@ -2143,6 +2145,7 @@ MonoBehaviour:
   WeaponInfoTextRect: {fileID: 8541818546572918396}
   WeaponInfoText: {fileID: 9169220115305184536}
   ItemInfoText: {fileID: 6202873481287023974}
+  RecycleButtonRect: {fileID: 3086978507399934931}
   CombineButtonRect: {fileID: 7427848178807998494}
   InfoMiniWindowRect: {fileID: 3032437196103912470}
   CategoryRectList:

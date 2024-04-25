@@ -458,6 +458,8 @@ namespace ProjectGra
                     }
                     break;
                 case GameControllState.Gameover:
+                    //var initSystem = state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>();
+                    //initSystem.Enabled = true;
                     break;
             }
         }

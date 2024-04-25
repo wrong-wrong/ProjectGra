@@ -8,6 +8,10 @@ namespace ProjectGra
     public class WeaponSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler,IPointerClickHandler
     {
         public static WeaponSlot CurrentHoveredSlot;
+        [SerializeField] Vector3 posAtShopUI;
+        [SerializeField] Vector3 posAtPauseUI;
+        [SerializeField] RectTransform slotRect;
+        private bool isAtShopUI;
         public bool isMainSlot;
         [SerializeField] Image bgImg;
         [SerializeField] Image iconImg;
@@ -25,26 +29,51 @@ namespace ProjectGra
         }
 
         #region UnityFunction
+
+
+        public void SetIsAtShopUIFlag(bool IsAtShopUI)
+        {
+            isAtShopUI = IsAtShopUI;
+            if (IsAtShopUI)
+            {
+                slotRect.localPosition = posAtShopUI;
+            }
+            else
+            {
+                slotRect.localPosition = posAtPauseUI;
+            }
+        }
         public void Awake()
         {
             isMainSlot = false;
             iconTransform = iconImg.transform;
             bgTransform = bgImg.transform;
+            slotRect.localPosition = posAtShopUI;
+            CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI += SetIsAtShopUIFlag;
+
+        }
+        public void OnDestroy()
+        {
+            CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI -= SetIsAtShopUIFlag;
         }
         public void OnBeginDrag(PointerEventData eventData)
         {
-            //Check weapon data , if null ,return;
+            if (WeaponIdx == -1 || !isAtShopUI) return;
+                //Check weapon data , if null ,return;
             iconTransform.SetParent(CanvasMonoSingleton.Instance.DragLayer);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (WeaponIdx == -1 || !isAtShopUI) return;
+
             //Check weapon data , if null ,return;
             iconTransform.position = eventData.position;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (WeaponIdx == -1 || !isAtShopUI) return;
             iconTransform.SetParent(bgTransform);
             ResetIcon();
             //Check weapon data , if null ,return;
@@ -64,6 +93,18 @@ namespace ProjectGra
             CurrentHoveredSlot = null;
         }
         #endregion
+
+        //public void SetStateAtShop()
+        //{
+        //    isAtShopUI = true;
+        //    slotRect.localPosition = posAtShopUI;
+        //}
+        //public void SetStateAtPause()
+        //{
+        //    isAtShopUI = false;
+        //    slotRect.localPosition = posAtPauseUI;
+
+        //}
         public void ResetIcon()
         {
             iconTransform.localPosition = Vector3.zero;
@@ -100,7 +141,7 @@ namespace ProjectGra
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if(WeaponIdx != -1) shopUIManager.ShowInfoMiniWindow(this);
+            if(WeaponIdx != -1) shopUIManager.ShowInfoMiniWindow(this, isAtShopUI);
         }
     }
 

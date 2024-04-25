@@ -21,7 +21,7 @@ namespace ProjectGra
             var superSingleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
             var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
 
-            state.EntityManager.AddComponentObject(superSingleton, new CameraTargetReference { 
+            state.EntityManager.SetComponentData(superSingleton, new CameraTargetReference { 
                 cameraTarget = CameraTargetMonoSingleton.instance.CameraTargetTransform, 
                 ghostPlayer = CameraTargetMonoSingleton.instance.transform});
             
@@ -122,6 +122,7 @@ namespace ProjectGra
             // Setting Spawning Config
             var SpawningConfigSO = MonoGameManagerSingleton.Instance.SpawningSOList[MonoGameManagerSingleton.Instance.CurrentDifficulty];
             var spawnConfigBuffer = state.EntityManager.AddBuffer<SpawningConfigBuffer>(superSingleton);
+            spawnConfigBuffer.Clear();
             for(int i = 0, n = SpawningConfigSO.IsHordeOrElite.Count; i < n; i++)
             {
                 if (!SpawningConfigSO.IsHordeOrElite[i])

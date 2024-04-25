@@ -11,6 +11,19 @@ namespace ProjectGra
         private int itemIdx;
         private int itemLevel;
         private int currentPrice;
+        private bool isAtShopUI;
+        public void Awake()
+        {
+            CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI += SetIsAtShopUIFlag;
+        }
+        public void OnDestroy()
+        {
+            CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI -= SetIsAtShopUIFlag;
+        }
+        public void SetIsAtShopUIFlag(bool IsAtShopUI)
+        {
+            isAtShopUI = IsAtShopUI;
+        }
         public void InitWithItemIdxAndLevel(int itemIdx, int itemLevel, int currentPrice)
         {
             this.itemIdx = itemIdx;
@@ -20,7 +33,8 @@ namespace ProjectGra
         }
         public void OnPointerClick(PointerEventData eventData)
         {
-            CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithItem(itemIdx, itemLevel, currentPrice, this.gameObject, this.gameObject.transform.position);
+            if(isAtShopUI)CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithItem(itemIdx, itemLevel, currentPrice, this.gameObject, this.gameObject.transform.position);
+            else CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithItem(itemIdx, itemLevel, this.gameObject, this.gameObject.transform.position);
         }
         public void InitVisual(int level)
         {

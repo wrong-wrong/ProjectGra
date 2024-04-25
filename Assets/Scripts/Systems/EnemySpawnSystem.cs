@@ -12,7 +12,7 @@ namespace ProjectGra
     {
         int _MaxEnemyBufferIdxExclusive;
         int _LastUpdateWave;
-        bool _IsInit;
+        //bool _IsInit;
         int groupSpawnRealCount;
         float groupSpawnRealTimer;
         float groupSpawnTimer;
@@ -27,21 +27,23 @@ namespace ProjectGra
             state.EntityManager.AddComponent<EnemySpawnSystemDataSingleton>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new EnemySpawnSystemDataSingleton
             {
-                random = Random.CreateFromIndex(0)
+                random = Random.CreateFromIndex(0),
+                IsInit = false
             });
-            _MaxEnemyBufferIdxExclusive = 0;
-            _LastUpdateWave = 0;
-            _IsInit = false;
+
+           
         }
 
         public void OnStartRunning(ref SystemState state)
         {
+            var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
             var updateEnemyCom = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
-            if (!_IsInit)
+            if (!sysData.ValueRO.IsInit)
             {
-                _IsInit = true;
+                sysData.ValueRW.IsInit = true;
+                _MaxEnemyBufferIdxExclusive = 0;
+                _LastUpdateWave = 0;
                 var config = SystemAPI.GetSingleton<EnemySpawningConfig>();
-                var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
                 sysData.ValueRW.minRadius = config.minRadius;
                 sysData.ValueRW.maxRadius = config.maxRadius;
 
@@ -68,7 +70,7 @@ namespace ProjectGra
                 }
             }else if (updateEnemyCom.Value)
             {
-                var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
+                //var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
                 var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>();
                 var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
 
@@ -186,6 +188,7 @@ namespace ProjectGra
     public struct EnemySpawnSystemDataSingleton : IComponentData
     {
         public Random random;
+        public bool IsInit;
         public float realCooldown;
         public float spawningCooldown;
         public float minRadius;
