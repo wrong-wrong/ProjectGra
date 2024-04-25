@@ -13,6 +13,7 @@ namespace ProjectGra
                 AddComponent<SuperSingletonTag>(entity);
                 AddComponent<EnemyHpAndDmgModifierWithDifferentDifficulty>(entity);
                 AddComponent<CameraTargetReference>(entity);
+                AddBuffer<SpawningConfigBuffer>(entity);
             }
         }
     }

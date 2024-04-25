@@ -18,7 +18,7 @@ namespace ProjectGra
         {
             //state.RequireForUpdate<PlayerTag>(); // equal to Initialized , since playerTag is added through baking
 
-            state.RequireForUpdate<GameControllInitialized>();
+            state.RequireForUpdate<GameControllMonoDataApplied>();
 
             explosiveLookup = SystemAPI.GetComponentLookup<AttackExplosiveCom>();
             //state.EntityManager.AddComponent(state.SystemHandle, new PauseSystemData { IsPause = true });     // API oversight
@@ -478,7 +478,7 @@ namespace ProjectGra
     public struct GameControllNotInShop : IComponentData { }
     public struct GameControllWaveCleanup : IComponentData { }
     public struct GameControllGameOver : IComponentData { }
-    public struct GameControllInitialized : IComponentData { }
+    public struct GameControllMonoDataApplied : IComponentData { }
     public struct GameStateCom : IComponentData
     {
         public GameControllState CurrentState;
