@@ -1,3 +1,4 @@
+using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -12,6 +13,12 @@ namespace ProjectGra
         int _MaxEnemyBufferIdxExclusive;
         int _LastUpdateWave;
         bool _IsInit;
+        int groupSpawnRealCount;
+        float groupSpawnRealTimer;
+        float groupSpawnTimer;
+        float2 groupSpawnFixedRangePointOne;
+        float2 groupSpawnFixedRangePointTwo;
+        int groupSpawnCount;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -84,6 +91,7 @@ namespace ProjectGra
                     _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
                 }
                 Debug.Log("EnemySpawnSystem - SpawnCooldown : " + sysData.ValueRO.spawningCooldown +" - PointSpawnChance : " + sysData.ValueRO.pointSpawnChance);
+                groupSpawnCount = math.clamp(updateEnemyCom.CodingWave + 1, 5, 13);
             }
             Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
             Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
@@ -103,7 +111,9 @@ namespace ProjectGra
             //Debug.Log("realCooldown" + sysData.ValueRO.realCooldown);
             //Debug.Log("After substract deltatime" + sysData.ValueRO.realCooldown);
             //Debug.Log("deltatime " + deltaTime);
-            if ((sysData.ValueRW.realCooldown -= SystemAPI.Time.DeltaTime) < 0f)
+            var deltatime = SystemAPI.Time.DeltaTime;
+
+            if ((sysData.ValueRW.realCooldown -= deltatime) < 0f)
             {
                 //Debug.Log("spawning enemy!!!!!!!!!!");
                 var allEnemyPrefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
@@ -111,22 +121,50 @@ namespace ProjectGra
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
                 var playerPosition = SystemAPI.GetComponent<LocalTransform>(playerEntity).Position;
                 var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
-                var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
                 float2 f2pos;
                 f2pos.x = sysData.ValueRW.random.NextFloat(playerPosition.x - sysData.ValueRO.minRadius, playerPosition.x + sysData.ValueRO.minRadius);
                 f2pos.y = playerPosition.z + math.sqrt((sysData.ValueRO.minRadius + f2pos.x - playerPosition.x) * (sysData.ValueRO.minRadius - f2pos.x + playerPosition.x)) * (sysData.ValueRW.random.NextBool() ? -1 : 1);
-                f2pos.x *= sysData.ValueRO.random.NextFloat(1, sysData.ValueRO.maxRadius / sysData.ValueRO.minRadius);
-                f2pos.y *= sysData.ValueRO.random.NextFloat(1, sysData.ValueRO.maxRadius / sysData.ValueRO.minRadius);
+                f2pos.x *= sysData.ValueRW.random.NextFloat(1, sysData.ValueRO.maxRadius / sysData.ValueRO.minRadius);
+                f2pos.y *= sysData.ValueRW.random.NextFloat(1, sysData.ValueRO.maxRadius / sysData.ValueRO.minRadius);
                 sysData.ValueRW.flip = !sysData.ValueRW.flip;
                 if (sysData.ValueRW.flip)
                 {
                     f2pos = f2pos.yx;
                 }
-                playerPosition.xz = f2pos;//GetRandomPointWithRangeRadius(playerPosition, sysData.ValueRO.minRadius, sysData.ValueRO.maxRadius); // now it is not player position,
-                ecb.SetComponent<LocalTransform>(enemy, new LocalTransform { Position = playerPosition, Rotation = quaternion.identity, Scale = 1f });
+                if(sysData.ValueRW.random.NextFloat() < sysData.ValueRO.pointSpawnChance ) // spawn a group 
+                {
+                    var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
+                    playerPosition.xz = f2pos;//GetRandomPointWithRangeRadius(playerPosition, sysData.ValueRO.minRadius, sysData.ValueRO.maxRadius); // now it is not player position,
+                    ecb.SetComponent<LocalTransform>(enemy, new LocalTransform { Position = playerPosition, Rotation = quaternion.identity, Scale = 1f });
+                }
+                else
+                {
+                    Debug.Log("Group Spawn");
+                    groupSpawnRealCount = groupSpawnCount;
+                    var dir = f2pos.yx - playerPosition.zx;
+                    dir.x = -dir.x;
+                    groupSpawnFixedRangePointOne = f2pos + dir;// + groupSpawnRangeOffset;
+                    groupSpawnFixedRangePointTwo = f2pos - dir;// - groupSpawnRangeOffset;
+                }
+
+            }
+
+            if (groupSpawnRealCount > 0)
+            {
+                if ((groupSpawnRealTimer -= deltatime) < 0f)
+                {
+                    --groupSpawnRealCount;
+                    groupSpawnRealTimer = groupSpawnTimer;
+                    var allEnemyPrefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                    var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+                    var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
+                    var posf2 = sysData.ValueRW.random.NextFloat2(groupSpawnFixedRangePointOne, groupSpawnFixedRangePointTwo);
+                    ecb.SetComponent(enemy, new LocalTransform { Position = new float3(posf2.x, 0, posf2.y), Scale = 1f });
+                }
             }
 
         }
+
         //private float2 GetRandomPointWithRangeRadius(float3 playerPos, float minRadius, float maxRadius)
         //{
 

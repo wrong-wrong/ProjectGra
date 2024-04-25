@@ -13,9 +13,20 @@ namespace ProjectGra
     {
         private Entity ColliderPrefab;
         private BatchMeshID RealMeshId;
+
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        float _LootCrateDropRate;
+        float _ConsumableDropate;
+        bool isInit;
+
         private Entity summonExplosionPrefab;
         private Random random;
-        private float normalSpeed;
         private float chasingSpeed;
         private float floatingCycleSpeed;
         private float floatingRange;
@@ -36,24 +47,49 @@ namespace ProjectGra
 
         public void OnStartRunning(ref SystemState state)
         {
-            var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
-            summonExplosionPrefab = prefabContainer.SummonExplosionPrefab;
-            var config = SystemAPI.GetSingleton<EnemySummonerConfigCom>();
-            floatingCycleSpeed = config.EnemySummonerFloatingCycleSpeed;
-            floatingRange = config.EnemySummonerFloatingRange;
-            normalSpeed = config.EnemySummonerSpeed;
-            chasingSpeed = config.EnemySummonerChasingSpeed;
-            fleeDistanceSq = config.EnemySummonerFleeDistance * config.EnemySummonerFleeDistance;
-            chasingDistanceSq = config.EnemySummonerChasingDistance * config.EnemySummonerChasingDistance;
-            summonDistanceSq = config.EnemySummonerSummonDistance * config.EnemySummonerSummonDistance;
-            attackCooldown = config.EnemySummonerAttackCooldown;
-            explodeDistanceSq = config.EnemySummonerExplodeDistance * config.EnemySummonerExplodeDistance;
-            //Debug.Log(math.sin(1.5707963));     // 1
-            calculatedMulOfCycleSpeed = 360 * 0.0174532925f / floatingCycleSpeed;
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemySummonerMeshID;
+            if(!isInit)
+            {
+                isInit = true;
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemySummonerMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemySummonerCollider;
+                var config = SystemAPI.GetSingleton<EnemySummonerConfigCom>();
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+                _LootCrateDropRate = basicAttribute.LootCrateDropRate;
+                _ConsumableDropate = basicAttribute.ConsumableDropate;
+                var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
+                summonExplosionPrefab = prefabContainer.SummonExplosionPrefab;
+                floatingCycleSpeed = config.EnemySummonerFloatingCycleSpeed;
+                floatingRange = config.EnemySummonerFloatingRange;
+                chasingSpeed = config.EnemySummonerChasingSpeed;
+                fleeDistanceSq = config.EnemySummonerFleeDistance * config.EnemySummonerFleeDistance;
+                chasingDistanceSq = config.EnemySummonerChasingDistance * config.EnemySummonerChasingDistance;
+                summonDistanceSq = config.EnemySummonerSummonDistance * config.EnemySummonerSummonDistance;
+                attackCooldown = config.EnemySummonerAttackCooldown;
+                explodeDistanceSq = config.EnemySummonerExplodeDistance * config.EnemySummonerExplodeDistance;
+                //Debug.Log(math.sin(1.5707963));     // 1
+                calculatedMulOfCycleSpeed = 360 * 0.0174532925f / floatingCycleSpeed;
+                SystemAPI.SetComponent(summonExplosionPrefab, new AttackCurDamage { damage = _Damage });
+            }
 
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemySummonerCollider;
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[4].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+                SystemAPI.SetComponent(summonExplosionPrefab, new AttackCurDamage { damage = _Damage });
+            }
+
         }
 
         public void OnStopRunning(ref SystemState state)
@@ -107,7 +143,7 @@ namespace ProjectGra
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         tarDir.xz = math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
                         transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
-                        movement.ValueRW.tarDirMulSpeed = tarDir.xz * normalSpeed;
+                        movement.ValueRW.tarDirMulSpeed = tarDir.xz * _Speed;
                         break;
                     case EntityState.Follow:
                         // update pos using tarDir
@@ -125,7 +161,7 @@ namespace ProjectGra
                             stateMachine.ValueRW.CurrentState = EntityState.Flee;
                             tarDir.xz = -math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
                             transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
-                            movement.ValueRW.tarDirMulSpeed = tarDir.xz * normalSpeed;
+                            movement.ValueRW.tarDirMulSpeed = tarDir.xz * _Speed;
                             continue;
                         }
                         // distanceSq > summonDisSq, go to follow state, and set random tarDirNormalizeMulSpeed & rotaion
@@ -134,7 +170,7 @@ namespace ProjectGra
                             stateMachine.ValueRW.CurrentState = EntityState.Follow;
                             tarDir.xz = math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
                             transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, math.up());
-                            movement.ValueRW.tarDirMulSpeed = tarDir.xz * normalSpeed;
+                            movement.ValueRW.tarDirMulSpeed = tarDir.xz * _Speed;
                             continue;
                         }
                         // set rotaion every frame

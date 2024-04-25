@@ -28,7 +28,6 @@ namespace ProjectGra
         float attackDistanceSq;
         float cooldown;
         float deathCountDown;
-        int attackVal;
         bool isInit;
         Random random;
         Entity MaterialPrefab;
@@ -152,7 +151,7 @@ namespace ProjectGra
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         attack.ValueRW.AttackCooldown = cooldown;                        
                         Debug.Log("Player attacked by normal melee");
-                        playerHealthPoint.ValueRW.HealthPoint -= (int)(attackVal * transform.ValueRO.Scale);
+                        playerHealthPoint.ValueRW.HealthPoint -= (int)(_Damage * transform.ValueRO.Scale);
                         break;
                     case EntityState.Dead:
                         if ((death.ValueRW.timer -= deltatime) > 0f)

@@ -41,6 +41,8 @@ namespace ProjectGra
         [SerializeField] Image weaponCooldownFillingImg;
         [SerializeField] TextMeshProUGUI inGameMaterialCountText;
         [SerializeField] RectTransform ingameUIBackground;
+        [SerializeField] TextMeshProUGUI healthBarText;
+        [SerializeField] TextMeshProUGUI countDownText;
         [Header("Pause Canvas")]
         [SerializeField] Button pauseContinueButton;
 
@@ -95,6 +97,20 @@ namespace ProjectGra
         public void Start()
         {
             UpdateWaveNumberText();
+        }
+        private void Update()
+        {
+            if (updateCountdown)
+            {
+                var deltatime = Time.deltaTime;
+                if((countdownTimer -= deltatime) < lastCountdown)
+                {
+                    lastCountdown = (int)countdownTimer;
+                    stringBuilder.Append(lastCountdown);
+                    countDownText.text = stringBuilder.ToString();
+                    stringBuilder.Clear();
+                }
+            }
         }
         public void OnDestroy()
         {
@@ -178,12 +194,11 @@ namespace ProjectGra
             inGameWaveText.text = stringBuilder.ToString();
             stringBuilder.Clear();
         }
-        public void ShowShopAndOtherUI(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, int playerItemCountThisWave, int playerLevelupThisWave, int MaterialCount)
+        public void ShowShopAndOtherUI(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, int playerItemCountThisWave, int MaterialCount)
         {
             PlayerDataModel.Instance.SetAttributeWithStruct(attributeStruct, damageRelatedAttribute);
             PlayerDataModel.Instance.SetMaterialValWith(MaterialCount);
             this.itemCountThisWave = playerItemCountThisWave;
-            this.upgradeThisWave = playerLevelupThisWave;
             ShowItemFoundUIandIngameBackground();
         }
         public void ShowShopUI()
@@ -237,6 +252,25 @@ namespace ProjectGra
         #region In-game UI
         private int ingameUIMaxHp;
         private int ingameUIMaxExp;
+        private int currentPlayerLevel;
+        private int lastTotalExp;
+        private int currentExp;
+        private float countdownTimer;
+        private int lastCountdown;
+        private bool updateCountdown;
+        public void StartCountdownTimer(float totalTimer)
+        {
+            countdownTimer = totalTimer;
+            lastCountdown = (int)totalTimer;
+            stringBuilder.Append(lastCountdown);
+            countDownText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
+            updateCountdown = true;
+        }
+        public void StopCountdown()
+        {
+            updateCountdown = false;
+        }
         private void InitIngameUIWeaponCooldown()
         {
             weaponCooldownFillingImg.fillAmount = 1f;
@@ -248,6 +282,10 @@ namespace ProjectGra
         private void HideIngameUIBackground()
         {
             ingameUIBackground.localScale = Vector3.zero;
+        }
+        public void InGameUIUpdateCountdown(int countdown)
+        {
+
         }
         public void IngameUIWeaponCooldownFilling(float fillAmount)
         {
@@ -264,13 +302,26 @@ namespace ProjectGra
             this.ingameUIMaxHp = maxHp;
             this.ingameUIMaxExp = maxExp;
         }
-        public void IngameUIUpdataPlayerStats(int hp, int exp, int materialsCount)
+        public void IngameUIUpdataPlayerStats(int hp, int currentTotalExp, int materialsCount)
         {
             healthBar.fillAmount = (float)hp / ingameUIMaxHp;
-            experienceBar.fillAmount = exp / ingameUIMaxExp;
             stringBuilder.Append(materialsCount);
             inGameMaterialCountText.text = stringBuilder.ToString();
             stringBuilder.Clear();
+            stringBuilder.Append(hp);
+            stringBuilder.Append(" / ");
+            stringBuilder.Append(ingameUIMaxHp);
+            healthBarText.text = stringBuilder.ToString();
+            stringBuilder.Clear();
+            currentExp += currentTotalExp - lastTotalExp;
+            if(currentExp > ingameUIMaxExp)
+            {
+                currentExp -= ingameUIMaxExp;
+                ++currentPlayerLevel;
+                ++upgradeThisWave;
+                ingameUIMaxExp = (currentPlayerLevel + 3) * (currentPlayerLevel + 3);
+            }
+            experienceBar.fillAmount = (float)currentExp / ingameUIMaxExp;
         }
         public void ShowInGameUI()
         {

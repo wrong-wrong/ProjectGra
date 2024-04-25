@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1050c6646d80ae349b477798f2e5ea30, type: 3}
   m_Name: 3Egg
   m_EditorClassIdentifier: 
+  EnemyTypeName: 3Egg
   EnemyPrefab: {fileID: 3866693097470072034, guid: bbe690467650f954d919c6e4dc9261c7,
     type: 3}
   AppearCodingWave: 6

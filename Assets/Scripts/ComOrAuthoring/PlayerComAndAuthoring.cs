@@ -80,7 +80,6 @@ namespace ProjectGra
     {
         public int Exp;
         public int Level;
-        public int LevelUpThisWave;
     }
     public struct PlayerMaterialCount : IComponentData
     {

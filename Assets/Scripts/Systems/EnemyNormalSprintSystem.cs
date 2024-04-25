@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Rendering;
 using Unity.Transforms;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Random = Unity.Mathematics.Random;
@@ -15,19 +16,28 @@ namespace ProjectGra
 
         private Entity ColliderPrefab;
         private BatchMeshID RealMeshId;
+
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        float _LootCrateDropRate;
+        float _ConsumableDropate;
+        bool isInit;
+
         float3 flashColorDifference;
-        float followSpeed;
         float sprintWaitTimerSetting;
         float deathTimer;
 
-        int attackVal;
         float attackCoolDown;
         float sprintSpeed;
         float startSprintDistanceSq;
         float sprintDistance;
         float hitDistanceSq;
 
-        float lootChance;
         Random random;
         Entity MaterialPrefab;
         Entity ItemPrefab;
@@ -41,24 +51,47 @@ namespace ProjectGra
         }
         public void OnStartRunning(ref SystemState state)
         {
-            var config = SystemAPI.GetSingleton<NormalSprintConfigCom>();
-            flashColorDifference = config.FlashColorDifference;
-            followSpeed = config.FollowSpeed;
-            deathTimer = config.DeathCountdown;
-            attackCoolDown = config.AttackCooldown;
-            sprintSpeed = config.SprintSpeed;
-            startSprintDistanceSq = config.AttackDistance * config.AttackDistance;
-            sprintDistance = config.AttackDistance;
-            hitDistanceSq = config.HitDistance * config.HitDistance;
-            lootChance = config.LootChance;
-            attackVal = config.AttackVal;
-            sprintWaitTimerSetting = config.SprintWaitTimerSetting;
-            var container = SystemAPI.GetSingleton<PrefabContainerCom>();
-            MaterialPrefab = container.MaterialPrefab;
-            ItemPrefab = container.ItemPrefab;
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemyNormalSprintMeshID;
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalSprintCollider;
+            if (!isInit)
+            {
+                isInit = true;
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemyNormalSprintMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalSprintCollider;
+
+                var config = SystemAPI.GetSingleton<NormalSprintConfigCom>();
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+                _LootCrateDropRate = basicAttribute.LootCrateDropRate;
+                _ConsumableDropate = basicAttribute.ConsumableDropate;
+
+                flashColorDifference = config.FlashColorDifference;
+                deathTimer = config.DeathCountdown;
+                attackCoolDown = config.AttackCooldown;
+                sprintSpeed = config.SprintSpeed;
+                startSprintDistanceSq = config.AttackDistance * config.AttackDistance;
+                sprintDistance = config.AttackDistance;
+                hitDistanceSq = config.HitDistance * config.HitDistance;
+                sprintWaitTimerSetting = config.SprintWaitTimerSetting;
+                var container = SystemAPI.GetSingleton<PrefabContainerCom>();
+                MaterialPrefab = container.MaterialPrefab;
+                ItemPrefab = container.ItemPrefab;
+            }
+
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[2].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+            }
 
         }
         public void OnStopRunning(ref SystemState state) { }
@@ -133,7 +166,7 @@ namespace ProjectGra
                         {
                             transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             if (tarDirSq < 4f) continue;
-                            transform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
+                            transform.ValueRW.Position += normalizedDir * _Speed * deltatime;
                         }
                         break;
                     case EntityState.SprintAttack:
@@ -142,7 +175,7 @@ namespace ProjectGra
                         if (tarDirSq < hitDistanceSq)
                         {
                             //Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
-                            playerHealthPoint.ValueRW.HealthPoint -= attackVal;
+                            playerHealthPoint.ValueRW.HealthPoint -= _Damage;
                             stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         }
                         if ((attack.ValueRW.SprintTimer -= deltatime) < 0f)
@@ -152,7 +185,7 @@ namespace ProjectGra
                         }
                         break;
                     case EntityState.Dead:
-                        if (random.NextFloat() < lootChance)
+                        if (random.NextFloat() < _LootCrateDropRate)
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
                             ecb.SetComponent<LocalTransform>(material

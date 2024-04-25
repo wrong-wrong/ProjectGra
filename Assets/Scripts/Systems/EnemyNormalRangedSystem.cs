@@ -14,7 +14,18 @@ namespace ProjectGra
     {
         private Entity ColliderPrefab;
         private BatchMeshID RealMeshId;
-        float followSpeed;
+
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        float _LootCrateDropRate;
+        float _ConsumableDropate;
+        bool isInit;
+
         float attackDistanceSq;
         float attackCooldown;
         float deathCountdown;
@@ -22,11 +33,7 @@ namespace ProjectGra
         float fleeDistanceSq;
         float fleeSpeed;
 
-        int attackVal;
-
         Entity spawneePrefab;
-
-        float lootChance;
         Random random;
         Entity MaterialPrefab;
         Entity ItemPrefab;
@@ -41,25 +48,49 @@ namespace ProjectGra
 
         public void OnStartRunning(ref SystemState state) 
         {
-            var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
-            spawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
-            var config = SystemAPI.GetSingleton<NormalRangedConfigCom>();
-            followSpeed = config.FollowSpeed;
-            attackDistanceSq = config.AttackDistance * config.AttackDistance;
-            attackCooldown = config.AttackCooldown;
-            deathCountdown = config.DeathCountdown;
-            fleeDistanceSq = config.FleeDistance * config.FleeDistance;
-            fleeSpeed = config.FleeSpeed;
-            attackVal = config.AttackVal;
-            state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
-            state.EntityManager.SetComponentData(spawneePrefab, new AttackCurDamage { damage = attackVal });
-            var container = SystemAPI.GetSingleton<PrefabContainerCom>();
-            MaterialPrefab = container.MaterialPrefab;
-            ItemPrefab = container.ItemPrefab;
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemyNormalRangedMeshID;
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalRangedCollider;
+            if(!isInit)
+            {
+                isInit = true;
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemyNormalRangedMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyNormalRangedCollider;
+                var config = SystemAPI.GetSingleton<NormalRangedConfigCom>();
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+                _LootCrateDropRate = basicAttribute.LootCrateDropRate;
+                _ConsumableDropate = basicAttribute.ConsumableDropate;
 
+
+                var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
+                spawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
+                attackDistanceSq = config.AttackDistance * config.AttackDistance;
+                attackCooldown = config.AttackCooldown;
+                deathCountdown = config.DeathCountdown;
+                fleeDistanceSq = config.FleeDistance * config.FleeDistance;
+                fleeSpeed = config.FleeSpeed;
+                state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
+                state.EntityManager.SetComponentData(spawneePrefab, new AttackCurDamage { damage = _Damage });
+                var container = SystemAPI.GetSingleton<PrefabContainerCom>();
+                MaterialPrefab = container.MaterialPrefab;
+                ItemPrefab = container.ItemPrefab;
+            }
+
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[1].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+                SystemAPI.SetComponent(spawneePrefab, new AttackCurDamage { damage = _Damage });
+            }
         }
         public void OnStopRunning(ref SystemState state) { }
         public void OnUpdate(ref SystemState state)
@@ -111,7 +142,7 @@ namespace ProjectGra
                 switch (stateMachine.ValueRO.CurrentState)
                 {
                     case EntityState.Follow:
-                        transform.ValueRW.Position += normalizedDir * followSpeed * deltatime;
+                        transform.ValueRW.Position += normalizedDir * _Speed * deltatime;
                         transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                         if (disSq < attackDistanceSq * transform.ValueRO.Scale)
                         {
@@ -144,7 +175,7 @@ namespace ProjectGra
                         }
                         break;
                     case EntityState.Dead:
-                        if (random.NextFloat() < lootChance)
+                        if (random.NextFloat() < _LootCrateDropRate)
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
                             ecb.SetComponent<LocalTransform>(material

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1050c6646d80ae349b477798f2e5ea30, type: 3}
   m_Name: 2NormalSprint
   m_EditorClassIdentifier: 
+  EnemyTypeName: 2NormalSprint
   EnemyPrefab: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
     type: 3}
   AppearCodingWave: 2

@@ -337,8 +337,8 @@ namespace ProjectGra
             var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
             CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
-            CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, 1, materialCount.Count);
-            Debug.Log("Using Test Fixed number for itemCount and level up");
+            CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, materialCount.Count);
+            Debug.Log("Using Test Fixed number for itemCount");
 
             //CanvasMonoSingleton.Instance.HideInGameUI();
             //show Cursor
@@ -389,6 +389,7 @@ namespace ProjectGra
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
 
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
+                        CanvasMonoSingleton.Instance.StartCountdownTimer(timer);
                         Debug.Log("BeforeWave to InWave!");
                     }
                     if (Input.GetKeyUp(KeyCode.P))
@@ -408,6 +409,7 @@ namespace ProjectGra
 
                         state.EntityManager.RemoveComponent<GameControllInGame>(state.SystemHandle);
                         state.EntityManager.AddComponent<GameControllWaveCleanup>(state.SystemHandle);
+                        CanvasMonoSingleton.Instance.StopCountdown();
                         Debug.Log("InWave to AfterWave!");
 
                     }

@@ -120,6 +120,7 @@ namespace ProjectGra
                     waveNewEnemyBuffer.Add(new WaveNewEnemyBuffer { Value = 0 });
                 }
                 int[] tmpArr = new int[SOList.Count];
+                string[] tmpStrArr = new string[SOList.Count];
                 // create a tmp list;
                 // process EnemySO
                 //      Add to AllEnemyBuffer;  ++WaveNewEnemyList[AppearCodingWave];   tmpList.Add(AppCodingWave)
@@ -127,6 +128,7 @@ namespace ProjectGra
                 {
                     buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(SOList[i].EnemyPrefab, TransformUsageFlags.Dynamic) });
                     tmpArr[i] = SOList[i].AppearCodingWave;
+                    tmpStrArr[i] = SOList[i].EnemyTypeName;
                     ++waveNewEnemyBuffer.ElementAt(SOList[i].AppearCodingWave).Value;
                 }
                 // sort AllEnemyBuffer According to AppearingCodingWave according to tmpList
@@ -135,18 +137,24 @@ namespace ProjectGra
                 {
                     int baseValue = tmpArr[i];
                     Entity baseEntity = buffer[i].Prefab;
+                    string baseName = tmpStrArr[i];
                     int j = i - 1;
                     while(j >= 0 && baseValue < tmpArr[j] )
                     {
                         buffer.ElementAt(j + 1).Prefab = buffer[j].Prefab;
                         tmpArr[j + 1] = tmpArr[j];
+                        tmpStrArr[j + 1] = tmpStrArr[j];
                         --j;
                     }
                     buffer.ElementAt(j + 1).Prefab = baseEntity;
                     tmpArr[j + 1] = baseValue;
+                    tmpStrArr[j + 1] = baseName;
                 }
 
-
+                for(int i = 0; i < SOList.Count; i++)
+                {
+                    Debug.Log(tmpStrArr[i] + " - Idx :" + i);
+                }
 
 
                 //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic) });
@@ -179,37 +187,53 @@ namespace ProjectGra
                         ConsumableDropate = SO.ConsumableDropRate
                     }
                 });
+                SO = SOList[1];
+
+                AddComponent(entity, new NormalRangedConfigCom
+                {
+                    //EnemyPrefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic),
+                    AttackDistance = authoring.NormalRangedAttackDistance,
+                    AttackCooldown = authoring.NormalRangedAttackCooldown,
+                    DeathCountdown = authoring.NormalRangedDeathCountdown,
+                    FleeDistance = authoring.NormalRangedFleeDistance,
+                    FleeSpeed = authoring.NormalRangedFleeSpeed,
+                    //SpawneePrefab = GetEntity(authoring.NormalSpawneePrefab, TransformUsageFlags.Dynamic),
+                    SpawneeSpeed = authoring.SpawneeSpeed,
+                    SpawneeTimer = authoring.SpawneeTimer,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
+                });
+                SO = SOList[2];
                 AddComponent(entity, new NormalSprintConfigCom
                 {
-                    AttackVal = authoring.NormalRangedAttackVal,
-                    FollowSpeed = authoring.NormalSprintFollowSpeed,
                     AttackDistance = authoring.NormalSprintAttackDistance,
                     AttackCooldown = authoring.NormalSprintAttackCooldown,
                     DeathCountdown = authoring.NormalSprintDeathCountdown,
                     SprintSpeed = authoring.NormalSprintSprintSpeed,
                     HitDistance = authoring.NormalSprintHitDistanceDuringSprint,
-                    LootChance = authoring.NormalSprintLootChance,
                     FlashColorDifference = new float3(1 - authoring.NormalSprintFlashColor.r, 1 - authoring.NormalSprintFlashColor.g, 1 - authoring.NormalSprintFlashColor.b),
                     SprintWaitTimerSetting = authoring.NormalSprintSprintWaitTimerSetting,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
-                AddComponent(entity, new NormalRangedConfigCom
-                {
-                    //EnemyPrefab = GetEntity(authoring.NormalRangedPrefab, TransformUsageFlags.Dynamic),
-                    AttackVal = authoring.NormalRangedAttackVal,
-                    FollowSpeed = authoring.NormalRangedFollowSpeed,
-                    AttackDistance = authoring.NormalRangedAttackDistance,
-                    AttackCooldown = authoring.NormalRangedAttackCooldown,
-                    DeathCountdown = authoring.NormalRangedDeathCountdown,
-                    LootChance = authoring.NormalRangedLootChance,
-
-                    FleeDistance = authoring.NormalRangedFleeDistance,
-                    FleeSpeed = authoring.NormalRangedFleeSpeed,
-
-                    //SpawneePrefab = GetEntity(authoring.NormalSpawneePrefab, TransformUsageFlags.Dynamic),
-                    SpawneeSpeed = authoring.SpawneeSpeed,
-                    SpawneeTimer = authoring.SpawneeTimer,
-                });
-
                 // For summoned explosion
                 AddComponent(entity, new SummonedExplosionSystemConfigCom
                 {
@@ -217,6 +241,7 @@ namespace ProjectGra
                     TimerToSetInLaterThreeState = authoring.TimerToSetInLaterThreeState,
                 });
 
+                SO = SOList[4];
                 // For summoner
                 AddComponent(entity, new EnemySummonerConfigCom
                 {
@@ -227,8 +252,18 @@ namespace ProjectGra
                     EnemySummonerChasingSpeed = authoring.EnemySummonerChasingSpeed,
                     EnemySummonerFloatingCycleSpeed = authoring.EnemySummonerFloatingCycleSpeed,
                     EnemySummonerFloatingRange = authoring.EnemySummonerFloatingRange,
-                    EnemySummonerSpeed = authoring.EnemySummonerSpeed,
                     EnemySummonerExplodeDistance = authoring.EnemySummonerExplodeDistance,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
 
 
@@ -283,14 +318,7 @@ namespace ProjectGra
     {
         public int Value;
     }
-    public struct EliteEggAndShootConfig : IComponentData
-    {
-        public float Speed;
-        public float StageOneInSkillShootingInterval;
-        public float SpawnEggSkillSpawningInterval;
-        public int StageOneSkillShootCount;
-        public int SpawnEggSkillspawnCount;
-    }
+
     [InternalBufferCapacity(0)]
     public struct AllEnemyPrefabBuffer : IBufferElementData
     {
@@ -300,13 +328,8 @@ namespace ProjectGra
     {
         //public Entity EnemyPrefab;
         //NormalCom
-        public int AttackVal;
-        public float FollowSpeed;
         public float AttackCooldown;
         public float DeathCountdown;
-        public float LootChance;
-
-
         public float AttackDistance;
         public float FleeDistance;
         public float FleeSpeed;
@@ -315,26 +338,23 @@ namespace ProjectGra
         public float SpawneeSpeed;
         public float SpawneeTimer;
 
-
+        public EnemyBasicAttribute BasicAttribute;
     }
     public struct NormalSprintConfigCom : IComponentData
     {
         //public Entity EnemyPrefab;
-        public int AttackVal;
-        public float FollowSpeed;
         public float AttackCooldown;
         public float DeathCountdown;
-        public float LootChance;
         public float SprintWaitTimerSetting;
         public float AttackDistance;
         public float SprintSpeed;
         public float HitDistance;
         public float3 FlashColorDifference;
+        public EnemyBasicAttribute BasicAttribute;
     }
 
     public struct EnemySummonerConfigCom : IComponentData
     {
-        public float EnemySummonerSpeed;
         public float EnemySummonerAttackCooldown;
         public float EnemySummonerFloatingRange;
         public float EnemySummonerFloatingCycleSpeed;
@@ -343,6 +363,7 @@ namespace ProjectGra
         public float EnemySummonerChasingDistance;
         public float EnemySummonerExplodeDistance;
         public float EnemySummonerSummonDistance;
+        public EnemyBasicAttribute BasicAttribute;
     }
 
     public struct NormalMeleeConfigCom : IComponentData
@@ -364,18 +385,17 @@ namespace ProjectGra
         public float StageTwoInSkillShootingInterval;
         public int StageOneSkillShootCount;
         public int StageTwoSkillShootCount;
+        public EnemyBasicAttribute BasicAttribute;
     }
 
-    public struct SummonedExplosionSystemConfigCom : IComponentData
+    public struct EliteEggAndShootConfig : IComponentData
     {
-        //for flying state
-        //public float StartSpeed;
-        //public float SpeedVariation;
-        //public float StopSpeed;
-
-        //scaling to set in every state,  basic scale should be previous scale,
-        public float3 ScaleToSetInLaterThreeState;
-        public float3 TimerToSetInLaterThreeState;
+        public float Speed;
+        public float StageOneInSkillShootingInterval;
+        public float SpawnEggSkillSpawningInterval;
+        public int StageOneSkillShootCount;
+        public int SpawnEggSkillspawnCount;
+        public EnemyBasicAttribute BasicAttribute;
     }
 
     public struct EliteSprintAndShootConfigCom : IComponentData
@@ -391,8 +411,21 @@ namespace ProjectGra
         public float EliteSprintAndShootSprintSpeed;
         public float EliteSprintAndShootCollideDistance;
         public int EliteSprintAndShootSprintDamage;
+        public EnemyBasicAttribute BasicAttribute;
     }
 
+
+    public struct SummonedExplosionSystemConfigCom : IComponentData
+    {
+        //for flying state
+        //public float StartSpeed;
+        //public float SpeedVariation;
+        //public float StopSpeed;
+
+        //scaling to set in every state,  basic scale should be previous scale,
+        public float3 ScaleToSetInLaterThreeState;
+        public float3 TimerToSetInLaterThreeState;
+    }
     public struct EnemyBasicAttribute
     {
         public int HealthPoint;

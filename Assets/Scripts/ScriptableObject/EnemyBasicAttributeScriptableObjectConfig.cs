@@ -5,6 +5,7 @@ namespace ProjectGra
     [CreateAssetMenu(menuName = "MyEnemyBasicAttibuteSO")]
     public class EnemyBasicAttributeScriptableObjectConfig : ScriptableObject
     {
+        public string EnemyTypeName;
         public GameObject EnemyPrefab;
         public int AppearCodingWave;
         public int HealthPoint;

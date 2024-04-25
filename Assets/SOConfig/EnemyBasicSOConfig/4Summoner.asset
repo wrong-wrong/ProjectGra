@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1050c6646d80ae349b477798f2e5ea30, type: 3}
   m_Name: 4Summoner
   m_EditorClassIdentifier: 
+  EnemyTypeName: 4Summoner
   EnemyPrefab: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
     type: 3}
   AppearCodingWave: 9
