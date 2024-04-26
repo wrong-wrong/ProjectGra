@@ -81,11 +81,11 @@ namespace ProjectGra
             ResetReroll();
             UpdateAllShopItemBuyState();
         }
-        public void SetSlotWeaponIdx(int4 wpIdx)
+        public void SetSlotWeaponIdx(int4 wpIdx, int4 wpLevel)
         {
             for(int i = 0, n = weaponSlotList.Count;i < n; ++i)
             {
-                weaponSlotList[i].InitSlot(wpIdx[i]);
+                weaponSlotList[i].InitSlot(wpIdx[i], wpLevel[i]);
             }
         }
         public int4 GetSlotWeaponIdx()

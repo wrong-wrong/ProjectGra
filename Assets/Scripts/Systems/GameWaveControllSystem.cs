@@ -26,7 +26,7 @@ namespace ProjectGra
             ////l[0] = 1; l[1] = 2; l[2] = 3;
             //l[0] = -1; l[1] = -1; l[2] = -1;
             state.EntityManager.AddComponent<WaveControllSystemData>(state.SystemHandle);
-            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData { tmpWpIdx = default });
+            //state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData { tmpWpIdx = default });
             state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
             state.EntityManager.AddComponent<GameControllShouldUpdateEnemy>(state.SystemHandle);
@@ -42,8 +42,12 @@ namespace ProjectGra
             var config = SystemAPI.GetSingleton<GameWaveTimeConfig>();
             beginWaveTimeSet = config.BeginWaveTime;
             inWaveTimeSet = config.InWaveTime;
+            var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
+            var tmpI4 = new int4(MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx, -1, -1, -1);
+            sysData.ValueRW.tmpWpIdx = tmpI4;
+            sysData.ValueRW.tmpWpLevel = int4.zero;
             //playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
-            PopulateWeaponStateWithWeaponIdx(ref state, new int4(MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx,-1,-1,-1));
+            PopulateWeaponStateWithWeaponIdx(ref state, tmpI4);
         }
         public void OnStopRunning(ref SystemState state)
         {
@@ -333,9 +337,9 @@ namespace ProjectGra
             var mainWpstate = SystemAPI.GetSingleton<MainWeapon>();
             var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
-            var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
+            //var sysData = SystemAPI.GetSingleton<WaveControllSystemData>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
-            CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx);
+            //CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.tmpWpIdx, sysData.tmpWpLevel);
             CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, materialCount.Count);
             Debug.Log("Using Test Fixed number for itemCount");
 
@@ -349,11 +353,11 @@ namespace ProjectGra
             gameState.ValueRW.CurrentState = GameControllState.InShop;
         }
 
-        private void PauseReal(ref SystemState state)
+        private void Pause(ref SystemState state)
         {
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
 
-            CanvasMonoSingleton.Instance.ShowPauseCanvasGroup();
+            CanvasMonoSingleton.Instance.ShowPauseCanvasGroup(true);
             Cursor.lockState = CursorLockMode.None;
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
@@ -363,7 +367,7 @@ namespace ProjectGra
             SystemAPI.GetSingletonRW<GameControllShouldUpdateEnemy>().ValueRW.Value = false;
 
         }
-        private void UnpauseReal(ref SystemState state)
+        private void Unpause(ref SystemState state)
         {
 
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
@@ -387,6 +391,7 @@ namespace ProjectGra
                         var wave = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>().CodingWave;
 
                         timer = math.clamp(20 + wave * 5, 20, 60) + 1; // setting in wave time;
+                        gameState.ValueRW.PreviousState = GameControllState.BeforeWave;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
 
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
@@ -395,7 +400,7 @@ namespace ProjectGra
                     }
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        PauseReal(ref state);
+                        Pause(ref state);
                     }
                     if (Input.GetKeyUp(KeyCode.T))
                     {
@@ -416,7 +421,7 @@ namespace ProjectGra
                     }
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        PauseReal(ref state);
+                        Pause(ref state);
                     }
                     if (Input.GetKeyUp(KeyCode.T))
                     {
@@ -424,7 +429,7 @@ namespace ProjectGra
                     }
                     break;
                 case GameControllState.AfterWave:
-                    if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  // TODO need wave clean up System
+                    if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  
                     {
                         timer = beginWaveTimeSet; // setting begin wave time;!!!!      
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
@@ -433,7 +438,7 @@ namespace ProjectGra
                     }
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        PauseReal(ref state);
+                        Pause(ref state);
                     }
                     break;
                 case GameControllState.InShop:
@@ -446,24 +451,105 @@ namespace ProjectGra
                     gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
                     state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
                     state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
+                    var sysData = SystemAPI.GetSingleton<WaveControllSystemData>();
+                    CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.tmpWpIdx, sysData.tmpWpLevel);
+
                     Debug.Log("Uninitialized to BeforeWave!");
 
                     break;
                 case GameControllState.Paused:
                     if (Input.GetKeyUp(KeyCode.P))
                     {
-                        UnpauseReal(ref state);
+                        Unpause(ref state);
                         Debug.Log("Unpaused");
+                        return;
                     }
-                    // check flag in pause ui manager;
+                    // nothing happeds when setting clicked
+                    var buttonEnum = PauseUIManager.Instance.buttonClickedEnum;
+                    // check if continue clicked
+                    switch (buttonEnum)
+                    {
+                        
+                        case ButtonClickedEnum.Continue:
+                            PauseUIManager.Instance.buttonClickedEnum = ButtonClickedEnum.None;
+                            Unpause(ref state);
+                            break;
+                        case ButtonClickedEnum.Restart:
+                        case ButtonClickedEnum.MainMenu:
+                            PauseUIManager.Instance.buttonClickedEnum = ButtonClickedEnum.None;
+                            gameState.ValueRW.CurrentState = GameControllState.Uninitialized;
+                            gameState.ValueRW.PreviousState = GameControllState.Uninitialized;
+                            // just do wave clean on my own
+                            //      destory enemy, spawnee, item, material
+                            //      destory healthBar in cleanup Component
+                            DoWaveCleanup(ref state);
+                            // delete GameControllMonoDataApplied component
+                            state.EntityManager.RemoveComponent<GameControllMonoDataApplied>(state.SystemHandle);
+                            // delete other relevent component
+                            //      not in shop, not paused, in game ,, waveclean is not add at all
+                            state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
+                            state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
+                            state.EntityManager.RemoveComponent<GameControllInGame>(state.SystemHandle);
+
+                            // enable initSystem
+                            state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>().Enabled = true;
+                            break;
+                    }
+                    // check if restart clicked
+                    // check if main menu clicked
                     break;
                 case GameControllState.Gameover:
-                    //var initSystem = state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>();
-                    //initSystem.Enabled = true;
+
+                    //// first let the wave clean system updates
+                    ////      check flag , whether has added WaveCleanComponent and removed GCInGame
+                    //// if not add and remove
+                    //// else check if the WaveCleanCom has been removed by WaveCleanSystem
+                    ////      if so do the rest
+                    ///
+
+                    // set current state before any structural change
+                    gameState.ValueRW.CurrentState = GameControllState.Uninitialized;
+                    gameState.ValueRW.PreviousState = GameControllState.Uninitialized;
+                    // just do wave clean on my own
+                    //      destory enemy, spawnee, item, material
+                    //      destory healthBar in cleanup Component
+                    DoWaveCleanup(ref state);
+                    // delete GameControllMonoDataApplied component
+                    state.EntityManager.RemoveComponent<GameControllMonoDataApplied>(state.SystemHandle);
+                    // delete other relevent component
+                    //      not in shop, not paused, in game ,, waveclean is not add at all
+                    state.EntityManager.RemoveComponent<GameControllNotInShop>(state.SystemHandle);
+                    state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
+                    state.EntityManager.RemoveComponent<GameControllInGame>(state.SystemHandle);
+
+                    // enable initSystem
+                    var initSystem = state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>();
+                    initSystem.Enabled = true;
+                    // show pause UI
+                    CanvasMonoSingleton.Instance.ShowPauseCanvasGroup(false);
+                    //      hide continue button
                     break;
             }
         }
+        private void DoWaveCleanup(ref SystemState state)
+        {
+            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
+            var enemyList = SystemAPI.QueryBuilder().WithAll<EnemyTag>().Build().ToEntityArray(state.WorldUpdateAllocator);
+            ecb.DestroyEntity(enemyList);
+            var spawneeList = SystemAPI.QueryBuilder().WithAll<SpawneeTimer>().Build().ToEntityArray(state.WorldUpdateAllocator);
+            ecb.DestroyEntity(spawneeList);
+            //TODO destroy unpicked item
+            //TODO maybe need to destory material to
+            // destory health bar GO whose entity has been provisionally destoryed
+            foreach (var (healthBarManagedCom, entity) in SystemAPI.Query<HealthBarUICleanupCom>()
+                .WithEntityAccess()
+                .WithNone<HealthBatUIOffset>())
+            {
+                Object.Destroy(healthBarManagedCom.HealthBarGO);
+                ecb.RemoveComponent<HealthBarUICleanupCom>(entity);
+            }
+        }
     }
     public struct WaveControllSystemData : IComponentData
     {

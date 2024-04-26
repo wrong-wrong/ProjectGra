@@ -74,6 +74,7 @@ namespace ProjectGra
             {
                 Destroy(slotList[i].gameObject);
             }
+            infoList[infoList.Count - 1].RemoveListener();
             for (int i = infoList.Count - 1; i >= 0; i--)
             {
                 Destroy(infoList[i].gameObject);
@@ -88,8 +89,7 @@ namespace ProjectGra
             currentSlotType = ChoiceSlotType.Character;
             PlayerDataModel.Instance.ResetData();
             InitSlotsWithCurrentSlotType();
-            // bad smell..
-            CanvasMonoSingleton.Instance.CodingWave = 0;
+
         }
         private void InitSlotsWithCurrentSlotType()
         {

@@ -159,8 +159,10 @@ namespace ProjectGra
                 Debug.Log("GameInitializeSystem - SpawningConfigBuffer.Length : " + spawnConfigBuffer.Length);
                 state.EntityManager.SetComponentData(superSingleton,
                     new EnemyHpAndDmgModifierWithDifferentDifficulty { DamageModifier = SpawningConfigSO.EnemyDamageModifier, HealthPointModifier = SpawningConfigSO.EnemyHealthPointModifier });
+                var waveControllSysHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<GameWaveControllSystem>();
+                //state.EntityManager.AddComponent<GameControllMonoDataApplied>(superSingleton);
+                state.EntityManager.AddComponent<GameControllMonoDataApplied>(waveControllSysHandle);
 
-                state.EntityManager.AddComponent<GameControllMonoDataApplied>(superSingleton);
 
             }
 

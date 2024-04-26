@@ -173,6 +173,8 @@ namespace ProjectGra
         public void ShowPresetChoosingCanvasGroup()
         {
             choiceManager.ResetState();
+            // bad smell..
+            CodingWave = 0;
             PresetChoosingCanvasGroup.alpha = 1f;
             PresetChoosingCanvasGroup.blocksRaycasts = true;
             PresetChoosingCanvasGroup.interactable = true;
@@ -225,9 +227,9 @@ namespace ProjectGra
         {
             shopUIManager.AddGameItem(itemIdx, itemLevel, currentPrice, costMaterialCount);
         }
-        public void SetSlotWeaponIdxInShop(int4 wpIdxInt4)
+        public void SetSlotWeaponIdxInShop(int4 wpIdxInt4, int4 wpLevel)
         {
-            shopUIManager.SetSlotWeaponIdx(wpIdxInt4);
+            shopUIManager.SetSlotWeaponIdx(wpIdxInt4, wpLevel);
         }
         public int4 GetSlotWeaponIdxInShop()
         {
@@ -290,11 +292,13 @@ namespace ProjectGra
         }
         #region PauseUI
 
-        public void ShowPauseCanvasGroup()
+        public void ShowPauseCanvasGroup(bool isShowingContinueButton)
         {
             PauseCanvasGroup.alpha = 1;
             PauseCanvasGroup.interactable = true;
             PauseCanvasGroup.blocksRaycasts = true;
+            updateCountdown = false;
+            pauseUIManager.SetContinueButtonRect(isShowingContinueButton);
             ShowSingleAttributeUI();
             //SetWeaponAndItemIsCurrentShopUI(false);
             OnWeaponCanvasGroupShowIsCurrentShopUI?.Invoke(false);
@@ -305,6 +309,7 @@ namespace ProjectGra
             PauseCanvasGroup.alpha = 0;
             PauseCanvasGroup.interactable = false;
             PauseCanvasGroup.blocksRaycasts = false;
+            updateCountdown = false;
             HideSingleAttributeUI();
             HideWeaponAndItemCanvas();
         }
