@@ -81,11 +81,11 @@ namespace ProjectGra
             ResetReroll();
             UpdateAllShopItemBuyState();
         }
-        public void SetSlotWeaponIdx(int4 wpIdx, bool4 isMeleeWp)
+        public void SetSlotWeaponIdx(int4 wpIdx)
         {
             for(int i = 0, n = weaponSlotList.Count;i < n; ++i)
             {
-                weaponSlotList[i].InitSlot(wpIdx[i], isMeleeWp[i]);
+                weaponSlotList[i].InitSlot(wpIdx[i]);
             }
         }
         public int4 GetSlotWeaponIdx()
@@ -96,10 +96,10 @@ namespace ProjectGra
         {
             return new int4(weaponSlotList[0].WeaponLevel, weaponSlotList[1].WeaponLevel, weaponSlotList[2].WeaponLevel, weaponSlotList[3].WeaponLevel);
         }
-        public bool4 GetSlotWeaponIsMelee()
-        {
-            return new bool4(weaponSlotList[0].IsMeleeWeapon, weaponSlotList[1].IsMeleeWeapon, weaponSlotList[2].IsMeleeWeapon, weaponSlotList[3].IsMeleeWeapon);
-        }
+        //public bool4 GetSlotWeaponIsMelee()
+        //{
+        //    return new bool4(weaponSlotList[0].IsMeleeWeapon, weaponSlotList[1].IsMeleeWeapon, weaponSlotList[2].IsMeleeWeapon, weaponSlotList[3].IsMeleeWeapon);
+        //}
 
         public void AddGameItem(int itemIdx, int itemLevel,int currentPrice, int costMaterialCount)
         {
@@ -136,7 +136,7 @@ namespace ProjectGra
             //OnWeaponAddOrDelete?.Invoke(weaponSlotList[slotIdx].WeaponIdx, false);
 
             PlayerDataModel.Instance.AddMaterialValWith(weaponSlotList[slotIdx].CurrentPrice);
-            weaponSlotList[slotIdx].InitSlot(-1,false,0);
+            weaponSlotList[slotIdx].InitSlot(-1,0);
         }
         public void CombineWeaponFromTo(int combineSlotIdx, int callSlotIdx)
         {
@@ -146,7 +146,7 @@ namespace ProjectGra
 
             weaponSlotList[callSlotIdx].WeaponLevel++;
             weaponSlotList[callSlotIdx].InitSlot();
-            weaponSlotList[combineSlotIdx].InitSlot(-1, false, 0);
+            weaponSlotList[combineSlotIdx].InitSlot(-1, 0);
         }
         public void ShowInfoMiniWindow(WeaponSlot slot, bool isAtShopUI)
         {
@@ -190,7 +190,7 @@ namespace ProjectGra
                 if (weaponSlotList[i].WeaponIdx == -1)
                 {
                     weaponSlotList[i].CurrentPrice = price;
-                    weaponSlotList[i].InitSlot(weaponIdx,isMeleeWp, weaponLevel);
+                    weaponSlotList[i].InitSlot(weaponIdx, weaponLevel);
                     PlayerDataModel.Instance.AddMaterialValWith(-price);
                     UpdateAllShopItemBuyState();
                     // Weapon Category Bonus Should change

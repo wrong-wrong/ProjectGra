@@ -44,7 +44,14 @@ namespace ProjectGra
             }
             //Debug.Log("PlayerDataModel - Awake");
         }
-
+        public void ResetData()
+        {
+            for(int i = 0; i < 13; ++i)
+            {
+                attributeValueList[i] = 0;
+            }
+            OnPlayerAttributeChanged?.Invoke();
+        }
         public float4 GetDamageBonus()
         {
             return new float4(attributeValueList[7], attributeValueList[8], attributeValueList[9], attributeValueList[10]);

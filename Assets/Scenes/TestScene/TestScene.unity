@@ -757,7 +757,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 37218824}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
@@ -2185,9 +2185,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 277585049}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &320539270
 GameObject:
@@ -4095,6 +4095,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559129622}
   m_CullTransparentMesh: 1
+--- !u!1 &582036010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 582036011}
+  - component: {fileID: 582036013}
+  - component: {fileID: 582036014}
+  m_Layer: 5
+  m_Name: InfoContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &582036011
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582036010}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1037666950}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: -585, y: -260}
+  m_SizeDelta: {x: 0, y: 100}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &582036013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582036010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 60
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &582036014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582036010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f755a814434bc9c469c281329db5d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  containerRect: {fileID: 582036011}
 --- !u!1 &622551400
 GameObject:
   m_ObjectHideFlags: 0
@@ -5453,11 +5529,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentDifficulty: 0
+  CurrentWeaponPresetIdx: 0
   SpawningSOList:
   - {fileID: 11400000, guid: 8aa1a1f784393c349b7ad2a7b7e9c8f8, type: 2}
   - {fileID: 11400000, guid: c49f44dee3b5700459da97a9e2899acf, type: 2}
   - {fileID: 11400000, guid: 368aed644d897bf48b88072941de704b, type: 2}
-  IsSelectionDone: 1
+  IsPresetChoosingDone: 0
 --- !u!1 &874655253
 GameObject:
   m_ObjectHideFlags: 0
@@ -6557,6 +6634,7 @@ GameObject:
   - component: {fileID: 1037666953}
   - component: {fileID: 1037666952}
   - component: {fileID: 1037666951}
+  - component: {fileID: 1037666954}
   m_Layer: 5
   m_Name: SelectionCanvasGroup
   m_TagString: Untagged
@@ -6575,7 +6653,9 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 582036011}
+  - {fileID: 1173108016}
   m_Father: {fileID: 37218828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -6633,6 +6713,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1037666949}
   m_CullTransparentMesh: 1
+--- !u!114 &1037666954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037666949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14c84a447cf2dc046a451810f76ae6e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoContainer: {fileID: 582036014}
+  slotContainer: {fileID: 1173108019}
+  ChoiceSlotPrefab: {fileID: 4914124006039681919, guid: cf735739190359944a4703e63093dcad,
+    type: 3}
+  InfoWindowPrefab: {fileID: 2884529656574889396, guid: 1f2e17db75b8b414da45f8e508c17377,
+    type: 3}
+  infoWindowWidth: 350
+  slotWidth: 100
+  infoWindowSpacing: 60
+  slotSpacing: 24
 --- !u!114 &1068832706 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3894184648827346450, guid: eb0cfc0eab9fb774799eb1c243e2d9fb,
@@ -7142,6 +7244,82 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1163521555}
   m_CullTransparentMesh: 1
+--- !u!1 &1173108015
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1173108016}
+  - component: {fileID: 1173108018}
+  - component: {fileID: 1173108019}
+  m_Layer: 5
+  m_Name: SlotContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1173108016
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173108015}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1037666950}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 165, y: 160}
+  m_SizeDelta: {x: 0, y: 100}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &1173108018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173108015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 24
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &1173108019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173108015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f755a814434bc9c469c281329db5d7e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  containerRect: {fileID: 1173108016}
 --- !u!1 &1198869147
 GameObject:
   m_ObjectHideFlags: 0
@@ -9104,6 +9282,8 @@ MonoBehaviour:
   ItemFoundAndUpgradeCanvasGroup: {fileID: 418565748}
   ShopCanvasGroup: {fileID: 1900123356}
   WeaponAndItemCanvasGroup: {fileID: 150923883}
+  MainMenuCanvasGroup: {fileID: 277585053}
+  PresetChoosingCanvasGroup: {fileID: 1037666951}
   infoMiniWindow: {fileID: 2775712493661324883}
   DragLayer: {fileID: 1120018342}
   healthBar: {fileID: 381666639}
@@ -12691,6 +12871,20 @@ MonoBehaviour:
   - {r: 0.19490921, g: 0.36625472, b: 0.4716981, a: 1}
   - {r: 0.425186, g: 0.31187612, b: 0.5924529, a: 1}
   - {r: 0.3962264, g: 0.18764682, b: 0.19671544, a: 1}
+  DifficultySpriteList:
+  - {fileID: 21300000, guid: 747e3b6d4dc7d314fa3f99bece2c663d, type: 3}
+  - {fileID: 21300000, guid: 1700b82ef7f081d4c9ad3efe04470af0, type: 3}
+  - {fileID: 21300000, guid: dcc3f908f96d73b4d985ce6700320a98, type: 3}
+  DifficultyDescriptionList:
+  - No elite or horde. Enemies have less hp and deal less damage
+  - Elites and hordes appear.
+  - Elites and hordes appear. Enemies are stronger
+  DifficultyNameList:
+  - Zero
+  - One
+  - Two
+  CharacterPresetSOList:
+  - {fileID: 11400000, guid: 93feef9eeb6749d4c8fce6dd4d3f1d65, type: 2}
   UpgradeSOList:
   - {fileID: 11400000, guid: 82625401173f66c4bbea3b45a4ab1d8f, type: 2}
   - {fileID: 11400000, guid: c1c38e402aec6bb4980fb20cbdae50d1, type: 2}

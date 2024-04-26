@@ -29,6 +29,8 @@ namespace ProjectGra
         [SerializeField] CanvasGroup ItemFoundAndUpgradeCanvasGroup;
         [SerializeField] CanvasGroup ShopCanvasGroup;
         [SerializeField] CanvasGroup WeaponAndItemCanvasGroup;
+        [SerializeField] CanvasGroup MainMenuCanvasGroup;
+        [SerializeField] CanvasGroup PresetChoosingCanvasGroup;
         [Header("InfoMiniWindow")]
         [SerializeField] InfoMiniWindow infoMiniWindow;
         //[Header("AttributeTextInItsCanvas")]
@@ -126,6 +128,21 @@ namespace ProjectGra
         //{
         //    shopUIManager.SetWeaponAndItemInCanvas(isCanvasShop);
         //}
+
+        public void HidePresetChoosingUI()
+        {
+            Debug.Log("Hiding!!!!!!!!!");
+            PresetChoosingCanvasGroup.alpha = 0f;
+            PresetChoosingCanvasGroup.blocksRaycasts = false;
+            PresetChoosingCanvasGroup.interactable = false;
+        }
+        public void ShowPresetChoosingUI()
+        {
+            PresetChoosingCanvasGroup.alpha = 1f;
+            PresetChoosingCanvasGroup.blocksRaycasts = true;
+            PresetChoosingCanvasGroup.interactable = true;
+        }
+
         private void ShowWeaponAndItemCanvas()
         {
             WeaponAndItemCanvasGroup.alpha = 1f;
@@ -173,9 +190,9 @@ namespace ProjectGra
         {
             shopUIManager.AddGameItem(itemIdx, itemLevel, currentPrice, costMaterialCount);
         }
-        public void SetSlotWeaponIdxInShop(int4 wpIdxInt4, bool4 isMeleeWp)
+        public void SetSlotWeaponIdxInShop(int4 wpIdxInt4)
         {
-            shopUIManager.SetSlotWeaponIdx(wpIdxInt4, isMeleeWp);
+            shopUIManager.SetSlotWeaponIdx(wpIdxInt4);
         }
         public int4 GetSlotWeaponIdxInShop()
         {
@@ -185,10 +202,10 @@ namespace ProjectGra
         {
             return shopUIManager.GetSlotWeaponLevelInShop();
         }
-        internal bool4 GetSlowWeaponIsMeleeInShop()
-        {
-            return shopUIManager.GetSlotWeaponIsMelee();
-        }
+        //internal bool4 GetSlowWeaponIsMeleeInShop()
+        //{
+        //    return shopUIManager.GetSlotWeaponIsMelee();
+        //}
         private void UpdateWaveNumberText()
         {
             stringBuilder.Append("Wave ");

@@ -96,10 +96,10 @@ namespace ProjectGra
                 ecb.Dispose();
             }
 
-            if(MonoGameManagerSingleton.Instance.IsSelectionDone)
+            if(MonoGameManagerSingleton.Instance.IsPresetChoosingDone)
             {
                 state.Enabled = false;
-                MonoGameManagerSingleton.Instance.IsSelectionDone = false;
+                MonoGameManagerSingleton.Instance.IsPresetChoosingDone = false;
                 var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
                 var superSingleton = SystemAPI.GetSingletonEntity<SuperSingletonTag>();
 
@@ -130,6 +130,7 @@ namespace ProjectGra
                 CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(playerHp.HealthPoint, 0, playerMaterialsCount.Count);
                 CanvasMonoSingleton.Instance.HideShop();
                 CanvasMonoSingleton.Instance.ShowInGameUI();
+                CanvasMonoSingleton.Instance.HidePresetChoosingUI();
 
 
                 // Setting Spawning Config

@@ -26,7 +26,7 @@ namespace ProjectGra
             ////l[0] = 1; l[1] = 2; l[2] = 3;
             //l[0] = -1; l[1] = -1; l[2] = -1;
             state.EntityManager.AddComponent<WaveControllSystemData>(state.SystemHandle);
-            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData { tmpIsMeleeWp = default, tmpWpIdx = default });
+            state.EntityManager.SetComponentData(state.SystemHandle, new WaveControllSystemData { tmpWpIdx = default });
             state.EntityManager.AddComponent<GameStateCom>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
             state.EntityManager.AddComponent<GameControllShouldUpdateEnemy>(state.SystemHandle);
@@ -43,7 +43,7 @@ namespace ProjectGra
             beginWaveTimeSet = config.BeginWaveTime;
             inWaveTimeSet = config.InWaveTime;
             //playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
-            PopulateWeaponStateWithWeaponIdx(ref state);
+            PopulateWeaponStateWithWeaponIdx(ref state, new int4(MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx,-1,-1,-1));
         }
         public void OnStopRunning(ref SystemState state)
         {
@@ -63,7 +63,7 @@ namespace ProjectGra
             UnpauseReal(ref state);
         }
 
-        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default, int4 weaponLevel = default, bool4 isMeleeWeapon = default)
+        private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default, int4 weaponLevel = default)
         {
             //Get configBuffer info from 
             float tmpRange = 0;
@@ -102,7 +102,7 @@ namespace ProjectGra
                 var calculatedCooldown = config.Cooldown[weaponLevel[0]] * cooldownModifier;
                 var calculatedRange = playerRange + config.Range[weaponLevel[0]];   //used to set spawnee's timer
                 Debug.Log("Attribute related - All Weapon Cooldown modified with : " + cooldownModifier);
-                if (!isMeleeWeapon[0]) // Ranged Weapon
+                if (!config.IsMeleeWeapon) // Ranged Weapon
                 {
                     //using ecb or set directly
                     ecb.SetComponent(playerEntity, new MainWeapon
@@ -211,7 +211,7 @@ namespace ProjectGra
                 //Debug.Log("Attribute related - Auto wp " + i + 1 + "Cooldown modified with percentage:" + math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f));
                 var calculatedRange = playerRange + config.Range[weaponLevel[i + 1]];   //used to set spawnee's timer
                 tmpRange = math.max(tmpRange, config.Range[weaponLevel[i + 1]]);
-                if (!isMeleeWeapon[i + 1]) // Ranged Weapon
+                if (!config.IsMeleeWeapon) // Ranged Weapon
                 {
                     autoWpEcb.Add(new AutoWeaponBuffer
                     {
@@ -295,13 +295,12 @@ namespace ProjectGra
             {
                 tmpWpIdx = CanvasMonoSingleton.Instance.GetSlotWeaponIdxInShop(),
                 tmpWpLevel = CanvasMonoSingleton.Instance.GetSlotWeaponLevelInShop(),
-                tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop(),
+                //tmpIsMeleeWp = CanvasMonoSingleton.Instance.GetSlowWeaponIsMeleeInShop(),
             };
             SystemAPI.SetComponent(state.SystemHandle, newSysData);
 
             Debug.Log(newSysData.tmpWpIdx);
-            Debug.Log(newSysData.tmpIsMeleeWp);
-            PopulateWeaponStateWithWeaponIdx(ref state, newSysData.tmpWpIdx, newSysData.tmpWpLevel, newSysData.tmpIsMeleeWp);
+            PopulateWeaponStateWithWeaponIdx(ref state, newSysData.tmpWpIdx, newSysData.tmpWpLevel);
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
             Cursor.lockState = CursorLockMode.Locked;
@@ -336,7 +335,7 @@ namespace ProjectGra
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
             var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
-            CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx, sysData.ValueRW.tmpIsMeleeWp);
+            CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.ValueRW.tmpWpIdx);
             CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, materialCount.Count);
             Debug.Log("Using Test Fixed number for itemCount");
 
@@ -471,7 +470,7 @@ namespace ProjectGra
         //public NativeArray<int> idxList;
         public int4 tmpWpIdx;
         public int4 tmpWpLevel;
-        public bool4 tmpIsMeleeWp;
+        //public bool4 tmpIsMeleeWp;
     }
     public struct GameControllNotPaused : IComponentData { }
     public struct GameControllInGame : IComponentData { }

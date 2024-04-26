@@ -19,7 +19,7 @@ namespace ProjectGra
         public int WeaponIdx;
         public int CurrentPrice;
 
-        public bool IsMeleeWeapon;
+        //public bool IsMeleeWeapon;
         private Transform iconTransform;
         private Transform bgTransform;  // dont starve 里面在拖拽的时候会先设置icon的parent到一个dragLayer，拖拽玩之后再把parent设置回bgTransform，应该是为了优化,其实还是为了防止遮挡
         private ShopUIManager shopUIManager;
@@ -122,9 +122,8 @@ namespace ProjectGra
                 bgImg.color = SOConfigSingleton.Instance.levelBgColor[WeaponLevel];
             }
         }
-        public void InitSlot(int idx, bool isMeleeWp,int level = 0)
+        public void InitSlot(int idx,int level = 0)
         {
-            this.IsMeleeWeapon = isMeleeWp;
             WeaponIdx = idx;
             WeaponLevel = level;
             InitSlot();
@@ -132,10 +131,9 @@ namespace ProjectGra
         public void SwapWeaponSlot(WeaponSlot dragged, WeaponSlot slot2)
         {
             var tmpIdx = slot2.WeaponIdx;
-            var tmpIsMelee = slot2.IsMeleeWeapon;
             var tmpLevel = slot2.WeaponLevel;
-            slot2.InitSlot(dragged.WeaponIdx, dragged.IsMeleeWeapon,dragged.WeaponLevel);
-            dragged.InitSlot(tmpIdx, tmpIsMelee, tmpLevel);
+            slot2.InitSlot(dragged.WeaponIdx,dragged.WeaponLevel);
+            dragged.InitSlot(tmpIdx, tmpLevel);
             if (dragged.isMainSlot || slot2.isMainSlot) { shopUIManager.UpdateMainWeaponInfo(); }
         }
 

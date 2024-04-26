@@ -7,8 +7,9 @@ namespace ProjectGra{
     {
         public static MonoGameManagerSingleton Instance;
         public int CurrentDifficulty;
+        public int CurrentWeaponPresetIdx;
         public List<SpawningScriptableObjectConfig> SpawningSOList;
-        public bool IsSelectionDone;
+        public bool IsPresetChoosingDone;
         private void Awake()
         {
             if(Instance != null) 

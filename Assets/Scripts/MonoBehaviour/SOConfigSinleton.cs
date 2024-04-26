@@ -14,6 +14,10 @@ namespace ProjectGra
         public static SOConfigSingleton Instance;
         public List<Color> levelBgColor;
         public List<Color> levelBgColorLight;
+        public List<Sprite> DifficultySpriteList;
+        public List<string> DifficultyDescriptionList;
+        public List<string> DifficultyNameList;
+        public List<CharacterPresetScriptableObjectConfig> CharacterPresetSOList;
         public List<UpgradeScriptableObjectConfig> UpgradeSOList;
         private int weaponCount;
         private Random random;
