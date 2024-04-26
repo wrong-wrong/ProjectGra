@@ -23,15 +23,8 @@ namespace ProjectGra
         {
             slotList = new List<ChoiceSlot>();
             infoList = new List<ChoiceInfoWindow>();
-            ResetState();
-        }
-        private void Update()
-        {
-            if(Input.GetKeyUp(KeyCode.Space))
-            {
-                slotContainer.RePosition(0);
-                infoContainer.RePosition(0);
-            }
+
+
         }
         private void onChoiceSlotConfirm(int Idx)
         {

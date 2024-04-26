@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     public class AudioManager : MonoBehaviour
     {
         [SerializeField] GameObject audioPrefab;
+        [SerializeField] AudioMixer audioMixer;
+        [SerializeField] string parameterName;
+        [SerializeField] AudioSource testAudioSource;
         public static AudioManager Instance;
         public int MaxAudioSourceCount;
         [SerializeField] List<AudioSource> audioSourceRingList;
@@ -28,7 +32,9 @@ namespace ProjectGra
             audioSourceRingList = new List<AudioSource>(MaxAudioSourceCount);
             for(int i = 0; i < MaxAudioSourceCount; ++i)
             {
-                audioSourceRingList.Add(Instantiate(audioPrefab).GetComponent<AudioSource>());
+                var audioSource = Instantiate(audioPrefab).GetComponent<AudioSource>();
+                audioSource.outputAudioMixerGroup = audioMixer.outputAudioMixerGroup;
+                audioSourceRingList.Add(audioSource);
             }
 
             _audioHead = 0;
@@ -53,7 +59,19 @@ namespace ProjectGra
             this.enabled = false;
 
         }
-
+        public void SetAudioMixerVolume(float volume)
+        {
+            if(volume < 0.1f)
+            {
+                audioMixer.SetFloat(parameterName, -80f);
+                
+            }
+            else
+            {
+                audioMixer.SetFloat(parameterName, Mathf.Log10(volume) * 20);
+            }
+            testAudioSource.Play();
+        }
         public void FixedUpdate()
         {
             var audioPosList = EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList;

@@ -30,7 +30,9 @@ namespace ProjectGra.PlayerController
         {
             offsetList = new NativeArray<float3>(3, Allocator.Persistent);
             var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
-            CamYSensitivity = configCom.CamYSensitivity;
+            var mouseSensitivityModifier = CanvasMonoSingleton.Instance.GetMouseSensitivityModifier();
+
+            CamYSensitivity = configCom.CamYSensitivity * mouseSensitivityModifier;
             mainWpOffset = configCom.mainWpOffset;
             offsetList[0] = configCom.leftAutoWpOffset;
             offsetList[1] = configCom.midAutoWpOffset;

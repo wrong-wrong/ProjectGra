@@ -18,7 +18,7 @@ namespace ProjectGra
         public List<string> IdxToAttributeName;
 
         public Action OnShopContinueButtonClicked;
-        public Action OnPauseContinueButtonClicked;
+        //public Action OnPauseContinueButtonClicked;
         public Action<bool> OnWeaponCanvasGroupShowIsCurrentShopUI;
         public int CodingWave;
         [SerializeField] TextMeshProUGUI shopWaveText;
@@ -31,6 +31,13 @@ namespace ProjectGra
         [SerializeField] CanvasGroup WeaponAndItemCanvasGroup;
         [SerializeField] CanvasGroup MainMenuCanvasGroup;
         [SerializeField] CanvasGroup PresetChoosingCanvasGroup;
+        [SerializeField] CanvasGroup SettingCanvasGroup;
+
+        [Header("Setting Manager")]
+        [SerializeField] SettingManager settingManager;
+        [Header("ChoiceManager")]
+        [SerializeField] ChoiceManager choiceManager;
+
         [Header("InfoMiniWindow")]
         [SerializeField] InfoMiniWindow infoMiniWindow;
         //[Header("AttributeTextInItsCanvas")]
@@ -49,7 +56,8 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI inGameWaveText;
 
         [Header("Pause Canvas")]
-        [SerializeField] Button pauseContinueButton;
+        //[SerializeField] Button pauseContinueButton;
+        [SerializeField] PauseUIManager pauseUIManager;
 
         [Header("Shop UI Manger")]
         [SerializeField] ShopUIManager shopUIManager;
@@ -77,7 +85,7 @@ namespace ProjectGra
             Instance = this;
             InGameUICanvasGroup.interactable = false;
             InGameUICanvasGroup.blocksRaycasts = false;
-            pauseContinueButton.onClick.AddListener(() => { OnPauseContinueButtonClicked?.Invoke(); }); //tring to use lambda
+            //pauseContinueButton.onClick.AddListener(() => { OnPauseContinueButtonClicked?.Invoke(); }); //tring to use lambda
             OnShopContinueButtonClicked += BeforeExitShopCallBack;
             PlayerDataModel.Instance.OnMaterialChanged += IngameUISetMaterial;
             itemFoundUIRect.localScale = Vector3.zero;
@@ -103,17 +111,20 @@ namespace ProjectGra
         }
         public void OnDestroy()
         {
-            pauseContinueButton.onClick.RemoveAllListeners();
+            //pauseContinueButton.onClick.RemoveAllListeners();
         }
         public void ShopContinueButtonActionWrapper()
         {
             OnShopContinueButtonClicked?.Invoke();
         }
-        private void PauseContinueButtonActionWrapper()
+        //private void PauseContinueButtonActionWrapper()
+        //{
+        //    OnPauseContinueButtonClicked?.Invoke();
+        //}
+        public float GetMouseSensitivityModifier()
         {
-            OnPauseContinueButtonClicked?.Invoke();
+            return settingManager.GetMouseSensitivityModifier();
         }
-
         private void BeforeExitShopCallBack()
         {
             ++CodingWave;
@@ -129,15 +140,39 @@ namespace ProjectGra
         //    shopUIManager.SetWeaponAndItemInCanvas(isCanvasShop);
         //}
 
-        public void HidePresetChoosingUI()
+        public void ShowSettingCanvasGroup()
         {
-            Debug.Log("Hiding!!!!!!!!!");
+            SettingCanvasGroup.alpha = 1f;
+            SettingCanvasGroup.interactable = true;
+            SettingCanvasGroup.blocksRaycasts = true;
+        }
+        public void HideSettingCanvasGroup()
+        {
+            SettingCanvasGroup.alpha = 0f;
+            SettingCanvasGroup.interactable = false;
+            SettingCanvasGroup.blocksRaycasts = false;
+        }
+        public void ShowMainMenuCanvasGroup()
+        {
+            MainMenuCanvasGroup.alpha = 1f;
+            MainMenuCanvasGroup.interactable = true;
+            MainMenuCanvasGroup.blocksRaycasts = true;
+        }
+        public void HideMainMenuCanvasGroup()
+        {
+            MainMenuCanvasGroup.alpha = 0f;
+            MainMenuCanvasGroup.interactable = false;
+            MainMenuCanvasGroup.blocksRaycasts = false;
+        }
+        public void HidePresetChoosingCanvasGroup()
+        {
             PresetChoosingCanvasGroup.alpha = 0f;
             PresetChoosingCanvasGroup.blocksRaycasts = false;
             PresetChoosingCanvasGroup.interactable = false;
         }
-        public void ShowPresetChoosingUI()
+        public void ShowPresetChoosingCanvasGroup()
         {
+            choiceManager.ResetState();
             PresetChoosingCanvasGroup.alpha = 1f;
             PresetChoosingCanvasGroup.blocksRaycasts = true;
             PresetChoosingCanvasGroup.interactable = true;

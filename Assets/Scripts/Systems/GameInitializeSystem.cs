@@ -130,7 +130,7 @@ namespace ProjectGra
                 CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(playerHp.HealthPoint, 0, playerMaterialsCount.Count);
                 CanvasMonoSingleton.Instance.HideShop();
                 CanvasMonoSingleton.Instance.ShowInGameUI();
-                CanvasMonoSingleton.Instance.HidePresetChoosingUI();
+                CanvasMonoSingleton.Instance.HidePresetChoosingCanvasGroup();
 
 
                 // Setting Spawning Config

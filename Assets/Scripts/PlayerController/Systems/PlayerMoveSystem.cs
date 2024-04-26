@@ -24,9 +24,11 @@ namespace ProjectGra
         public void OnStartRunning(ref SystemState state) 
         {
             var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
+            var mouseSensitivityModifier = CanvasMonoSingleton.Instance.GetMouseSensitivityModifier();
+
             playerOriginalSpeed = configCom.PlayerBasicMoveSpeedValue;
             playerSprintMultiplier = configCom.PlayerSprintMultiplierValue;
-            CamXSensitivity = configCom.CamXSensitivity;
+            CamXSensitivity = configCom.CamXSensitivity * mouseSensitivityModifier;
             var playerAttribute = SystemAPI.GetSingleton<PlayerAttributeMain>();
             Debug.Log("Attribute related - Speed modified with percentage : " + (playerAttribute.SpeedPercentage + 1));
             playerBasicSpeed = playerOriginalSpeed * (1 + playerAttribute.SpeedPercentage);

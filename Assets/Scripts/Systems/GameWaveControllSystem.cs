@@ -36,7 +36,7 @@ namespace ProjectGra
         public void OnStartRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnShopContinueButtonClicked += ShopContinueButtonCallback;
-            CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
+            //CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
             //tmp test code
             //var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
             var config = SystemAPI.GetSingleton<GameWaveTimeConfig>();
@@ -48,7 +48,7 @@ namespace ProjectGra
         public void OnStopRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnShopContinueButtonClicked -= ShopContinueButtonCallback;
-            CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked -= PauseContinueButtonCallback;
+            //CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked -= PauseContinueButtonCallback;
         }
         public void ShopContinueButtonCallback()
         {
@@ -57,11 +57,11 @@ namespace ProjectGra
             ExitShopState(ref state);
         }
 
-        public void PauseContinueButtonCallback()
-        {
-            ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
-            UnpauseReal(ref state);
-        }
+        //public void PauseContinueButtonCallback()
+        //{
+        //    ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
+        //    UnpauseReal(ref state);
+        //}
 
         private void PopulateWeaponStateWithWeaponIdx(ref SystemState state, int4 weaponIdx = default, int4 weaponLevel = default)
         {
@@ -455,6 +455,7 @@ namespace ProjectGra
                         UnpauseReal(ref state);
                         Debug.Log("Unpaused");
                     }
+                    // check flag in pause ui manager;
                     break;
                 case GameControllState.Gameover:
                     //var initSystem = state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>();
