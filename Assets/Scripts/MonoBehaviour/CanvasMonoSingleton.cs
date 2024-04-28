@@ -54,6 +54,7 @@ namespace ProjectGra
         [SerializeField] TextMeshProUGUI inGameMaterialCountText;
         [SerializeField] RectTransform ingameUIBackground;
         [SerializeField] TextMeshProUGUI healthBarText;
+        [SerializeField] TextMeshProUGUI expBarText;
         [SerializeField] TextMeshProUGUI countDownText;
         [SerializeField] TextMeshProUGUI inGameWaveText;
 
@@ -401,12 +402,14 @@ namespace ProjectGra
             healthBarText.text = stringBuilder.ToString();
             stringBuilder.Clear();
             currentExp += currentTotalExp - lastTotalExp;
+            lastTotalExp = currentTotalExp;
             if (currentExp > ingameUIMaxExp)
             {
                 currentExp -= ingameUIMaxExp;
                 ++currentPlayerLevel;
                 ++upgradeThisWave;
                 ingameUIMaxExp = (currentPlayerLevel + 3) * (currentPlayerLevel + 3);
+                expBarText.text = "LV." + currentPlayerLevel;
             }
             experienceBar.fillAmount = (float)currentExp / ingameUIMaxExp;
         }
@@ -468,8 +471,8 @@ namespace ProjectGra
             ShowIngameUIBackground();
             ShowItemFoundAndUpgradeCanvasGroup();
             ShowSingleAttributeUI();
-            ++upgradeThisWave;
-            Debug.LogWarning("adding upgrade times for test");
+            ////++upgradeThisWave;
+            //Debug.LogWarning("adding upgrade times for test");
             if (itemCountThisWave > 0)
             {
                 itemFoundUIRect.localScale = Vector3.one;

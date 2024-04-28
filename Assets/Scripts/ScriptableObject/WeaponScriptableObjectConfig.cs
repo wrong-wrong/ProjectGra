@@ -20,7 +20,7 @@ namespace ProjectGra
 
         [Header("Common field")]
         public int WeaponIndex;
-        public int WeaponLevel;
+        //public int WeaponLevel;
 
         public GameObject WeaponModel;
         public GameObject SpawneePrefabs;

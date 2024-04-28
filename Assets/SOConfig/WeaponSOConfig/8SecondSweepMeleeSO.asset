@@ -16,42 +16,41 @@ MonoBehaviour:
   IsMeleeSweep: 1
   SweepHalfWidth: 3
   MeleeForwardSpeed: 12
-  WeaponName: SecondSweepMelee
+  WeaponName: Sword
   BasePrice:
-    x: 1
-    y: 2
-    z: 3
-    w: 4
+    x: 20
+    y: 51
+    z: 95
+    w: 190
   color: {r: 0.6901961, g: 0.55816, b: 0.18823528, a: 1}
   WeaponIndex: 8
-  WeaponLevel: 0
   WeaponModel: {fileID: 8249870532000828795, guid: b313778dc7b409547b79d5ce0975402c,
     type: 3}
   SpawneePrefabs: {fileID: 0}
-  MeleeBonus: 0
+  MeleeBonus: 100
   RangedBonus: 0
   ElementBonus: 0
   AttackSpeedBonus: 0
   BasicDamage:
-    x: 10
-    y: 15
-    z: 20
-    w: 25
+    x: 20
+    y: 25
+    z: 40
+    w: 60
   WeaponCriticalHitChance:
-    x: 0
-    y: 0
-    z: 0
-    w: 0
+    x: 3
+    y: 3
+    z: 3
+    w: 3
   WeaponCriticalHitRatio:
-    x: 0
-    y: 0
-    z: 0
-    w: 0
+    x: 2
+    y: 2
+    z: 2
+    w: 2
   Cooldown:
-    x: 1
-    y: 1
-    z: 1
-    w: 1
+    x: 1.41
+    y: 1.28
+    z: 1.13
+    w: 0.98
   Range:
     x: 12
     y: 12

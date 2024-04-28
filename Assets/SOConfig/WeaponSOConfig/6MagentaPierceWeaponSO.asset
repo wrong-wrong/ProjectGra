@@ -16,7 +16,7 @@ MonoBehaviour:
   IsMeleeSweep: 0
   SweepHalfWidth: 0
   MeleeForwardSpeed: 0
-  WeaponName: Magenta
+  WeaponName: 6Unconfigured
   BasePrice:
     x: 1
     y: 2
@@ -24,7 +24,6 @@ MonoBehaviour:
     w: 4
   color: {r: 0.20000002, g: 0.20000002, b: 0.6, a: 1}
   WeaponIndex: 6
-  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: 0d122ff8f90c95843921d54c22090c52,
     type: 3}
   SpawneePrefabs: {fileID: 7642312741532248169, guid: 132961f23c0698647a6e569277b19860,

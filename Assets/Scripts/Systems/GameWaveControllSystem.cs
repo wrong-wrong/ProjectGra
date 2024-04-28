@@ -97,11 +97,12 @@ namespace ProjectGra
 
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
+                var cooldownModifier = math.clamp(1f - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
+                playerAttibute.MeleeRangedElementAttSpd.w *= 100f;
                 var calculatedDamageAfterBonus = (int)((1f + playerAttibute.DamagePercentage)
                     * (config.BasicDamage[weaponLevel[0]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance[weaponLevel[0]];
-
-                var cooldownModifier = math.clamp(1f - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
+                
                 var calculatedCooldown = config.Cooldown[weaponLevel[0]] * cooldownModifier;
                 var calculatedRange = playerRange + config.Range[weaponLevel[0]];   //used to set spawnee's timer
                 Debug.Log("Attribute related - All Weapon Cooldown modified with : " + cooldownModifier);

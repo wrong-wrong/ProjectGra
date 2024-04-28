@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7526659ae099090408ddb1dec6a37b15, type: 3}
+  m_Name: 24Mammoth
+  m_EditorClassIdentifier: 
+  ItemIdx: 24
+  ItemLevel: 3
+  ItemBasePrice: 130
+  ItemName: Mammoth
+  ItemSprite: {fileID: 21300000, guid: ddf7593730ce09044a0fdcdc422c719f, type: 3}
+  AffectedAttributeIdx: 07000000010000000600000003000000
+  BonusedValueList: 1400000005000000f8fffffffdffffff

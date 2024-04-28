@@ -15,9 +15,9 @@ namespace ProjectGra
         //4Range 
         //5CriticalHitChance %
         //6Damage %
-        //7Melee %
-        //8Ranged %
-        //9Element %
+        //7Melee 
+        //8Ranged 
+        //9Element 
         //10AttackSpeed %
         //11 life steal %
         //12 dodge %
@@ -78,13 +78,13 @@ namespace ProjectGra
             attributeValueList[1] = mainAttribute.HealthRegain;
             attributeValueList[2] = (int)(mainAttribute.Armor * 100 + 0.0000001);
             attributeValueList[3] = (int)(mainAttribute.SpeedPercentage * 100 + 0.0000001);
-            attributeValueList[4] = (int)mainAttribute.Range;
+            attributeValueList[4] = (int)(mainAttribute.Range * 100 + 0.0000001);
 
             attributeValueList[5] = (int)(damageAttribute.CriticalHitChance * 100 + 0.0000001);
             attributeValueList[6] = (int)(damageAttribute.DamagePercentage * 100 + 0.0000001);
-            attributeValueList[7] = (int)(damageAttribute.MeleeRangedElementAttSpd.x * 100 + 0.0000001);
-            attributeValueList[8] = (int)(damageAttribute.MeleeRangedElementAttSpd.y * 100 + 0.0000001);
-            attributeValueList[9] = (int)(damageAttribute.MeleeRangedElementAttSpd.z * 100 + 0.0000001);
+            attributeValueList[7] = (int)damageAttribute.MeleeRangedElementAttSpd.x;
+            attributeValueList[8] = (int)damageAttribute.MeleeRangedElementAttSpd.y;
+            attributeValueList[9] = (int)damageAttribute.MeleeRangedElementAttSpd.z;
             attributeValueList[10] = (int)(damageAttribute.MeleeRangedElementAttSpd.w * 100 + 0.0000001);
 
             //life steal
@@ -126,8 +126,8 @@ namespace ProjectGra
             {
                 CriticalHitChance = attributeValueList[5]/100f,
                 DamagePercentage = attributeValueList[6]/100f,
-                MeleeRangedElementAttSpd = new float4(attributeValueList[7]/100f,
-                attributeValueList[8] / 100f, attributeValueList[9]/100f,
+                MeleeRangedElementAttSpd = new float4(attributeValueList[7],
+                attributeValueList[8], attributeValueList[9],
                 attributeValueList[10]/100f)
             };
         }
@@ -140,7 +140,7 @@ namespace ProjectGra
                 HealthRegain = (int)attributeValueList[1],
                 Armor = attributeValueList[2] / 100f,
                 SpeedPercentage = attributeValueList[3]/100f,
-                Range = attributeValueList[4],
+                Range = attributeValueList[4]/100f,
                 LifeSteal = attributeValueList[11] / 100f,
                 Dodge = attributeValueList[12] / 100f,
             };

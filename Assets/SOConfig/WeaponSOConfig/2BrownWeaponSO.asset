@@ -16,48 +16,47 @@ MonoBehaviour:
   IsMeleeSweep: 0
   SweepHalfWidth: 0
   MeleeForwardSpeed: 0
-  WeaponName: Brown
+  WeaponName: Pistol
   BasePrice:
-    x: 1
-    y: 2
-    z: 3
-    w: 4
+    x: 10
+    y: 22
+    z: 45
+    w: 91
   color: {r: 0.22352943, g: 0.1137255, b: 0.015686275, a: 1}
   WeaponIndex: 2
-  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: a063aae67133e644e82dc0bb1b5a5760,
     type: 3}
   SpawneePrefabs: {fileID: 1601605760723225021, guid: 1344b5295dc3bbc48998d054ddc2537a,
     type: 3}
   MeleeBonus: 0
-  RangedBonus: 0
+  RangedBonus: 100
   ElementBonus: 0
   AttackSpeedBonus: 0
   BasicDamage:
-    x: 20
-    y: 25
+    x: 12
+    y: 20
     z: 30
-    w: 40
+    w: 50
   WeaponCriticalHitChance:
-    x: 0
-    y: 0
-    z: 0
-    w: 0
+    x: 3
+    y: 3
+    z: 3
+    w: 3
   WeaponCriticalHitRatio:
-    x: 0
-    y: 0
-    z: 0
-    w: 0
+    x: 2
+    y: 2
+    z: 2
+    w: 2
   Cooldown:
-    x: 1
-    y: 1
-    z: 1
-    w: 1
+    x: 1.2
+    y: 1.12
+    z: 1.03
+    w: 0.87
   Range:
-    x: 9
-    y: 9
-    z: 9
-    w: 9
+    x: 12
+    y: 12
+    z: 12
+    w: 12
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0
     y: 0

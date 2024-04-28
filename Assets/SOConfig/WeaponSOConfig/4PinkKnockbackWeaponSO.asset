@@ -16,7 +16,7 @@ MonoBehaviour:
   IsMeleeSweep: 0
   SweepHalfWidth: 0
   MeleeForwardSpeed: 0
-  WeaponName: Pink
+  WeaponName: 4Unconfigured
   BasePrice:
     x: 1
     y: 2
@@ -24,7 +24,6 @@ MonoBehaviour:
     w: 4
   color: {r: 0.8235295, g: 0.42352945, b: 0.7254902, a: 1}
   WeaponIndex: 4
-  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: ea71d056706000c4a8c939b59642ba8b,
     type: 3}
   SpawneePrefabs: {fileID: 7705179427040638521, guid: 422fd44b0d4575f429965391eeb1f9f7,

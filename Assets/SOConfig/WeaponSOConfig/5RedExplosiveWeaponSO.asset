@@ -16,48 +16,47 @@ MonoBehaviour:
   IsMeleeSweep: 0
   SweepHalfWidth: 0
   MeleeForwardSpeed: 0
-  WeaponName: Red
+  WeaponName: Shredder
   BasePrice:
-    x: 1
-    y: 2
-    z: 3
-    w: 4
+    x: 15
+    y: 31
+    z: 61
+    w: 122
   color: {r: 0.98823535, g: 0.1764706, b: 0.25882354, a: 1}
   WeaponIndex: 5
-  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: 6236b3f27bd71cc46b3266884d53cdd7,
     type: 3}
   SpawneePrefabs: {fileID: 365588521010595200, guid: 9911dd1a4c55ec04983ab9728709487d,
     type: 3}
   MeleeBonus: 0
-  RangedBonus: 0
+  RangedBonus: 50
   ElementBonus: 0
   AttackSpeedBonus: 0
   BasicDamage:
-    x: 9
-    y: 9
-    z: 9
-    w: 9
+    x: 5
+    y: 10
+    z: 15
+    w: 25
   WeaponCriticalHitChance:
-    x: 0
-    y: 0
-    z: 0
-    w: 0
+    x: 3
+    y: 3
+    z: 3
+    w: 3
   WeaponCriticalHitRatio:
-    x: 0
-    y: 0
-    z: 0
-    w: 0
-  Cooldown:
     x: 2
     y: 2
     z: 2
     w: 2
+  Cooldown:
+    x: 1.3
+    y: 1.22
+    z: 1.13
+    w: 1.05
   Range:
-    x: 8
-    y: 8
-    z: 8
-    w: 8
+    x: 13.5
+    y: 13.5
+    z: 13.5
+    w: 13.5
   WeaponPositionOffsetRelativeToCameraTarget:
     x: 0
     y: 0

@@ -16,15 +16,14 @@ MonoBehaviour:
   IsMeleeSweep: 0
   SweepHalfWidth: 0
   MeleeForwardSpeed: 0
-  WeaponName: Gray3
+  WeaponName: 3Unconfigured
   BasePrice:
-    x: 1
-    y: 2
-    z: 3
-    w: 4
+    x: 20
+    y: 39
+    z: 74
+    w: 149
   color: {r: 0.25882354, g: 0.25490198, b: 0.25882354, a: 1}
   WeaponIndex: 3
-  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: d280ffcc38825594381c07467a82570b,
     type: 3}
   SpawneePrefabs: {fileID: 1601605760723225021, guid: f35e11804ebd10c499f118699235b17e,

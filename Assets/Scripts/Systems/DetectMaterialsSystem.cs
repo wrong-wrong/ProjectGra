@@ -28,7 +28,7 @@ namespace ProjectGra
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<PlayerTag>());
             var playerMaterial = SystemAPI.GetSingletonRW<PlayerMaterialCount>();
             var playerItem = SystemAPI.GetSingletonRW<PlayerItemCount>();
-            var playerExperience = SystemAPI.GetSingletonRW<PlayerExperienceAndLevel>();
+            var playerExperience = SystemAPI.GetSingletonRW<PlayerExperience>();
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
             var itemTagLookup = SystemAPI.GetComponentLookup<ItemTag>();
             var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);

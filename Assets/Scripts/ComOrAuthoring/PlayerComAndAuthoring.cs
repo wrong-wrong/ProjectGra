@@ -16,7 +16,7 @@ namespace ProjectGra
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
                 AddComponent(entity, new PlayerItemCount { Count = 0 });
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
-                AddComponent(entity, new PlayerExperienceAndLevel { Exp = 0 });
+                AddComponent(entity, new PlayerExperience { Exp = 0 });
                 AddComponent<EntityStateMachine>(entity);
 
                 //
@@ -76,10 +76,10 @@ namespace ProjectGra
     {
         public float Value;
     }
-    public struct PlayerExperienceAndLevel : IComponentData
+    public struct PlayerExperience : IComponentData
     {
         public int Exp;
-        public int Level;
+        //public int Level;
     }
     public struct PlayerMaterialCount : IComponentData
     {
