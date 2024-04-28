@@ -42,6 +42,9 @@ namespace ProjectGra
         [Header("Game Wave Time Config")]
         public float BeginWaveTimeSet;
         public float InWaveTimeSet;
+        [Header("Material Config")]
+        public float MaterialSpeed;
+        public float MaterialTotalTimer;
 
         public class Baker : Baker<ConfigAuthoringAddToSS>
         {
@@ -83,8 +86,14 @@ namespace ProjectGra
                     minRadius = authoring.minRadius,
                 });
                 AddComponent(entity, new GameWaveTimeConfig { InWaveTime = authoring.InWaveTimeSet, BeginWaveTime = authoring.BeginWaveTimeSet });
+                AddComponent(entity, new MaterialConfig { Speed = authoring.MaterialSpeed, TotalTimer = authoring.MaterialTotalTimer });
             }
         }
+    }
+    public struct MaterialConfig : IComponentData
+    {
+        public float Speed;
+        public float TotalTimer;
     }
     public struct GameWaveTimeConfig : IComponentData
     {

@@ -5,6 +5,7 @@ using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static UnityEditor.Progress;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
@@ -81,7 +82,7 @@ namespace ProjectGra
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
                 var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
                 _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
-                _Damage = (int)(_Damage * attModifier.DamageModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier),1);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[0].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
             }
@@ -97,7 +98,7 @@ namespace ProjectGra
         {
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerLocalTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
+            //var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
             var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
 
@@ -155,26 +156,25 @@ namespace ProjectGra
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         attack.ValueRW.AttackCooldown = cooldown;                        
                         Debug.Log("Player attacked by normal melee");
-                        playerHealthPoint.ValueRW.HealthPoint -= (int)(_Damage * transform.ValueRO.Scale);
+                        //playerHealthPoint.ValueRW.HealthPoint -= (int)(_Damage * transform.ValueRO.Scale);
+                        ecb.AppendToBuffer<PlayerDamagedRecordBuffer>(playerEntity, new PlayerDamagedRecordBuffer { Value = (int)(_Damage * transform.ValueRO.Scale) });
                         break;
                     case EntityState.Dead:
-                        if ((death.ValueRW.timer -= deltatime) > 0f)
+
+                        if (random.NextFloat() < _LootCrateDropRate)
                         {
-                            transform.ValueRW.Scale = death.ValueRO.timer / deathCountDown;
+                            var item = ecb.Instantiate(ItemPrefab);
+                            ecb.SetComponent<LocalTransform>(item
+                                , transform.ValueRO);
                         }
-                        else
-                        {
-                            if (random.NextFloat() < _LootCrateDropRate)
-                            {
-                                var material = ecb.Instantiate(MaterialPrefab);
-                                ecb.SetComponent<LocalTransform>(material
-                                    , transform.ValueRO);
-                            }
-                            ecb.DestroyEntity(entity);
-                            // request particle
-                            EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
-                            EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
-                        }
+                        var material = ecb.Instantiate(MaterialPrefab);
+                        ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                        ecb.DestroyEntity(entity);
+                        // request particle
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
+                        EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
+                        
                         break;
 
                 }

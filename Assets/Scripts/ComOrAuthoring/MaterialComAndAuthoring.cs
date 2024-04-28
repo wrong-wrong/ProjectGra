@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ProjectGra
@@ -11,8 +12,15 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent<MaterialTag>(entity);
+                AddComponent<MaterialMoveCom>(entity);
+                SetComponentEnabled<MaterialMoveCom>(entity, true);
             }
         }
     }
     public struct MaterialTag : IComponentData { }
+    public struct MaterialMoveCom : IComponentData, IEnableableComponent
+    {
+        public float2 tarDir;
+        public float accumulateTimer;
+    }
 }

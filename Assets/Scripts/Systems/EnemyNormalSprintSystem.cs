@@ -89,7 +89,7 @@ namespace ProjectGra
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
                 var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
                 _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
-                _Damage = (int)(_Damage * attModifier.DamageModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[2].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
             }
@@ -101,7 +101,7 @@ namespace ProjectGra
         {
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
+            //var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
 
             var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var realCollider = state.EntityManager.GetComponentData<PhysicsCollider>(ColliderPrefab);
@@ -176,7 +176,8 @@ namespace ProjectGra
                         if (tarDirSq < hitDistanceSq)
                         {
                             //Debug.Log("tarDirsq < hitDistanceSq - Setting state to Sprint");
-                            playerHealthPoint.ValueRW.HealthPoint -= _Damage;
+                            //playerHealthPoint.ValueRW.HealthPoint -= _Damage;
+                            ecb.AppendToBuffer<PlayerDamagedRecordBuffer>(playerEntity, new PlayerDamagedRecordBuffer { Value = (int)(_Damage * transform.ValueRO.Scale) });
                             stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         }
                         if ((attack.ValueRW.SprintTimer -= deltatime) < 0f)
@@ -188,9 +189,15 @@ namespace ProjectGra
                     case EntityState.Dead:
                         if (random.NextFloat() < _LootCrateDropRate)
                         {
-                            var material = ecb.Instantiate(MaterialPrefab);
-                            ecb.SetComponent<LocalTransform>(material
+                            var item = ecb.Instantiate(ItemPrefab);
+                            ecb.SetComponent<LocalTransform>(item
                                 , transform.ValueRO);
+                        }
+                        for(int i = 0; i < _MaterialsDropped; ++i)
+                        {
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);
                         // request particle

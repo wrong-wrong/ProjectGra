@@ -154,6 +154,7 @@ namespace ProjectGra
         }
         public void ShowMainMenuCanvasGroup()
         {
+            Cursor.lockState = CursorLockMode.None;
             MainMenuCanvasGroup.alpha = 1f;
             MainMenuCanvasGroup.interactable = true;
             MainMenuCanvasGroup.blocksRaycasts = true;
@@ -172,6 +173,7 @@ namespace ProjectGra
         }
         public void ShowPresetChoosingCanvasGroup()
         {
+            Cursor.lockState = CursorLockMode.None;
             choiceManager.ResetState();
             // bad smell..
             CodingWave = 0;
@@ -253,12 +255,14 @@ namespace ProjectGra
         }
         public void ShowShopAndOtherUI(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, int playerItemCountThisWave, int MaterialCount)
         {
+            //show Cursor
+            Cursor.lockState = CursorLockMode.None;
             PlayerDataModel.Instance.SetAttributeWithStruct(attributeStruct, damageRelatedAttribute);
             PlayerDataModel.Instance.SetMaterialValWith(MaterialCount);
             this.itemCountThisWave = playerItemCountThisWave;
             ShowItemFoundUIandIngameBackground();
         }
-        public void ShowShopUI()
+        private void ShowShopUI()
         {
 
             HideInGameUI();
@@ -274,6 +278,7 @@ namespace ProjectGra
         }
         public void HideShop()
         {
+            Cursor.lockState = CursorLockMode.Locked;
             ShopCanvasGroup.alpha = 0;
             ShopCanvasGroup.interactable = false;
             ShopCanvasGroup.blocksRaycasts = false;
@@ -292,13 +297,23 @@ namespace ProjectGra
         }
         #region PauseUI
 
-        public void ShowPauseCanvasGroup(bool isShowingContinueButton)
+        public void ShowPauseCanvasGroup(bool isShowingContinueButton, bool isSurvived = default)
         {
+            Cursor.lockState = CursorLockMode.None;
             PauseCanvasGroup.alpha = 1;
             PauseCanvasGroup.interactable = true;
             PauseCanvasGroup.blocksRaycasts = true;
             updateCountdown = false;
-            pauseUIManager.SetContinueButtonRect(isShowingContinueButton);
+            if (isShowingContinueButton)
+            {
+                pauseUIManager.SetContinueButtonRect(isShowingContinueButton);
+            }
+            else
+            {
+                pauseUIManager.SetContinueButtonRect(isShowingContinueButton);
+                pauseUIManager.ShowGameResult(isSurvived);
+            }
+
             ShowSingleAttributeUI();
             //SetWeaponAndItemIsCurrentShopUI(false);
             OnWeaponCanvasGroupShowIsCurrentShopUI?.Invoke(false);
@@ -306,6 +321,7 @@ namespace ProjectGra
         }
         public void HidePauseCanvasGroup()
         {
+            Cursor.lockState = CursorLockMode.Locked;
             PauseCanvasGroup.alpha = 0;
             PauseCanvasGroup.interactable = false;
             PauseCanvasGroup.blocksRaycasts = false;
@@ -393,6 +409,8 @@ namespace ProjectGra
         }
         public void ShowInGameUI()
         {
+            Cursor.lockState = CursorLockMode.Locked;
+
             InitIngameUIWeaponCooldown();
             HideIngameUIBackground();
             InGameUICanvasGroup.alpha = 1;

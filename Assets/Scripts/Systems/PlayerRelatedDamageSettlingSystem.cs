@@ -21,12 +21,12 @@ namespace ProjectGra
 
         public void OnStartRunning(ref SystemState state)
         {
-            var playerAttribute = SystemAPI.GetSingletonRW<PlayerAttributeMain>();
+            var playerAttribute = SystemAPI.GetSingleton<PlayerAttributeMain>();
             accumulateHp = 0f;
             hpRegenerationSpeed = 0f;
-            if(playerAttribute.ValueRO.HealthRegain > 0)
+            if(playerAttribute.HealthRegain > 0)
             {
-                hpRegenerationSpeed = 0.2f + (playerAttribute.ValueRO.HealthRegain - 1) * 0.089f;
+                hpRegenerationSpeed = 0.2f + (playerAttribute.HealthRegain - 1) * 0.089f;
             }
         }
 
@@ -69,7 +69,11 @@ namespace ProjectGra
                 }
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
                 var playerHpRW = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
-                playerHpRW.ValueRW.HealthPoint -= (int)(damageGet * (1f - playerAttribute.ValueRO.Armor));
+                if ((playerHpRW.ValueRW.HealthPoint -= (int)(damageGet * (1f - playerAttribute.ValueRO.Armor))) < 0)
+                {
+                    SystemAPI.GetSingletonRW<GameStateCom>().ValueRW.CurrentState = GameControllState.Gameover;
+                    Debug.Log("Should setting game state to Gameover");
+                }
                 damageBuffer.Clear();
             }
 

@@ -89,7 +89,7 @@ namespace ProjectGra
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
                 var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
                 _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
-                _Damage = (int)(_Damage * attModifier.DamageModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[1].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
                 SystemAPI.SetComponent(spawneePrefab, new AttackCurDamage { damage = _Damage });
@@ -180,10 +180,14 @@ namespace ProjectGra
                     case EntityState.Dead:
                         if (random.NextFloat() < _LootCrateDropRate)
                         {
-                            var material = ecb.Instantiate(MaterialPrefab);
-                            ecb.SetComponent<LocalTransform>(material
+                            var item = ecb.Instantiate(ItemPrefab);
+                            ecb.SetComponent<LocalTransform>(item
                                 , transform.ValueRO);
                         }
+                        var material = ecb.Instantiate(MaterialPrefab);
+                        ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+
+                        ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
                         ecb.DestroyEntity(entity);
                         // request particle
                         EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);

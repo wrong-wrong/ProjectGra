@@ -46,6 +46,7 @@ namespace ProjectGra
             var tmpI4 = new int4(MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx, -1, -1, -1);
             sysData.ValueRW.tmpWpIdx = tmpI4;
             sysData.ValueRW.tmpWpLevel = int4.zero;
+            timer = beginWaveTimeSet;
             //playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
             PopulateWeaponStateWithWeaponIdx(ref state, tmpI4);
         }
@@ -307,7 +308,6 @@ namespace ProjectGra
             PopulateWeaponStateWithWeaponIdx(ref state, newSysData.tmpWpIdx, newSysData.tmpWpLevel);
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
-            Cursor.lockState = CursorLockMode.Locked;
 
 
             //set spawning system
@@ -333,10 +333,15 @@ namespace ProjectGra
             var PlayerAttibuteCom = SystemAPI.GetSingleton<PlayerAttributeMain>();
             var PlayerDamagedRelatedAttributeCom = SystemAPI.GetSingleton<PlayerAtttributeDamageRelated>();
             var playerItemCount = SystemAPI.GetSingleton<PlayerItemCount>();
-            var playerExpCom = SystemAPI.GetSingleton<PlayerExperienceAndLevel>();
-            var mainWpstate = SystemAPI.GetSingleton<MainWeapon>();
-            var autoWpBuffer = SystemAPI.GetSingletonBuffer<AutoWeaponBuffer>();
+            //var playerExpCom = SystemAPI.GetSingleton<PlayerExperienceAndLevel>();
             var materialCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
+
+            //set gamestate
+            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
+            Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
+            gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
+            gameState.ValueRW.CurrentState = GameControllState.InShop;
+
             //var sysData = SystemAPI.GetSingleton<WaveControllSystemData>();
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
             //CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.tmpWpIdx, sysData.tmpWpLevel);
@@ -344,13 +349,8 @@ namespace ProjectGra
             Debug.Log("Using Test Fixed number for itemCount");
 
             //CanvasMonoSingleton.Instance.HideInGameUI();
-            //show Cursor
-            Cursor.lockState = CursorLockMode.None;
-            //set gamestate
-            var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
-            Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
-            gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
-            gameState.ValueRW.CurrentState = GameControllState.InShop;
+
+
         }
 
         private void Pause(ref SystemState state)
@@ -358,7 +358,6 @@ namespace ProjectGra
             state.EntityManager.RemoveComponent<GameControllNotPaused>(state.SystemHandle);
 
             CanvasMonoSingleton.Instance.ShowPauseCanvasGroup(true);
-            Cursor.lockState = CursorLockMode.None;
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
             gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
@@ -373,7 +372,6 @@ namespace ProjectGra
             state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
             //Unpause
             CanvasMonoSingleton.Instance.HidePauseCanvasGroup();
-            Cursor.lockState = CursorLockMode.Locked;
             //set gamestate
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             gameState.ValueRW.CurrentState = gameState.ValueRO.PreviousState;
@@ -431,7 +429,16 @@ namespace ProjectGra
                 case GameControllState.AfterWave:
                     if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  
                     {
-                        timer = beginWaveTimeSet; // setting begin wave time;!!!!      
+                        timer = beginWaveTimeSet; // setting begin wave time;!!!!
+                        // if coding wave is 19 , and you survived it then you won
+                        var wave = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>().CodingWave;
+                        if(wave == 19)
+                        {
+                            gameState.ValueRW.CurrentState = GameControllState.Gameover;
+                            gameState.ValueRW.PreviousState = GameControllState.AfterWave;
+                            Debug.Log("YOU WON");
+                            return;
+                        }
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
                         EnterShopState(ref state);
                         Debug.Log("AfterWave to InShop!");
@@ -507,6 +514,8 @@ namespace ProjectGra
                     ////      if so do the rest
                     ///
 
+                    // check if player survived to after wave
+                    var survived = gameState.ValueRO.PreviousState == GameControllState.AfterWave;
                     // set current state before any structural change
                     gameState.ValueRW.CurrentState = GameControllState.Uninitialized;
                     gameState.ValueRW.PreviousState = GameControllState.Uninitialized;
@@ -523,25 +532,41 @@ namespace ProjectGra
                     state.EntityManager.RemoveComponent<GameControllInGame>(state.SystemHandle);
 
                     // enable initSystem
-                    var initSystem = state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>();
+                    ref var initSystem = ref state.WorldUnmanaged.GetExistingSystemState<GameInitializeSystem>();
                     initSystem.Enabled = true;
+
                     // show pause UI
-                    CanvasMonoSingleton.Instance.ShowPauseCanvasGroup(false);
+                    CanvasMonoSingleton.Instance.ShowPauseCanvasGroup(false, survived);
                     //      hide continue button
                     break;
             }
         }
         private void DoWaveCleanup(ref SystemState state)
         {
-            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            //var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            //var enemyList = SystemAPI.QueryBuilder().WithAll<EnemyTag>().Build().ToEntityArray(state.WorldUpdateAllocator);
+            //ecb.DestroyEntity(enemyList);
+            //var spawneeList = SystemAPI.QueryBuilder().WithAll<SpawneeTimer>().WithOptions(EntityQueryOptions.IgnoreComponentEnabledState).Build().ToEntityArray(state.WorldUpdateAllocator);
+            //ecb.DestroyEntity(spawneeList);
+            ////TODO destroy unpicked item
+            ////TODO maybe need to destory material to
+            //// destory health bar GO whose entity has been provisionally destoryed
+            //foreach (var (healthBarManagedCom, entity) in SystemAPI.Query<HealthBarUICleanupCom>()
+            //    .WithEntityAccess()
+            //    .WithNone<HealthBatUIOffset>())
+            //{
+            //    Object.Destroy(healthBarManagedCom.HealthBarGO);
+            //    ecb.RemoveComponent<HealthBarUICleanupCom>(entity);
+            //}
 
             var enemyList = SystemAPI.QueryBuilder().WithAll<EnemyTag>().Build().ToEntityArray(state.WorldUpdateAllocator);
-            ecb.DestroyEntity(enemyList);
-            var spawneeList = SystemAPI.QueryBuilder().WithAll<SpawneeTimer>().Build().ToEntityArray(state.WorldUpdateAllocator);
-            ecb.DestroyEntity(spawneeList);
+            state.EntityManager.DestroyEntity(enemyList);
+            var spawneeList = SystemAPI.QueryBuilder().WithAll<SpawneeTimer>().WithOptions(EntityQueryOptions.IgnoreComponentEnabledState).Build().ToEntityArray(state.WorldUpdateAllocator);
+            state.EntityManager.DestroyEntity(spawneeList);
             //TODO destroy unpicked item
             //TODO maybe need to destory material to
             // destory health bar GO whose entity has been provisionally destoryed
+            var ecb = SystemAPI.GetSingleton<MyECBSystemBeforeTransform.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             foreach (var (healthBarManagedCom, entity) in SystemAPI.Query<HealthBarUICleanupCom>()
                 .WithEntityAccess()
                 .WithNone<HealthBatUIOffset>())

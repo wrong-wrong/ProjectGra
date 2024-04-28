@@ -24,6 +24,8 @@ namespace ProjectGra
         float _LootCrateDropRate;
         float _ConsumableDropate;
         bool isInit;
+        Entity MaterialPrefab;
+        Entity ItemPrefab;
 
         private Entity summonExplosionPrefab;
         private Random random;
@@ -76,6 +78,10 @@ namespace ProjectGra
                 //Debug.Log(math.sin(1.5707963));     // 1
                 calculatedMulOfCycleSpeed = 360 * 0.0174532925f / floatingCycleSpeed;
                 SystemAPI.SetComponent(summonExplosionPrefab, new AttackCurDamage { damage = _Damage });
+
+                // Might put aside
+                MaterialPrefab = prefabContainer.MaterialPrefab;
+                ItemPrefab = prefabContainer.ItemPrefab;
             }
 
             var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
@@ -87,7 +93,7 @@ namespace ProjectGra
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
                 var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
                 _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
-                _Damage = (int)(_Damage * attModifier.DamageModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[4].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
                 SystemAPI.SetComponent(summonExplosionPrefab, new AttackCurDamage { damage = _Damage });
@@ -226,6 +232,16 @@ namespace ProjectGra
                         // check scaling ratio to decide whether to destory self
                         if (scalingCom.ValueRO.Ratio > 1f)
                         {
+                            if (random.NextFloat() < _LootCrateDropRate)
+                            {
+                                var item = ecb.Instantiate(ItemPrefab);
+                                ecb.SetComponent<LocalTransform>(item
+                                    , transform.ValueRO);
+                            }
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+
                             ecb.DestroyEntity(entity);
 
                             EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(transform.ValueRO.Position);

@@ -67,6 +67,8 @@ namespace ProjectGra
                         //Setting Weapon state should be take over by pause system
                         //but can do some initial work here , remove LEG for example
                     }
+                    Debug.Log("GameInitializeSystem - Done Game Data init");
+
                 }
 
                 // Register meshes
@@ -98,6 +100,7 @@ namespace ProjectGra
 
             if(MonoGameManagerSingleton.Instance.IsPresetChoosingDone)
             {
+                Debug.Log("GameInitializeSystem - DonePresetChoosing");
                 state.Enabled = false;
                 MonoGameManagerSingleton.Instance.IsPresetChoosingDone = false;
                 var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
@@ -156,7 +159,7 @@ namespace ProjectGra
                         });
                     }
                 }
-                Debug.Log("GameInitializeSystem - SpawningConfigBuffer.Length : " + spawnConfigBuffer.Length);
+                //Debug.Log("GameInitializeSystem - SpawningConfigBuffer.Length : " + spawnConfigBuffer.Length);
                 state.EntityManager.SetComponentData(superSingleton,
                     new EnemyHpAndDmgModifierWithDifferentDifficulty { DamageModifier = SpawningConfigSO.EnemyDamageModifier, HealthPointModifier = SpawningConfigSO.EnemyHealthPointModifier });
                 var waveControllSysHandle = state.WorldUnmanaged.GetExistingUnmanagedSystem<GameWaveControllSystem>();

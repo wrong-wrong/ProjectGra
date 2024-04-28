@@ -410,6 +410,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ItemPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 8063985965773569175, guid: 502e8bb5a3352d64ba15541b0ab52a45,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -947,7 +952,7 @@ MonoBehaviour:
   CameraYSensitivity: 0.8
   PlayerBasicMoveSpeed: 4
   PlayerSprintMultiplier: 1.5
-  MaxHealthPoint: 100
+  MaxHealthPoint: 10
   HealthRegain: 0
   Armor: 0
   SpeedPercentage: 0
@@ -965,6 +970,8 @@ MonoBehaviour:
   maxRadius: 13
   BeginWaveTimeSet: 3
   InWaveTimeSet: 30
+  MaterialSpeed: 2
+  MaterialTotalTimer: 1
 --- !u!114 &1829473141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -983,12 +990,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8292955bf1311394e95d89599cf3e887, type: 2}
   - {fileID: 11400000, guid: c6041c8264bd34a4dad44a4d61f08ff7, type: 2}
   - {fileID: 11400000, guid: e52e29dbda053a544afd947d2565cec9, type: 2}
-  EliteSprintAndShootPrefab: {fileID: 516433283474445698, guid: 6e40a9975c7605844abd7414fb3ac8b6,
-    type: 3}
-  EliteEggAndShootPrefab: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
-    type: 3}
-  EliteShooterPrefab: {fileID: 6706160365292713119, guid: 704295c3cdfbd064387d459c68c25210,
-    type: 3}
+  EliteEggAndShootSO: {fileID: 11400000, guid: edf648490f114ca4091ea87e664f230e, type: 2}
+  EliteShooterSO: {fileID: 11400000, guid: ac417c7eeb1cbbe498456426320e0160, type: 2}
+  EliteSprintAndShootSO: {fileID: 11400000, guid: 8b7648b603cb87249b2b73cb4589a1eb,
+    type: 2}
   EliteShooterStageOneSpeed: 3
   EliteShooterStageTwoSpeed: 4
   EliteShooterStageOneInSkillShootingInterval: 1

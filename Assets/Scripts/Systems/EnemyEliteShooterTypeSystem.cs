@@ -22,7 +22,15 @@ namespace ProjectGra
         public int StageOneSkillShootCount;
         public int StageTwoSkillShootCount;
 
-        //public float 
+
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        bool isInit;
 
         //private float spawnTimer;
         //private bool isDoingSkill;
@@ -46,24 +54,51 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
+            random = Random.CreateFromIndex(0);
+
         }
 
         public void OnStartRunning(ref SystemState state)
         {
-            var config = SystemAPI.GetSingleton<EliteShooterConfigCom>();
-            StageOneSpeed = config.StageOneSpeed;
-            StageTwoSpeed = config.StageTwoSpeed;
-            StageOneSkillShootCount = config.StageOneSkillShootCount;
-            StageOneInSkillShootingInterval = config.StageOneInSkillShootingInterval;
-            StageTwoSkillShootCount = config.StageTwoSkillShootCount;
-            StageTwoInSkillShootingInterval = config.StageTwoInSkillShootingInterval;
+            if(!isInit)
+            {
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemyEliteShootMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteShootCollider;
 
-            var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
-            eliteScalingSpawneePrefab = prefabContainer.ScalingSpawneePrefab;
-            random = Random.CreateFromIndex(0);
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemyEliteShootMeshID;
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteShootCollider;
+                var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
+                eliteScalingSpawneePrefab = prefabContainer.ScalingSpawneePrefab;
+
+                var config = SystemAPI.GetSingleton<EliteShooterConfigCom>();
+                StageOneSpeed = config.StageOneSpeed;
+                StageTwoSpeed = config.StageTwoSpeed;
+                StageOneSkillShootCount = config.StageOneSkillShootCount;
+                StageOneInSkillShootingInterval = config.StageOneInSkillShootingInterval;
+                StageTwoSkillShootCount = config.StageTwoSkillShootCount;
+                StageTwoInSkillShootingInterval = config.StageTwoInSkillShootingInterval;
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+            }
+
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
+                _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[6].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+            }
+
         }
 
         public void OnStopRunning(ref SystemState state)

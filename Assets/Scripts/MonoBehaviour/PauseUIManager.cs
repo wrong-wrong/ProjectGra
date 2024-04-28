@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,15 +12,18 @@ namespace ProjectGra
         [SerializeField] Button settingButton;
         [SerializeField] Button mainMenuButton;
         [SerializeField] RectTransform continueButtonRect;
-
+        [SerializeField] RectTransform resultRect;
+        [SerializeField] TextMeshProUGUI resultText;
+        [SerializeField] string survivedString;
+        [SerializeField] string failedString;
         public ButtonClickedEnum buttonClickedEnum;
         public static PauseUIManager Instance;
 
         private void Awake()
         {
-            if(Instance!=null)
+            if (Instance != null)
             {
-                Destroy(gameObject); 
+                Destroy(gameObject);
                 return;
             }
             Instance = this;
@@ -28,9 +32,21 @@ namespace ProjectGra
             restartButton.onClick.AddListener(OnRestartButtonClicked);
             mainMenuButton.onClick.AddListener(OnMainMenuButtonClicked);
         }
+        public void ShowGameResult(bool isSurvived)
+        {
+            if (isSurvived)
+            {
+                resultText.text = survivedString;
+            }
+            else
+            {
+                resultText.text = failedString;
+            }
+        }
         public void SetContinueButtonRect(bool isShowing)
         {
             continueButtonRect.localScale = isShowing ? Vector3.one : Vector3.zero;
+            resultRect.localScale = isShowing ? Vector3.zero : Vector3.one;
         }
         private void OnRestartButtonClicked()
         {

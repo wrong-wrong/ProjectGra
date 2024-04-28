@@ -16,6 +16,15 @@ namespace ProjectGra
         private BatchMeshID RealMeshId;
         private Random random;
 
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        bool isInit;
+
         private Entity normalSpawneePrefab;
         private float3 rightSpawnPosOffset;
         private float3 leftSpawnPosOffset;
@@ -25,11 +34,9 @@ namespace ProjectGra
         private float spawnInterval;
         private float sprintDistanceSq;
         private float sprintDistance;
-        private float speed;
         private float sprintSpeed;
         private float collideDistanceSq;
         private float skillCooldown;
-        private int sprintDamage;
 
         public void OnCreate(ref SystemState state)
         {
@@ -38,27 +45,53 @@ namespace ProjectGra
             state.RequireForUpdate<TestSceneExecuteTag>();
             state.RequireForUpdate<EnemyEliteSprintAndShootCom>();
             random = Random.CreateFromIndex(0);
+            isInit = false;
         }
         public void OnStartRunning(ref SystemState state)
         {
-            var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
-            normalSpawneePrefab = prefabContainer.NormalEnemySpawneePrefab;
-            var config = SystemAPI.GetSingleton<EliteSprintAndShootConfigCom>();
-            rightSpawnPosOffset = config.EliteSprintAndShootRightSpawnPosOffset;
-            leftSpawnPosOffset = config.EliteSprintAndShootLeftSpawnPosOffset;
-            spawnYAxisRotation = math.radians(config.EliteSprintAndShootSpawnYAxisRotation);
-            spawnCount = config.EliteSprintAndShootSpawnCount;
-            spawnInterval = config.EliteSprintAndShootSpawnInterval;
-            sprintDistanceSq = config.EliteSprintAndShootSprintDistance * config.EliteSprintAndShootSprintDistance;
-            sprintDistance = config.EliteSprintAndShootSprintDistance;
-            speed = config.EliteSprintAndShootSpeed;
-            sprintSpeed = config.EliteSprintAndShootSprintSpeed;
-            collideDistanceSq = config.EliteSprintAndShootCollideDistance * config.EliteSprintAndShootCollideDistance;
-            skillCooldown = config.EliteSprintAndShootSkillCooldown;
-            sprintDamage = config.EliteSprintAndShootSprintDamage;
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemyEliteSprintAndShootMeshID;
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteSprintAndShootCollider;
+            if (!isInit)
+            {
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemyEliteSprintAndShootMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteSprintAndShootCollider;
+
+                var prefabContainer = SystemAPI.GetSingleton<PrefabContainerCom>();
+                normalSpawneePrefab = prefabContainer.NormalEnemySpawneePrefab;
+
+                var config = SystemAPI.GetSingleton<EliteSprintAndShootConfigCom>();
+                rightSpawnPosOffset = config.EliteSprintAndShootRightSpawnPosOffset;
+                leftSpawnPosOffset = config.EliteSprintAndShootLeftSpawnPosOffset;
+                spawnYAxisRotation = math.radians(config.EliteSprintAndShootSpawnYAxisRotation);
+                spawnCount = config.EliteSprintAndShootSpawnCount;
+                spawnInterval = config.EliteSprintAndShootSpawnInterval;
+                sprintDistanceSq = config.EliteSprintAndShootSprintDistance * config.EliteSprintAndShootSprintDistance;
+                sprintDistance = config.EliteSprintAndShootSprintDistance;
+                sprintSpeed = config.EliteSprintAndShootSprintSpeed;
+                collideDistanceSq = config.EliteSprintAndShootCollideDistance * config.EliteSprintAndShootCollideDistance;
+                skillCooldown = config.EliteSprintAndShootSkillCooldown;
+
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+            }
+
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
+                _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[7].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+            }
         }
         public void OnUpdate(ref SystemState state)
         {
@@ -69,7 +102,7 @@ namespace ProjectGra
 
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
-            var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
+            //var playerHealthPoint = SystemAPI.GetComponentRW<EntityHealthPoint>(playerEntity);
             var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var deltatime = SystemAPI.Time.DeltaTime;
             foreach (var (spawnTimer, spawnTimerBit, materialAndMesh, collider, stateMachine) in SystemAPI.Query<RefRW<SpawningTimer>, EnabledRefRW<SpawningTimer>
@@ -126,7 +159,7 @@ namespace ProjectGra
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         tarDir.xz = math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
                         transform.ValueRW.Rotation = quaternion.LookRotationSafe(tarDir, math.up());
-                        elite.ValueRW.tarDirNormalizedMulSpeed = tarDir.xz * speed;
+                        elite.ValueRW.tarDirNormalizedMulSpeed = tarDir.xz * _Speed;
                         break;
                     case EntityState.DoingSkill:
                         // update pos using tarDirNormalizedMulSpeed
@@ -151,7 +184,8 @@ namespace ProjectGra
                         if (elite.ValueRO.currentSprintDamage > 0 && distanceSq < collideDistanceSq)
                         {
                             //      if so, dealing damage and set isDoingSkill to false, we want the damage only be dealed once, but the elite keep sprinting, so we set the curDamage to 0  
-                            playerHealthPoint.ValueRW.HealthPoint -= elite.ValueRO.currentSprintDamage;
+                            //playerHealthPoint.ValueRW.HealthPoint -= elite.ValueRO.currentSprintDamage;
+                            ecb.AppendToBuffer<PlayerDamagedRecordBuffer>(playerEntity, new PlayerDamagedRecordBuffer { Value = (int)(_Damage * transform.ValueRO.Scale) });
                             elite.ValueRW.currentSprintDamage = 0;
                         }
                         if ((elite.ValueRW.sprintCountdown -= deltatime) < 0f)
@@ -159,7 +193,7 @@ namespace ProjectGra
                             stateMachine.ValueRW.CurrentState = EntityState.Follow;
                             tarDir.xz = math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
                             transform.ValueRW.Rotation = quaternion.LookRotationSafe(tarDir, math.up());
-                            elite.ValueRW.tarDirNormalizedMulSpeed = tarDir.xz * speed;
+                            elite.ValueRW.tarDirNormalizedMulSpeed = tarDir.xz * _Speed;
                         }
 
                         break;
@@ -171,13 +205,13 @@ namespace ProjectGra
                             elite.ValueRW.movementResetCountdown = 2f;
                             tarDir.xz = math.normalize(random.NextFloat2(float2.zero, tarDir.xz));
                             transform.ValueRW.Rotation = quaternion.LookRotationSafe(tarDir, math.up());
-                            elite.ValueRW.tarDirNormalizedMulSpeed = tarDir.xz * speed;
+                            elite.ValueRW.tarDirNormalizedMulSpeed = tarDir.xz * _Speed;
                         }
                         // update and check skill cooldown and distance; 
                         //      if true, set tarDir, LookRotation, isDoingSkill, skillTimer, left&rightQuaternion
                         if ((elite.ValueRW.skillCooldown -= deltatime) < 0f && distanceSq < sprintDistanceSq)
                         {
-                            elite.ValueRW.currentSprintDamage = sprintDamage;
+                            elite.ValueRW.currentSprintDamage = _Damage;
                             elite.ValueRW.sprintCountdown = 1.4f * sprintDistance / sprintSpeed;
                             elite.ValueRW.skillCooldown = skillCooldown;
                             elite.ValueRW.spawneeLeftCount = spawnCount;

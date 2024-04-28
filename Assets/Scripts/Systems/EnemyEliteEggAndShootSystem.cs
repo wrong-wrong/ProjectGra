@@ -13,9 +13,19 @@ namespace ProjectGra
     public partial struct EnemyEliteEggAndShootSystem : ISystem, ISystemStartStop
     {
         private Entity ColliderPrefab;
-
+        private BatchMeshID RealMeshId;
         private Random random;
-        private float Speed;
+
+        int _HealthPoint;
+        int _HpIncreasePerWave;
+        int _BasicDamage;
+        int _Damage;
+        float _DmgIncreasePerWave;
+        float _Speed;
+        int _MaterialsDropped;
+        bool isInit;
+        Entity ItemPrefab;
+        Entity MaterialPrefab;
         private float StageOneInSkillShootingInterval;
         private float SpawnEggSkillSpawningInterval;
         private int StageOneSkillShootCount;
@@ -30,7 +40,6 @@ namespace ProjectGra
         private float2 postiveOne;
         private float3 offsetMin;
         private float3 offsetMax;
-        private BatchMeshID RealMeshId;
 
         public void OnCreate(ref SystemState state)
         {
@@ -50,20 +59,44 @@ namespace ProjectGra
 
         public void OnStartRunning(ref SystemState state)
         {
-            var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
-            NormalSpawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
+            if(!isInit)
+            {
+                var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
+                RealMeshId = batchMeshIDContainer.EnemyEliteEggAndShootMeshID;
+                ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteEggAndShootCollider;
 
-            EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[3].Prefab;
-            
-            var config = SystemAPI.GetSingleton<EliteEggAndShootConfig>();
-            Speed = config.Speed;
-            StageOneInSkillShootingInterval = config.StageOneInSkillShootingInterval;
-            SpawnEggSkillSpawnCount = config.SpawnEggSkillspawnCount;
-            StageOneSkillShootCount = config.StageOneSkillShootCount;
-            SpawnEggSkillSpawningInterval = config.SpawnEggSkillSpawningInterval;
-            var batchMeshIDContainer = SystemAPI.GetSingleton<BatchMeshIDContainer>();
-            RealMeshId = batchMeshIDContainer.EnemyEliteEggAndShootMeshID;
-            ColliderPrefab = SystemAPI.GetSingleton<RealColliderPrefabContainerCom>().EnemyEliteEggAndShootCollider;
+                var prefabContainerCom = SystemAPI.GetSingleton<PrefabContainerCom>();
+                NormalSpawneePrefab = prefabContainerCom.NormalEnemySpawneePrefab;
+                EggPrefab = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>()[3].Prefab;
+                var config = SystemAPI.GetSingleton<EliteEggAndShootConfig>();
+                StageOneInSkillShootingInterval = config.StageOneInSkillShootingInterval;
+                SpawnEggSkillSpawnCount = config.SpawnEggSkillspawnCount;
+                StageOneSkillShootCount = config.StageOneSkillShootCount;
+                SpawnEggSkillSpawningInterval = config.SpawnEggSkillSpawningInterval;
+                var basicAttribute = config.BasicAttribute;
+                _HealthPoint = basicAttribute.HealthPoint;
+                _HpIncreasePerWave = basicAttribute.HpIncreasePerWave;
+                _BasicDamage = basicAttribute.Damage;
+                _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
+                _Speed = basicAttribute.Speed;
+                _MaterialsDropped = basicAttribute.MaterialsDropped;
+                ItemPrefab = prefabContainerCom.ItemPrefab;
+                MaterialPrefab = prefabContainerCom.MaterialPrefab;
+            }
+
+            var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
+            // Per Wave Update
+            //      Needs to set EnemyPrefab's HealthPoint, update System's damage, and attribute of enemy's projectile 
+            if (shouldUpdate.Value)
+            {
+                _HealthPoint += _HpIncreasePerWave;
+                _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
+                var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
+                _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
+                var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+                SystemAPI.SetComponent(prefabBuffer[5].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
+            }
         }
 
         public void OnStopRunning(ref SystemState state)
@@ -122,8 +155,8 @@ namespace ProjectGra
                             tardir.xz += random.NextFloat2(negtiveOne, postiveOne);
                             transform.ValueRW.Rotation = quaternion.LookRotation(tardir, math.up());
                             var distance = math.length(tardir);
-                            eliteCom.ValueRW.TargetDirNormalizedMulSpeed = math.normalize(tardir) * Speed;
-                            eliteCom.ValueRW.MovingRandomIntervalCooldown = distance / Speed + random.NextFloat(1f, 3f);
+                            eliteCom.ValueRW.TargetDirNormalizedMulSpeed = math.normalize(tardir) * _Speed;
+                            eliteCom.ValueRW.MovingRandomIntervalCooldown = distance / _Speed + random.NextFloat(1f, 3f);
                         }
 
                         //whether to do skill
@@ -169,8 +202,8 @@ namespace ProjectGra
                             tardir.xz += random.NextFloat2(negtiveOne, postiveOne) * 3;
                             transform.ValueRW.Rotation = quaternion.LookRotation(-tardir, math.up());
                             var distance = math.length(tardir);
-                            eliteCom.ValueRW.TargetDirNormalizedMulSpeed = -math.normalize(tardir) * Speed;
-                            eliteCom.ValueRW.MovingRandomIntervalCooldown = distance / Speed + random.NextFloat(1f, 3f);
+                            eliteCom.ValueRW.TargetDirNormalizedMulSpeed = -math.normalize(tardir) * _Speed;
+                            eliteCom.ValueRW.MovingRandomIntervalCooldown = distance / _Speed + random.NextFloat(1f, 3f);
                         }
 
                         transform.ValueRW.Position += eliteCom.ValueRO.TargetDirNormalizedMulSpeed * deltatime;
@@ -238,6 +271,13 @@ namespace ProjectGra
                         {
                             ecb.DestroyEntity(buffer[i].EggInstance);
                         }
+
+                        var item = ecb.Instantiate(ItemPrefab);
+                        ecb.SetComponent<LocalTransform>(item, transform.ValueRO);
+
+                        var material = ecb.Instantiate(MaterialPrefab);
+                        ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
                         ecb.DestroyEntity(entity);
                         break;
                 }

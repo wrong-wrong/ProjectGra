@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -11,9 +10,10 @@ namespace ProjectGra
         [SerializeField] List<EnemyBasicAttributeScriptableObjectConfig> EnemySOList;
         #region elite config
         [Header("ElitePrefab")]
-        public GameObject EliteSprintAndShootPrefab;
-        public GameObject EliteEggAndShootPrefab;
-        public GameObject EliteShooterPrefab;
+        public EnemyBasicAttributeScriptableObjectConfig EliteEggAndShootSO;
+        public EnemyBasicAttributeScriptableObjectConfig EliteShooterSO;
+        public EnemyBasicAttributeScriptableObjectConfig EliteSprintAndShootSO;
+
 
         [Header("EliteShooterConfig")]
         public float EliteShooterStageOneSpeed;
@@ -115,7 +115,7 @@ namespace ProjectGra
                 var SOList = authoring.EnemySOList;
                 Debug.Log("Baking SOList.Count : " + SOList.Count);
                 var waveNewEnemyBuffer = AddBuffer<WaveNewEnemyBuffer>(entity);
-                for(int i = 0; i < 19; ++i)
+                for (int i = 0; i < 20; ++i)
                 {
                     waveNewEnemyBuffer.Add(new WaveNewEnemyBuffer { Value = 0 });
                 }
@@ -133,13 +133,13 @@ namespace ProjectGra
                 }
                 // sort AllEnemyBuffer According to AppearingCodingWave according to tmpList
 
-                for(int i = 1; i < SOList.Count; ++i)
+                for (int i = 1; i < SOList.Count; ++i)
                 {
                     int baseValue = tmpArr[i];
                     Entity baseEntity = buffer[i].Prefab;
                     string baseName = tmpStrArr[i];
                     int j = i - 1;
-                    while(j >= 0 && baseValue < tmpArr[j] )
+                    while (j >= 0 && baseValue < tmpArr[j])
                     {
                         buffer.ElementAt(j + 1).Prefab = buffer[j].Prefab;
                         tmpArr[j + 1] = tmpArr[j];
@@ -151,7 +151,7 @@ namespace ProjectGra
                     tmpStrArr[j + 1] = baseName;
                 }
 
-                for(int i = 0; i < SOList.Count; i++)
+                for (int i = 0; i < SOList.Count; i++)
                 {
                     Debug.Log(tmpStrArr[i] + " - Idx :" + i);
                 }
@@ -163,9 +163,9 @@ namespace ProjectGra
                 //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EggPrefab, TransformUsageFlags.Dynamic) });
                 //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EnemySummonerPrefab, TransformUsageFlags.Dynamic) });
 
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootPrefab, TransformUsageFlags.Dynamic) });
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootPrefab, TransformUsageFlags.Dynamic) });
-                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootSO.EnemyPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterSO.EnemyPrefab, TransformUsageFlags.Dynamic) });
+                buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootSO.EnemyPrefab, TransformUsageFlags.Dynamic) });
                 Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
 
                 EnemyBasicAttributeScriptableObjectConfig SO;
@@ -284,7 +284,7 @@ namespace ProjectGra
                 });
 
                 //because no data need to set to the EggSystem, there is no need to creat a component
-
+                SO = authoring.EliteSprintAndShootSO;
                 // For EliteSprintAndShoot
                 AddComponent(entity, new EliteSprintAndShootConfigCom
                 {
@@ -293,25 +293,44 @@ namespace ProjectGra
                     EliteSprintAndShootSpawnCount = authoring.EliteSprintAndShootSpawnCount,
                     EliteSprintAndShootSpawnInterval = authoring.EliteSprintAndShootSpawnInterval,
                     EliteSprintAndShootSpawnYAxisRotation = authoring.EliteSprintAndShootSpawnYAxisRotation,
-                    EliteSprintAndShootSpeed = authoring.EliteSprintAndShootSpeed,
                     EliteSprintAndShootSprintDistance = authoring.EliteSprintAndShootSprintDistance,
                     EliteSprintAndShootSprintSpeed = authoring.EliteSprintAndShootSprintSpeed,
                     EliteSprintAndShootCollideDistance = authoring.EliteSprintAndShootCollideDistance,
                     EliteSprintAndShootSkillCooldown = authoring.EliteSprintAndShootSkillCooldown,
-                    EliteSprintAndShootSprintDamage = authoring.EliteSprintAndShootSprintDamage,
-
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
 
+                SO = authoring.EliteEggAndShootSO;
                 // For EliteEggAndShoot
                 AddComponent(entity, new EliteEggAndShootConfig
                 {
                     SpawnEggSkillspawnCount = authoring.EliteEggAndShootSpawnEggSkillspawnCount,
                     SpawnEggSkillSpawningInterval = authoring.EliteEggAndShootSpawnEggSkillSpawningInterval,
-                    Speed = authoring.EliteEggAndShootSpeed,
                     StageOneInSkillShootingInterval = authoring.EliteEggAndShootStageOneInSkillShootingInterval,
-                    StageOneSkillShootCount = authoring.EliteEggAndShootStageOneSkillShootCount
+                    StageOneSkillShootCount = authoring.EliteEggAndShootStageOneSkillShootCount,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
-
+                SO = authoring.EliteShooterSO;
                 // For EliteShooter
                 AddComponent(entity, new EliteShooterConfigCom
                 {
@@ -322,6 +341,17 @@ namespace ProjectGra
                     StageOneSkillShootCount = authoring.EliteEggAndShootStageOneSkillShootCount,
                     StageTwoInSkillShootingInterval = authoring.EliteShooterStageTwoInSkillShootingInterval,
                     StageTwoSkillShootCount = authoring.EliteShooterStageTwoSkillShootCount,
+                    BasicAttribute = new EnemyBasicAttribute
+                    {
+                        HealthPoint = SO.HealthPoint,
+                        HpIncreasePerWave = SO.HPIncreasePerWave,
+                        Damage = SO.Damage,
+                        DmgIncreasePerWave = SO.DmgIncreasePerWave,
+                        Speed = SO.Speed,
+                        MaterialsDropped = SO.MaterialsDropped,
+                        LootCrateDropRate = SO.LootCrateDropRate,
+                        ConsumableDropate = SO.ConsumableDropRate
+                    }
                 });
 
 
@@ -408,7 +438,6 @@ namespace ProjectGra
 
     public struct EliteEggAndShootConfig : IComponentData
     {
-        public float Speed;
         public float StageOneInSkillShootingInterval;
         public float SpawnEggSkillSpawningInterval;
         public int StageOneSkillShootCount;
@@ -425,10 +454,8 @@ namespace ProjectGra
         public int EliteSprintAndShootSpawnCount;
         public float EliteSprintAndShootSpawnInterval;
         public float EliteSprintAndShootSprintDistance;
-        public float EliteSprintAndShootSpeed;
         public float EliteSprintAndShootSprintSpeed;
         public float EliteSprintAndShootCollideDistance;
-        public int EliteSprintAndShootSprintDamage;
         public EnemyBasicAttribute BasicAttribute;
     }
 

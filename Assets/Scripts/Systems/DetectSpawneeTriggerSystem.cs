@@ -264,7 +264,7 @@ namespace ProjectGra
             //Debug.Log("Pierced Job - Hurting");
             if ((refHP.ValueRW.HealthPoint -= damage) <= 0)
             {
-                ecb.RemoveComponent<PhysicsCollider>(GetHitEntity);
+                //ecb.RemoveComponent<PhysicsCollider>(GetHitEntity);
                 //both way setting state machine works
                 //ecb.SetComponent(Enemy, new EntityStateMachine { CurrentState = EntityState.Dead });    
                 EntityStateMachineLookup.GetRefRW(GetHitEntity).ValueRW.CurrentState = EntityState.Dead;
