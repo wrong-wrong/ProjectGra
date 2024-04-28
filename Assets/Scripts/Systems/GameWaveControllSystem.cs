@@ -12,7 +12,6 @@ namespace ProjectGra
         private float timer;
         private ComponentLookup<AttackExplosiveCom> explosiveLookup;
         private float beginWaveTimeSet;
-        private float inWaveTimeSet;
         //private Entity playerPrefab;
         public void OnCreate(ref SystemState state)
         {
@@ -31,17 +30,16 @@ namespace ProjectGra
             state.EntityManager.SetComponentData(state.SystemHandle, new GameStateCom { CurrentState = GameControllState.Uninitialized });
             state.EntityManager.AddComponent<GameControllShouldUpdateEnemy>(state.SystemHandle);
             state.EntityManager.SetComponentData(state.SystemHandle, new GameControllShouldUpdateEnemy { Value = true });
-            timer = 3f;
         }
         public void OnStartRunning(ref SystemState state)
         {
             CanvasMonoSingleton.Instance.OnShopContinueButtonClicked += ShopContinueButtonCallback;
+            beginWaveTimeSet = CanvasMonoSingleton.Instance.beforeWaveTime;
+            timer = beginWaveTimeSet;
+
             //CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
             //tmp test code
             //var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
-            var config = SystemAPI.GetSingleton<GameWaveTimeConfig>();
-            beginWaveTimeSet = config.BeginWaveTime;
-            inWaveTimeSet = config.InWaveTime;
             var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
             var tmpI4 = new int4(MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx, -1, -1, -1);
             sysData.ValueRW.tmpWpIdx = tmpI4;
@@ -460,7 +458,7 @@ namespace ProjectGra
                     state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
                     var sysData = SystemAPI.GetSingleton<WaveControllSystemData>();
                     CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.tmpWpIdx, sysData.tmpWpLevel);
-
+                    CanvasMonoSingleton.Instance.StartCountdownTimer(timer);
                     Debug.Log("Uninitialized to BeforeWave!");
 
                     break;

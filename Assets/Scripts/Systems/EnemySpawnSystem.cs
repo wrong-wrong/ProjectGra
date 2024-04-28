@@ -1,8 +1,6 @@
-using System;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
@@ -31,7 +29,7 @@ namespace ProjectGra
                 IsInit = false
             });
 
-           
+
         }
 
         public void OnStartRunning(ref SystemState state)
@@ -47,10 +45,10 @@ namespace ProjectGra
                 sysData.ValueRW.minRadius = config.minRadius;
                 sysData.ValueRW.maxRadius = config.maxRadius;
 
-                var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>();
+                var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>()[updateEnemyCom.CodingWave];
                 var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
 
-                var spawnConfigCd = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+                var spawnConfigCd = spawningConfig.SpawnCooldown;
                 if (spawnConfigCd > 0)
                 {
                     sysData.ValueRW.realCooldown = spawnConfigCd;
@@ -61,20 +59,21 @@ namespace ProjectGra
                     sysData.ValueRW.realCooldown = -spawnConfigCd;
                     sysData.ValueRW.IsHordeOrElite = true;
                 }
-                sysData.ValueRW.pointSpawnChance = spawningConfig[updateEnemyCom.CodingWave].PointSpawnChance;
-                sysData.ValueRW.spawningCooldown = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+                sysData.ValueRW.pointSpawnChance = spawningConfig.PointSpawnChance;
+                sysData.ValueRW.spawningCooldown = spawningConfig.SpawnCooldown;
 
                 for (int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
                 {
                     _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
                 }
-            }else if (updateEnemyCom.Value)
+            }
+            if (updateEnemyCom.Value)
             {
                 //var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
-                var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>();
+                var spawningConfig = SystemAPI.GetSingletonBuffer<SpawningConfigBuffer>()[updateEnemyCom.CodingWave];
                 var WaveNewEnemyBuffer = SystemAPI.GetSingletonBuffer<WaveNewEnemyBuffer>();
 
-                var spawnConfigCd = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+                var spawnConfigCd = spawningConfig.SpawnCooldown;
                 if (spawnConfigCd > 0)
                 {
                     sysData.ValueRW.realCooldown = spawnConfigCd;
@@ -85,15 +84,33 @@ namespace ProjectGra
                     sysData.ValueRW.realCooldown = -spawnConfigCd;
                     sysData.ValueRW.IsHordeOrElite = true;
                 }
-                sysData.ValueRW.pointSpawnChance = spawningConfig[updateEnemyCom.CodingWave].PointSpawnChance;
-                sysData.ValueRW.spawningCooldown = spawningConfig[updateEnemyCom.CodingWave].SpawnCooldown;
+                sysData.ValueRW.pointSpawnChance = spawningConfig.PointSpawnChance;
+                sysData.ValueRW.spawningCooldown = spawningConfig.SpawnCooldown;
 
                 for (int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
                 {
                     _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
                 }
-                Debug.Log("EnemySpawnSystem - SpawnCooldown : " + sysData.ValueRO.spawningCooldown +" - PointSpawnChance : " + sysData.ValueRO.pointSpawnChance);
-                groupSpawnCount = math.clamp(updateEnemyCom.CodingWave + 1, 5, 13);
+                Debug.Log("EnemySpawnSystem - SpawnCooldown : " + sysData.ValueRO.spawningCooldown + " - PointSpawnChance : " + sysData.ValueRO.pointSpawnChance);
+                groupSpawnCount = spawningConfig.GroupSpawnCount;
+                groupSpawnTimer = spawningConfig.GroupSpawnCooldown;
+            }
+            if (sysData.ValueRO.IsHordeOrElite)
+            {
+                if (groupSpawnCount < 0)
+                {
+                    var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+                    var allEnemyPrefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
+
+                    var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(5,8)].Prefab);
+                    var posf2 = sysData.ValueRW.random.NextFloat2(groupSpawnFixedRangePointOne, groupSpawnFixedRangePointTwo);
+                    ecb.SetComponent(enemy, new LocalTransform { Position = new float3(posf2.x, 0, posf2.y), Scale = 1f });
+                }
+                else
+                {
+                    groupSpawnCount = (int)(groupSpawnCount * 1.5f);
+                    groupSpawnTimer *= 0.8f;
+                }
             }
             Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
             Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
@@ -109,6 +126,7 @@ namespace ProjectGra
             //    //state.EntityManager.Instantiate()
             //}
             var sysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
+
             //Debug.Log("SpawningCooldown" + sysData.ValueRO.spawningCooldown);
             //Debug.Log("realCooldown" + sysData.ValueRO.realCooldown);
             //Debug.Log("After substract deltatime" + sysData.ValueRO.realCooldown);
@@ -133,11 +151,13 @@ namespace ProjectGra
                 {
                     f2pos = f2pos.yx;
                 }
-                if(sysData.ValueRW.random.NextFloat() < sysData.ValueRO.pointSpawnChance ) // spawn a group 
+                if (sysData.ValueRW.random.NextFloat() < sysData.ValueRO.pointSpawnChance) // spawn a group 
                 {
                     var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
                     playerPosition.xz = f2pos;//GetRandomPointWithRangeRadius(playerPosition, sysData.ValueRO.minRadius, sysData.ValueRO.maxRadius); // now it is not player position,
                     ecb.SetComponent<LocalTransform>(enemy, new LocalTransform { Position = playerPosition, Rotation = quaternion.identity, Scale = 1f });
+                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(playerPosition);
+                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.Spawn);
                 }
                 else
                 {
@@ -161,7 +181,10 @@ namespace ProjectGra
                     var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
                     var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
                     var posf2 = sysData.ValueRW.random.NextFloat2(groupSpawnFixedRangePointOne, groupSpawnFixedRangePointTwo);
-                    ecb.SetComponent(enemy, new LocalTransform { Position = new float3(posf2.x, 0, posf2.y), Scale = 1f });
+                    var pos = new float3(posf2.x, 0, posf2.y);
+                    ecb.SetComponent(enemy, new LocalTransform { Position = pos, Scale = 1f });
+                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(pos);
+                    EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.Spawn);
                 }
             }
 

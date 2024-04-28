@@ -24,7 +24,8 @@ namespace ProjectGra
         float _Speed;
         int _MaterialsDropped;
         bool isInit;
-
+        Entity ItemPrefab;
+        Entity MaterialPrefab;
         private Entity normalSpawneePrefab;
         private float3 rightSpawnPosOffset;
         private float3 leftSpawnPosOffset;
@@ -77,6 +78,8 @@ namespace ProjectGra
                 _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
                 _Speed = basicAttribute.Speed;
                 _MaterialsDropped = basicAttribute.MaterialsDropped;
+                ItemPrefab = prefabContainer.ItemPrefab;
+                MaterialPrefab = prefabContainer.MaterialPrefab;
             }
 
             var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
@@ -223,6 +226,15 @@ namespace ProjectGra
                         }
                         break;
                     case EntityState.Dead:
+                        var item = ecb.Instantiate(ItemPrefab);
+                        ecb.SetComponent<LocalTransform>(item, transform.ValueRO);
+
+                        for (int i = 0; i < _MaterialsDropped; ++i)
+                        {
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        }
                         ecb.DestroyEntity(entity);
                         break;
                 }

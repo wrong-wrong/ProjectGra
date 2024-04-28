@@ -15,6 +15,8 @@ namespace ProjectGra
         [SerializeField] List<int> rerollPriceIncreasePerReroll;
         public StringBuilder stringBuilder;
         public static CanvasMonoSingleton Instance;
+        [Header("Configs")]
+        public float beforeWaveTime;
         public List<string> IdxToAttributeName;
 
         public Action OnShopContinueButtonClicked;
@@ -131,6 +133,7 @@ namespace ProjectGra
             SOConfigSingleton.Instance.Wave++;
             ingameUIMaxHp = PlayerDataModel.Instance.GetMaxHealthPoint();
             ingameUIMaxExp = PlayerDataModel.Instance.GetMaxExp();
+            StartCountdownTimer(beforeWaveTime);
             HideShop();
             UpdateWaveNumberText();
             ShowInGameUI();

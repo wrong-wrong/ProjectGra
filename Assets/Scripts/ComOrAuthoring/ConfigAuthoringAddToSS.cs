@@ -85,7 +85,7 @@ namespace ProjectGra
                     maxRadius = authoring.maxRadius,
                     minRadius = authoring.minRadius,
                 });
-                AddComponent(entity, new GameWaveTimeConfig { InWaveTime = authoring.InWaveTimeSet, BeginWaveTime = authoring.BeginWaveTimeSet });
+                //AddComponent(entity, new GameWaveTimeConfig { InWaveTime = authoring.InWaveTimeSet, BeginWaveTime = authoring.BeginWaveTimeSet });
                 AddComponent(entity, new MaterialConfig { Speed = authoring.MaterialSpeed, TotalTimer = authoring.MaterialTotalTimer });
             }
         }
@@ -95,11 +95,11 @@ namespace ProjectGra
         public float Speed;
         public float TotalTimer;
     }
-    public struct GameWaveTimeConfig : IComponentData
-    {
-        public float BeginWaveTime;
-        public float InWaveTime;
-    }
+    //public struct GameWaveTimeConfig : IComponentData
+    //{
+    //    public float BeginWaveTime;
+    //    public float InWaveTime;
+    //}
     public struct EnemySpawningConfig : IComponentData
     {
         public float SpawningCooldown;

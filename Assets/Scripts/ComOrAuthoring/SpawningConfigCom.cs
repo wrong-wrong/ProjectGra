@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Unity.Entities;
-using UnityEngine;
 
 namespace ProjectGra
 {
@@ -11,6 +9,8 @@ namespace ProjectGra
         public float PointSpawnChance;
         // set SpawnCooldown to negtive to indicate this wave involves horde or elite
         public float SpawnCooldown;
+        public float GroupSpawnCooldown;
+        public int GroupSpawnCount;
     }
     public struct EnemyHpAndDmgModifierWithDifferentDifficulty : IComponentData
     {

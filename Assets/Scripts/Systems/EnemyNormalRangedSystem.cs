@@ -184,10 +184,12 @@ namespace ProjectGra
                             ecb.SetComponent<LocalTransform>(item
                                 , transform.ValueRO);
                         }
-                        var material = ecb.Instantiate(MaterialPrefab);
-                        ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
-
-                        ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        for (int i = 0; i < _MaterialsDropped; ++i)
+                        {
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        }
                         ecb.DestroyEntity(entity);
                         // request particle
                         EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);

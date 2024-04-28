@@ -147,7 +147,9 @@ namespace ProjectGra
                         spawnConfigBuffer.Add(new SpawningConfigBuffer
                         {
                             SpawnCooldown = SpawningConfigSO.SpawningCooldown[i],
-                            PointSpawnChance = SpawningConfigSO.PointSpawnChance[i]
+                            PointSpawnChance = SpawningConfigSO.PointSpawnChance[i],
+                            GroupSpawnCooldown = SpawningConfigSO.GroupSpawnCooldown[i],
+                            GroupSpawnCount = SpawningConfigSO.GroupSpawnCount[i],
                         });
                     }
                     else
@@ -155,7 +157,9 @@ namespace ProjectGra
                         spawnConfigBuffer.Add(new SpawningConfigBuffer
                         {
                             SpawnCooldown = -SpawningConfigSO.SpawningCooldown[i],
-                            PointSpawnChance = SpawningConfigSO.PointSpawnChance[i]
+                            PointSpawnChance = SpawningConfigSO.PointSpawnChance[i],
+                            GroupSpawnCooldown = SpawningConfigSO.GroupSpawnCooldown[i],
+                            GroupSpawnCount = SpawningConfigSO.GroupSpawnCount[i],
                         });
                     }
                 }

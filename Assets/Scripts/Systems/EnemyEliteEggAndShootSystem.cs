@@ -275,9 +275,12 @@ namespace ProjectGra
                         var item = ecb.Instantiate(ItemPrefab);
                         ecb.SetComponent<LocalTransform>(item, transform.ValueRO);
 
-                        var material = ecb.Instantiate(MaterialPrefab);
-                        ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
-                        ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                        for (int i = 0; i < _MaterialsDropped; ++i)
+                        {
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        }
                         ecb.DestroyEntity(entity);
                         break;
                 }

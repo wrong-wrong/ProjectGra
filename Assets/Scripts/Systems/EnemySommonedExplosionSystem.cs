@@ -1,7 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace ProjectGra
 {
@@ -72,7 +71,7 @@ namespace ProjectGra
                             scaling.ValueRW.ScalingTime = TimerToSetInLaterThreeState[0];
                             scaling.ValueRW.AccumulateTimer = 0f;
                         }
-                        else if(state.EntityManager.Exists(summon.ValueRO.FollowingEntity))
+                        else if (state.EntityManager.Exists(summon.ValueRO.FollowingEntity))
                         {
                             var tarTransform = SystemAPI.GetComponent<LocalTransform>(summon.ValueRO.FollowingEntity);
                             tarTransform.Position.y += 2.5f;

@@ -5,7 +5,6 @@ using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Rendering;
-using static UnityEditor.Progress;
 using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
@@ -82,11 +81,11 @@ namespace ProjectGra
                 _Damage = _BasicDamage + (int)(shouldUpdate.CodingWave * _DmgIncreasePerWave);
                 var attModifier = SystemAPI.GetSingleton<EnemyHpAndDmgModifierWithDifferentDifficulty>();
                 _HealthPoint = (int)(_HealthPoint * attModifier.HealthPointModifier);
-                _Damage = math.max((int)(_Damage * attModifier.DamageModifier),1);
+                _Damage = math.max((int)(_Damage * attModifier.DamageModifier), 1);
                 var prefabBuffer = SystemAPI.GetSingletonBuffer<AllEnemyPrefabBuffer>();
                 SystemAPI.SetComponent(prefabBuffer[0].Prefab, new EntityHealthPoint { HealthPoint = _HealthPoint });
             }
-            
+
 
         }
         public void OnStopRunning(ref SystemState state)
@@ -117,7 +116,7 @@ namespace ProjectGra
                 collider.ValueRW = realCollider;
                 stateMachine.ValueRW.CurrentState = EntityState.Follow;
             }
-            foreach (var (transform, stateMachine, attack, death, knockbackBit,knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
+            foreach (var (transform, stateMachine, attack, death, knockbackBit, knockbackCom, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<EntityStateMachine>, RefRW<NormalMeleeAttack>
                 , RefRW<NormalMeleeDeath>
                 , EnabledRefRW<EntityKnockBackCom>
                 , RefRW<EntityKnockBackCom>>()
@@ -154,7 +153,7 @@ namespace ProjectGra
 
                     case EntityState.MeleeAttack:
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
-                        attack.ValueRW.AttackCooldown = cooldown;                        
+                        attack.ValueRW.AttackCooldown = cooldown;
                         Debug.Log("Player attacked by normal melee");
                         //playerHealthPoint.ValueRW.HealthPoint -= (int)(_Damage * transform.ValueRO.Scale);
                         ecb.AppendToBuffer<PlayerDamagedRecordBuffer>(playerEntity, new PlayerDamagedRecordBuffer { Value = (int)(_Damage * transform.ValueRO.Scale) });
@@ -167,14 +166,17 @@ namespace ProjectGra
                             ecb.SetComponent<LocalTransform>(item
                                 , transform.ValueRO);
                         }
-                        var material = ecb.Instantiate(MaterialPrefab);
-                        ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
-                        ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                        for (int i = 0; i < _MaterialsDropped; ++i)
+                        {
+                            var material = ecb.Instantiate(MaterialPrefab);
+                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
+                        }
                         ecb.DestroyEntity(entity);
                         // request particle
                         EffectRequestSharedStaticBuffer.SharedValue.Data.ParticlePosList.Add(transform.ValueRO.Position);
                         EffectRequestSharedStaticBuffer.SharedValue.Data.ParticleEnumList.Add(ParticleEnum.Default);
-                        
+
                         break;
 
                 }

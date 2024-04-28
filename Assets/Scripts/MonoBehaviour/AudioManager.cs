@@ -152,6 +152,7 @@ namespace ProjectGra
     {
         NormalShoot,
         Explode,
+        Spawn,
     }
 
 }

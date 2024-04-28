@@ -12,5 +12,7 @@ namespace ProjectGra
         public List<bool> IsHordeOrElite;
         public List<float> PointSpawnChance;
         public List<float> SpawningCooldown;
+        public List<int> GroupSpawnCount;
+        public List<float> GroupSpawnCooldown;
     }
 }
