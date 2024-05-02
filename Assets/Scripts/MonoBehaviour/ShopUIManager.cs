@@ -74,7 +74,16 @@ namespace ProjectGra
         //        }
         //    }
         //}
-
+        public void ResetShopLockState()
+        {
+            for(int i = 0; i < shopItemList.Count; ++i)
+            {
+                if (shopItemList[i].isLock)
+                {
+                    shopItemList[i].isLock = false;
+                }
+            }
+        }
         public void ShowShopReset()
         {
             UpdateMainWeaponInfo();
@@ -101,12 +110,12 @@ namespace ProjectGra
         //    return new bool4(weaponSlotList[0].IsMeleeWeapon, weaponSlotList[1].IsMeleeWeapon, weaponSlotList[2].IsMeleeWeapon, weaponSlotList[3].IsMeleeWeapon);
         //}
 
-        public void AddGameItem(int itemIdx, int itemLevel,int currentPrice, int costMaterialCount)
+        public void AddGameItem(int itemIdx, int itemLevel,int basePrice, int costMaterialCount)
         {
             //currentPrice to set item info, costMaterialCount to update player's material count;
             var item = Instantiate(gameItemPrefab, content);
             item.gameObject.transform.SetAsFirstSibling();
-            item.GetComponent<SingleGameItem>().InitWithItemIdxAndLevel(itemIdx, itemLevel,currentPrice);
+            item.GetComponent<SingleGameItem>().InitWithItemIdxAndLevel(itemIdx, itemLevel,basePrice);
             PlayerDataModel.Instance.AddMaterialValWith(-costMaterialCount);
             var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
             for (int i = 0, n = currrentItem.AffectedAttributeIdx.Count; i < n; i++)
@@ -182,16 +191,16 @@ namespace ProjectGra
                 shopItemList[i].UpdateBuyButtonState(PlayerDataModel.Instance.playerMaterialCount);
             }
         }
-        public bool CheckWeaponSlotTryBuyShopItem(int weaponIdx, bool isMeleeWp, int weaponLevel, int price)
+        public bool CheckWeaponSlotTryBuyShopItem(int weaponIdx, bool isMeleeWp, int weaponLevel, int baseprice,int currentprice)
         {
             WeaponSlot tmp = null;
             for (int i = 0, n = weaponSlotList.Count; i < n; ++i)
             {
                 if (weaponSlotList[i].WeaponIdx == -1)
                 {
-                    weaponSlotList[i].CurrentPrice = price;
-                    weaponSlotList[i].InitSlot(weaponIdx, weaponLevel);
-                    PlayerDataModel.Instance.AddMaterialValWith(-price);
+                    weaponSlotList[i].CurrentPrice = currentprice;
+                    weaponSlotList[i].InitSlot(weaponIdx, baseprice,weaponLevel);
+                    PlayerDataModel.Instance.AddMaterialValWith(-currentprice);
                     UpdateAllShopItemBuyState();
                     // Weapon Category Bonus Should change
                     //OnWeaponAddOrDelete?.Invoke(weaponIdx, true);
@@ -211,7 +220,7 @@ namespace ProjectGra
             {
                 tmp.WeaponLevel++;
                 tmp.InitSlot();
-                PlayerDataModel.Instance.AddMaterialValWith(-price);
+                PlayerDataModel.Instance.AddMaterialValWith(-currentprice);
                 UpdateAllShopItemBuyState();
                 //UpdateMaterialCount();
                 return true;

@@ -22,6 +22,7 @@ namespace ProjectGra
         public Action OnShopContinueButtonClicked;
         //public Action OnPauseContinueButtonClicked;
         public Action<bool> OnWeaponCanvasGroupShowIsCurrentShopUI;
+        public Action<int> OnNewWaveBegin;
         public int CodingWave;
         [SerializeField] TextMeshProUGUI shopWaveText;
 
@@ -48,15 +49,8 @@ namespace ProjectGra
         public RectTransform DragLayer;
 
         [Header("InGameUI")]
-        [SerializeField] Image healthBar;
-        [SerializeField] Image experienceBar;
-        [SerializeField] Image weaponCooldownFillingImg;
-        [SerializeField] TextMeshProUGUI inGameMaterialCountText;
-        [SerializeField] RectTransform ingameUIBackground;
-        [SerializeField] TextMeshProUGUI healthBarText;
-        [SerializeField] TextMeshProUGUI expBarText;
-        [SerializeField] TextMeshProUGUI countDownText;
-        [SerializeField] TextMeshProUGUI inGameWaveText;
+        [SerializeField] InGameUIManager ingameUIManager;
+
 
         [Header("Pause Canvas")]
         //[SerializeField] Button pauseContinueButton;
@@ -98,20 +92,7 @@ namespace ProjectGra
         {
             UpdateWaveNumberText();
         }
-        private void Update()
-        {
-            if (updateCountdown)
-            {
-                var deltatime = Time.deltaTime;
-                if ((countdownTimer -= deltatime) < lastCountdown)
-                {
-                    lastCountdown = (int)countdownTimer;
-                    stringBuilder.Append(lastCountdown);
-                    countDownText.text = stringBuilder.ToString();
-                    stringBuilder.Clear();
-                }
-            }
-        }
+
         public void OnDestroy()
         {
             //pauseContinueButton.onClick.RemoveAllListeners();
@@ -132,8 +113,8 @@ namespace ProjectGra
         {
             ++CodingWave;
             SOConfigSingleton.Instance.Wave++;
-            ingameUIMaxHp = PlayerDataModel.Instance.GetMaxHealthPoint();
-            ingameUIMaxExp = PlayerDataModel.Instance.GetMaxExp();
+            ingameUIManager.IngameUIInit(PlayerDataModel.Instance.GetMaxHealthPoint(), PlayerDataModel.Instance.GetMaxExp());
+            OnNewWaveBegin?.Invoke(CodingWave);
             StartCountdownTimer(beforeWaveTime);
             HideShop();
             UpdateWaveNumberText();
@@ -179,6 +160,7 @@ namespace ProjectGra
         {
             Cursor.lockState = CursorLockMode.None;
             choiceManager.ResetState();
+            shopUIManager.ResetShopLockState();
             // bad smell..
             CodingWave = 0;
             PresetChoosingCanvasGroup.alpha = 1f;
@@ -229,9 +211,9 @@ namespace ProjectGra
         {
             shopUIManager.RecycleWeaponFromSlot(calledSlotIdx);
         }
-        public void AddGameItem(int itemIdx, int itemLevel, int currentPrice, int costMaterialCount)
+        public void AddGameItem(int itemIdx, int itemLevel, int basePrice, int costMaterialCount)
         {
-            shopUIManager.AddGameItem(itemIdx, itemLevel, currentPrice, costMaterialCount);
+            shopUIManager.AddGameItem(itemIdx, itemLevel, basePrice, costMaterialCount);
         }
         public void SetSlotWeaponIdxInShop(int4 wpIdxInt4, int4 wpLevel)
         {
@@ -254,8 +236,14 @@ namespace ProjectGra
             stringBuilder.Append("Wave ");
             stringBuilder.Append(CodingWave + 1);
             shopWaveText.text = stringBuilder.ToString();
-            inGameWaveText.text = stringBuilder.ToString();
+            ingameUIManager.UpdateWaveText(CodingWave);
             stringBuilder.Clear();
+        }
+        public void ShowShopAndOtherUI()
+        {
+            //show Cursor
+            Cursor.lockState = CursorLockMode.None;
+            ShowItemFoundUIandIngameBackground();
         }
         public void ShowShopAndOtherUI(PlayerAttributeMain attributeStruct, PlayerAtttributeDamageRelated damageRelatedAttribute, int playerItemCountThisWave, int MaterialCount)
         {
@@ -263,7 +251,7 @@ namespace ProjectGra
             Cursor.lockState = CursorLockMode.None;
             PlayerDataModel.Instance.SetAttributeWithStruct(attributeStruct, damageRelatedAttribute);
             PlayerDataModel.Instance.SetMaterialValWith(MaterialCount);
-            this.itemCountThisWave = playerItemCountThisWave;
+            this.normalCrateThisWave = playerItemCountThisWave;
             ShowItemFoundUIandIngameBackground();
         }
         private void ShowShopUI()
@@ -307,7 +295,7 @@ namespace ProjectGra
             PauseCanvasGroup.alpha = 1;
             PauseCanvasGroup.interactable = true;
             PauseCanvasGroup.blocksRaycasts = true;
-            updateCountdown = false;
+            ingameUIManager.StopCountdown();
             if (isShowingContinueButton)
             {
                 pauseUIManager.SetContinueButtonRect(isShowingContinueButton);
@@ -329,7 +317,7 @@ namespace ProjectGra
             PauseCanvasGroup.alpha = 0;
             PauseCanvasGroup.interactable = false;
             PauseCanvasGroup.blocksRaycasts = false;
-            updateCountdown = false;
+            ingameUIManager.StartCountdown();
             HideSingleAttributeUI();
             HideWeaponAndItemCanvas();
         }
@@ -338,80 +326,87 @@ namespace ProjectGra
 
 
         #region In-game UI
-        private int ingameUIMaxHp;
-        private int ingameUIMaxExp;
-        private int currentPlayerLevel;
-        private int lastTotalExp;
-        private int currentExp;
-        private float countdownTimer;
-        private int lastCountdown;
-        private bool updateCountdown;
+
         public void StartCountdownTimer(float totalTimer)
         {
-            countdownTimer = totalTimer;
-            lastCountdown = (int)totalTimer;
-            stringBuilder.Append(lastCountdown);
-            countDownText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
-            updateCountdown = true;
+            ingameUIManager.StartCountdownTimer(totalTimer);
         }
         public void StopCountdown()
         {
-            updateCountdown = false;
+            ingameUIManager.StopCountdown();
         }
         private void InitIngameUIWeaponCooldown()
         {
-            weaponCooldownFillingImg.fillAmount = 1f;
+            ingameUIManager.InitIngameUIWeaponCooldown();
         }
         private void ShowIngameUIBackground()
         {
-            ingameUIBackground.localScale = Vector3.one;
+            ingameUIManager.ShowIngameUIBackground();
         }
         private void HideIngameUIBackground()
         {
-            ingameUIBackground.localScale = Vector3.zero;
+            ingameUIManager.HideIngameUIBackground();
         }
-        public void InGameUIUpdateCountdown(int countdown)
-        {
+        //public void InGameUIUpdateCountdown(int countdown)
+        //{
 
-        }
+        //}
         public void IngameUIWeaponCooldownFilling(float fillAmount)
         {
-            weaponCooldownFillingImg.fillAmount = fillAmount;
+            ingameUIManager.IngameUIWeaponCooldownFilling(fillAmount);
         }
         private void IngameUISetMaterial(int materialCount)
         {
-            stringBuilder.Append(materialCount);
-            inGameMaterialCountText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
+            ingameUIManager.IngameUISetMaterial(materialCount);
         }
-        public void IngameUISetMaxHpExp(int maxHp, int maxExp)
+        public void IngameUIInit(int maxHp, int maxExp)
         {
-            this.ingameUIMaxHp = maxHp;
-            this.ingameUIMaxExp = maxExp;
+            ingameUIManager.IngameUIInit(maxHp, maxExp);
         }
-        public void IngameUIUpdataPlayerStats(int hp, int currentTotalExp, int materialsCount)
+        //public void IngameUIUpdataPlayerStats(int hp, int currentTotalExp, int materialsCount)
+        //{
+        //    //healthBar.fillAmount = (float)hp / ingameUIMaxHp;
+        //    //stringBuilder.Append(materialsCount);
+        //    //inGameMaterialCountText.text = stringBuilder.ToString();
+        //    //stringBuilder.Clear();
+        //    //stringBuilder.Append(hp);
+        //    //stringBuilder.Append(" / ");
+        //    //stringBuilder.Append(ingameUIMaxHp);
+        //    //healthBarText.text = stringBuilder.ToString();
+        //    //stringBuilder.Clear();
+        //    //currentExp += currentTotalExp - lastTotalExp;
+        //    //lastTotalExp = currentTotalExp;
+        //    //if (currentExp > ingameUIMaxExp)
+        //    //{
+        //    //    currentExp -= ingameUIMaxExp;
+        //    //    ++currentPlayerLevel;
+        //    //    ++upgradeThisWave;
+        //    //    ingameUIMaxExp = (currentPlayerLevel + 3) * (currentPlayerLevel + 3);
+        //    //    expBarText.text = "LV." + currentPlayerLevel;
+        //    //}
+        //    //experienceBar.fillAmount = (float)currentExp / ingameUIMaxExp;
+        //}
+        public void IngameUIUpdatePlayerHp(int hp)
         {
-            healthBar.fillAmount = (float)hp / ingameUIMaxHp;
-            stringBuilder.Append(materialsCount);
-            inGameMaterialCountText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
-            stringBuilder.Append(hp);
-            stringBuilder.Append(" / ");
-            stringBuilder.Append(ingameUIMaxHp);
-            healthBarText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
-            currentExp += currentTotalExp - lastTotalExp;
-            lastTotalExp = currentTotalExp;
-            if (currentExp > ingameUIMaxExp)
-            {
-                currentExp -= ingameUIMaxExp;
-                ++currentPlayerLevel;
-                ++upgradeThisWave;
-                ingameUIMaxExp = (currentPlayerLevel + 3) * (currentPlayerLevel + 3);
-                expBarText.text = "LV." + currentPlayerLevel;
-            }
-            experienceBar.fillAmount = (float)currentExp / ingameUIMaxExp;
+            ingameUIManager.IngameUIUpdatePlayerHp(hp);
+        }
+        public void IngameUIUpdatePlayerExp(int currentTotalExp)
+        {
+            upgradeThisWave += ingameUIManager.IngameUIUpdatePlayerExp(currentTotalExp);
+        }
+        public void IngameUIUpdatePlayerMaterial(int materialsCount)
+        {
+            ingameUIManager.IngameUIUpdatePlayerMaterial(materialsCount);
+        }
+        public void IngameUIAddNormalCrateIcon(int normal)
+        {
+            ++normalCrateThisWave;
+            ingameUIManager.IngameUIAddNormalCrateIcon(normal);
+        }
+        public void IngameUIAddLegendaryCrateIcon(int legendary)
+        {
+            ++legendaryCrateThisWave;
+            ingameUIManager.IngameUIAddLegendaryCrateIcon(legendary);
         }
         public void ShowInGameUI()
         {
@@ -424,6 +419,7 @@ namespace ProjectGra
         public void HideInGameUI()
         {
             InGameUICanvasGroup.alpha = 0;
+            ingameUIManager.DestroyAllIcon();
         }
         #endregion
 
@@ -452,7 +448,8 @@ namespace ProjectGra
 
         #region ItemFound And Level Up UI
         //for item found and level up
-        int itemCountThisWave;
+        int legendaryCrateThisWave;
+        int normalCrateThisWave;
         int upgradeThisWave;
         private void ShowItemFoundAndUpgradeCanvasGroup()
         {
@@ -473,8 +470,15 @@ namespace ProjectGra
             ShowSingleAttributeUI();
             ////++upgradeThisWave;
             //Debug.LogWarning("adding upgrade times for test");
-            if (itemCountThisWave > 0)
+            if (legendaryCrateThisWave > 0)
             {
+                --legendaryCrateThisWave;
+                itemFoundUIRect.localScale = Vector3.one;
+                itemFoundUIManager.RerollLegendary();
+            }
+            else if (normalCrateThisWave > 0)
+            {
+                --normalCrateThisWave;
                 itemFoundUIRect.localScale = Vector3.one;
                 itemFoundUIManager.Reroll();
             }
@@ -511,7 +515,11 @@ namespace ProjectGra
         }
         public void ItemFoundUINext()
         {
-            if (--itemCountThisWave > 0)
+            if(legendaryCrateThisWave-- > 0)
+            {
+                itemFoundUIManager.RerollLegendary();
+            }
+            else if (normalCrateThisWave-- > 0)
             {
                 itemFoundUIManager.Reroll();
             }

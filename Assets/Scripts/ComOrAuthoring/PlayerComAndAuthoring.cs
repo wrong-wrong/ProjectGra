@@ -14,7 +14,7 @@ namespace ProjectGra
                 AddComponent<PlayerAttributeMain>(entity);
                 AddComponent<PlayerAtttributeDamageRelated>(entity);
                 AddComponent(entity, new EntityHealthPoint { HealthPoint = 100 });
-                AddComponent(entity, new PlayerItemCount { Count = 0 });
+                AddComponent(entity, new PlayerItemCount { Normal = 0 , Legendary = 0});
                 AddComponent(entity, new PlayerMaterialCount { Count = 0 });
                 AddComponent(entity, new PlayerExperience { Exp = 0 });
                 AddComponent<EntityStateMachine>(entity);
@@ -87,6 +87,7 @@ namespace ProjectGra
     }
     public struct PlayerItemCount : IComponentData
     {
-        public int Count;
+        public int Normal;
+        public int Legendary;
     }
 }

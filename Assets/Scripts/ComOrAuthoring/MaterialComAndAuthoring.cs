@@ -12,13 +12,13 @@ namespace ProjectGra
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent<MaterialTag>(entity);
-                AddComponent<MaterialMoveCom>(entity);
-                SetComponentEnabled<MaterialMoveCom>(entity, true);
+                AddComponent<LootMoveCom>(entity);
+                SetComponentEnabled<LootMoveCom>(entity, true);
             }
         }
     }
     public struct MaterialTag : IComponentData { }
-    public struct MaterialMoveCom : IComponentData, IEnableableComponent
+    public struct LootMoveCom : IComponentData, IEnableableComponent
     {
         public float2 tarDir;
         public float accumulateTimer;

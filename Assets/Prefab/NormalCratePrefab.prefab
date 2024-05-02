@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6236149675124014957}
   - component: {fileID: -3685475410526728321}
   m_Layer: 0
-  m_Name: ItemPrefab
+  m_Name: NormalCratePrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

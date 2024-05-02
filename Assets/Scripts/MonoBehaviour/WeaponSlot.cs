@@ -17,6 +17,7 @@ namespace ProjectGra
         [SerializeField] Image iconImg;
         public int WeaponLevel; //0 - common, 1 - uncommon, 2 - rare, 3 - legendary
         public int WeaponIdx;
+        private int basePrice;
         public int CurrentPrice;
 
         //public bool IsMeleeWeapon;
@@ -27,7 +28,10 @@ namespace ProjectGra
         {
             this.shopUIManager = shopUIManager;
         }
-
+        public void OnNewWaveBegin(int codingWave)
+        {
+            CurrentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(basePrice);
+        }
         #region UnityFunction
 
 
@@ -50,11 +54,13 @@ namespace ProjectGra
             bgTransform = bgImg.transform;
             slotRect.localPosition = posAtShopUI;
             CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI += SetIsAtShopUIFlag;
+            CanvasMonoSingleton.Instance.OnNewWaveBegin += OnNewWaveBegin;
 
         }
         public void OnDestroy()
         {
             CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI -= SetIsAtShopUIFlag;
+            CanvasMonoSingleton.Instance.OnNewWaveBegin -= OnNewWaveBegin;
         }
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -121,6 +127,11 @@ namespace ProjectGra
                 iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
                 bgImg.color = SOConfigSingleton.Instance.levelBgColor[WeaponLevel];
             }
+        }
+        public void InitSlot(int idx, int basePrice, int level = 0)
+        {
+            this.basePrice = basePrice;
+            InitSlot(idx, level);
         }
         public void InitSlot(int idx,int level = 0)
         {

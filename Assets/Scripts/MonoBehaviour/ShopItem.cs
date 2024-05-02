@@ -24,6 +24,7 @@ public class ShopItem : MonoBehaviour
     [SerializeField] Image icon;
     [SerializeField] Image iconBackground;
     [SerializeField] Image backgroundImage;
+    private int basePrice;
     private int currentPrice;
     private int weaponIdx;
     private int contentLevel;
@@ -90,7 +91,7 @@ public class ShopItem : MonoBehaviour
         var randomLevel = SOConfigSingleton.Instance.GetRandomLevel();
         itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdxFromRarities(randomLevel);
         var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
-
+        basePrice = currentItem.ItemBasePrice;
         currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(currentItem.ItemBasePrice);
         var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
 
@@ -126,7 +127,7 @@ public class ShopItem : MonoBehaviour
         isMeleeWp = config.IsMeleeWeapon;
         weaponIdx = config.WeaponIndex;
         var managedConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
-        var basePrice = managedConfig.weaponBasePriceMap[weaponIdx][contentLevel];
+        basePrice = managedConfig.weaponBasePriceMap[weaponIdx][contentLevel];
         currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(basePrice);
         priceText.text = currentPrice.ToString();
         nameText.text = managedConfig.weaponNameMap[weaponIdx].ToString();
@@ -196,7 +197,7 @@ public class ShopItem : MonoBehaviour
     {
         if (isWeapon)
         {
-            if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, isMeleeWp, contentLevel, currentPrice))
+            if (shopUIManager.CheckWeaponSlotTryBuyShopItem(weaponIdx, isMeleeWp, contentLevel, basePrice,currentPrice))
             {
                 rectTransform.localScale = Vector3.zero;
             }
@@ -207,7 +208,7 @@ public class ShopItem : MonoBehaviour
         }
         else
         {
-            shopUIManager.AddGameItem(itemIdx, contentLevel, currentPrice,currentPrice);
+            shopUIManager.AddGameItem(itemIdx, contentLevel, basePrice,currentPrice);
             rectTransform.localScale = Vector3.zero;
         }
     }

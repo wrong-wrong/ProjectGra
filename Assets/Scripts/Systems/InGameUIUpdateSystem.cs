@@ -9,6 +9,8 @@ namespace ProjectGra
         int lastHealthPoint;
         int lastExperience;
         int lastMaterialCount;
+        int lastNormalCrateCount;
+        int lastLegendaryCrateCount;
         float previousSetCooldown;
         public void OnCreate(ref SystemState state)
         {
@@ -18,23 +20,41 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
-            foreach(var (hp, exp, mat,wpState) in SystemAPI.Query<RefRO<EntityHealthPoint>, RefRO<PlayerExperience>, RefRO<PlayerMaterialCount>, RefRO<MainWeapon>>())
+            foreach(var (hp, exp, mat, item, wpState) in SystemAPI.Query<EntityHealthPoint, PlayerExperience, PlayerMaterialCount, PlayerItemCount, MainWeapon>())
             {
-                if(wpState.ValueRO.RealCooldown > 0)
+                if(wpState.RealCooldown > 0)
                 {
-                    CanvasMonoSingleton.Instance.IngameUIWeaponCooldownFilling(1 - wpState.ValueRO.RealCooldown / wpState.ValueRO.Cooldown);
-                    previousSetCooldown = wpState.ValueRO.RealCooldown;
+                    CanvasMonoSingleton.Instance.IngameUIWeaponCooldownFilling(1 - wpState.RealCooldown / wpState.Cooldown);
+                    previousSetCooldown = wpState.RealCooldown;
                 }
                 else if(previousSetCooldown > 0)
                 {
                     CanvasMonoSingleton.Instance.IngameUIWeaponCooldownFilling(1);
                 }
-                if (mat.ValueRO.Count != lastMaterialCount || hp.ValueRO.HealthPoint != lastHealthPoint || exp.ValueRO.Exp != lastExperience )
+                if (mat.Count != lastMaterialCount)
                 {
-                    lastHealthPoint = hp.ValueRO.HealthPoint;
-                    lastExperience = exp.ValueRO.Exp;
-                    lastMaterialCount = mat.ValueRO.Count;
-                    CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(lastHealthPoint, lastExperience, lastMaterialCount);
+                    lastMaterialCount = mat.Count;
+                    CanvasMonoSingleton.Instance.IngameUIUpdatePlayerMaterial(lastMaterialCount);
+                }
+                if(hp.HealthPoint != lastHealthPoint)
+                {
+                    lastHealthPoint = hp.HealthPoint;
+                    CanvasMonoSingleton.Instance.IngameUIUpdatePlayerHp(lastHealthPoint);
+                }
+                if(exp.Exp != lastExperience)
+                {
+                    lastExperience = exp.Exp;
+                    CanvasMonoSingleton.Instance.IngameUIUpdatePlayerExp(lastExperience);
+                }
+                if(item.Normal != lastNormalCrateCount)
+                {
+                    lastNormalCrateCount = item.Normal;
+                    CanvasMonoSingleton.Instance.IngameUIAddNormalCrateIcon(lastNormalCrateCount);
+                }
+                if(item.Legendary != lastLegendaryCrateCount)
+                {
+                    lastLegendaryCrateCount = item.Legendary;
+                    CanvasMonoSingleton.Instance.IngameUIAddLegendaryCrateIcon(lastLegendaryCrateCount);
                 }
             }
         }

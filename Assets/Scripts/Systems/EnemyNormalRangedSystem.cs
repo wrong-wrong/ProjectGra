@@ -77,7 +77,7 @@ namespace ProjectGra
                 state.EntityManager.SetComponentData(spawneePrefab, new AttackCurDamage { damage = _Damage });
                 var container = SystemAPI.GetSingleton<PrefabContainerCom>();
                 MaterialPrefab = container.MaterialPrefab;
-                ItemPrefab = container.ItemPrefab;
+                ItemPrefab = container.NormalCratePrefab;
             }
 
             var shouldUpdate = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>();
@@ -187,7 +187,7 @@ namespace ProjectGra
                         for (int i = 0; i < _MaterialsDropped; ++i)
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
-                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent(material, new LootMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
                             ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);

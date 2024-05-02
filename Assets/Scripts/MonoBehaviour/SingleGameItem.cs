@@ -11,24 +11,32 @@ namespace ProjectGra
         private int itemIdx;
         private int itemLevel;
         private int currentPrice;
+        private int basePrice;
         private bool isAtShopUI;
         public void Awake()
         {
             CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI += SetIsAtShopUIFlag;
+            CanvasMonoSingleton.Instance.OnNewWaveBegin += OnNewWaveBegin;
         }
         public void OnDestroy()
         {
             CanvasMonoSingleton.Instance.OnWeaponCanvasGroupShowIsCurrentShopUI -= SetIsAtShopUIFlag;
+            CanvasMonoSingleton.Instance.OnNewWaveBegin -= OnNewWaveBegin;
+        }
+        private void OnNewWaveBegin(int codingWave)
+        {
+            currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(basePrice);
         }
         public void SetIsAtShopUIFlag(bool IsAtShopUI)
         {
             isAtShopUI = IsAtShopUI;
         }
-        public void InitWithItemIdxAndLevel(int itemIdx, int itemLevel, int currentPrice)
+        public void InitWithItemIdxAndLevel(int itemIdx, int itemLevel, int basePrice)
         {
             this.itemIdx = itemIdx;
             this.itemLevel = itemLevel;
-            this.currentPrice = currentPrice;
+            this.basePrice = basePrice;
+            currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(basePrice);
             InitVisual(itemLevel);
         }
         public void OnPointerClick(PointerEventData eventData)

@@ -127,10 +127,8 @@ namespace ProjectGra
                 });
 
                 //Init in-game UI
-                var playerMaterialsCount = SystemAPI.GetSingleton<PlayerMaterialCount>();
-                var playerHp = SystemAPI.GetComponent<EntityHealthPoint>(playerEntity);
-                CanvasMonoSingleton.Instance.IngameUISetMaxHpExp(configCom.MaxHealthPoint, 16);
-                CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(playerHp.HealthPoint, 0, playerMaterialsCount.Count);
+                CanvasMonoSingleton.Instance.IngameUIInit(configCom.MaxHealthPoint, 16);
+                //CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(playerHp.HealthPoint, 0, playerMaterialsCount.Count);
                 CanvasMonoSingleton.Instance.HideShop();
                 CanvasMonoSingleton.Instance.ShowInGameUI();
                 CanvasMonoSingleton.Instance.HidePresetChoosingCanvasGroup();

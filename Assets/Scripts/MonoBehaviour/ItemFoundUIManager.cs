@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +17,8 @@ namespace ProjectGra
         [SerializeField] Button TakeButton;
         [SerializeField] Button RecycleButton;
         [SerializeField] int itemIdx;
-        int CurrentPrice;
+        int basePrice;
+        int currentPrice;
         int itemLevel;
         //private ItemScriptableObjectConfig currrentItem;
 
@@ -45,6 +45,11 @@ namespace ProjectGra
             TakeButton.onClick.RemoveAllListeners();
             RecycleButton.onClick.RemoveAllListeners();
         }
+        public void RerollLegendary()
+        {
+            itemIdx = SOConfigSingleton.Instance.GetRandomItemConfigIdxFromRarities(3);
+            InitAfterSetConfig();
+        }
         public void Reroll()
         {
             //currrentItem = SOConfigSingleton.Instance.GetRandomItemConfig();
@@ -54,20 +59,21 @@ namespace ProjectGra
         }
         public void Take()
         {
-            CanvasMonoSingleton.Instance.AddGameItem(itemIdx, itemLevel,CurrentPrice,0);
+            CanvasMonoSingleton.Instance.AddGameItem(itemIdx, itemLevel, basePrice, 0);
             CanvasMonoSingleton.Instance.ItemFoundUINext();
         }
 
         public void Recycle()
         {
-            PlayerDataModel.Instance.AddMaterialValWith(CurrentPrice);
+            PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
             CanvasMonoSingleton.Instance.ItemFoundUINext();
 
         }
         private void InitAfterSetConfig()
         {
             var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
-            CurrentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(currentItem.ItemBasePrice);
+            basePrice = currentItem.ItemBasePrice;
+            currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(currentItem.ItemBasePrice);
             itemLevel = currentItem.ItemLevel;
             itemIdx = currentItem.ItemIdx;
             //CurrentPrice = currentItem.ItemBasePrice;
@@ -75,7 +81,7 @@ namespace ProjectGra
             background.color = SOConfigSingleton.Instance.levelBgColor[currentItem.ItemLevel];
             icon.sprite = currentItem.ItemSprite;
             NameText.text = currentItem.ItemName;
-            RecycleText.text = "Recycle (+" + CurrentPrice + ")";
+            RecycleText.text = "Recycle (+" + currentPrice + ")";
             //SetItemInfoText();
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             for (int i = 0, n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
@@ -94,9 +100,9 @@ namespace ProjectGra
         {
             var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
-            for(int i = 0,n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
+            for (int i = 0, n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
             {
-                if (currentItem.BonusedValueList[i] > 0)strBuilder.Append("+");
+                if (currentItem.BonusedValueList[i] > 0) strBuilder.Append("+");
                 strBuilder.Append(currentItem.BonusedValueList[i]);
                 strBuilder.Append(CanvasMonoSingleton.Instance.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
                 strBuilder.AppendLine();

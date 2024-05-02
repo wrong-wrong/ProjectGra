@@ -24,7 +24,7 @@ namespace ProjectGra
         float _Speed;
         int _MaterialsDropped;
         bool isInit;
-        Entity ItemPrefab;
+        Entity LegendaryCratePrefab;
         Entity MaterialPrefab;
         private float StageOneInSkillShootingInterval;
         private float SpawnEggSkillSpawningInterval;
@@ -80,7 +80,7 @@ namespace ProjectGra
                 _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
                 _Speed = basicAttribute.Speed;
                 _MaterialsDropped = basicAttribute.MaterialsDropped;
-                ItemPrefab = prefabContainerCom.ItemPrefab;
+                LegendaryCratePrefab = prefabContainerCom.LegendaryCratePrefab;
                 MaterialPrefab = prefabContainerCom.MaterialPrefab;
             }
 
@@ -272,13 +272,13 @@ namespace ProjectGra
                             ecb.DestroyEntity(buffer[i].EggInstance);
                         }
 
-                        var item = ecb.Instantiate(ItemPrefab);
+                        var item = ecb.Instantiate(LegendaryCratePrefab);
                         ecb.SetComponent<LocalTransform>(item, transform.ValueRO);
 
                         for (int i = 0; i < _MaterialsDropped; ++i)
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
-                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent(material, new LootMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
                             ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);

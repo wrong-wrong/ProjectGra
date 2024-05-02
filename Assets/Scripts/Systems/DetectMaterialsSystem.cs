@@ -2,7 +2,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace ProjectGra
 {
@@ -10,6 +9,7 @@ namespace ProjectGra
     public partial struct DetectMaterialsSystem : ISystem
     {
         private CollisionFilter materialFilter;
+        private ComponentLookup<ItemTag> itemTagLookup;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllNotPaused>();
@@ -20,6 +20,7 @@ namespace ProjectGra
                 CollidesWith = 1 << 7, // materialsAndItem
                 BelongsTo = 1 << 1,  // raycast
             };
+            itemTagLookup = SystemAPI.GetComponentLookup<ItemTag>();
         }
 
         public void OnUpdate(ref SystemState state)
@@ -30,12 +31,12 @@ namespace ProjectGra
             var playerItem = SystemAPI.GetSingletonRW<PlayerItemCount>();
             var playerExperience = SystemAPI.GetSingletonRW<PlayerExperience>();
             var collisionWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().CollisionWorld;
-            var itemTagLookup = SystemAPI.GetComponentLookup<ItemTag>();
             var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var hits = new NativeList<DistanceHit>(state.WorldUpdateAllocator);
-            if(collisionWorld.OverlapSphere(playerTransform.Position, 2f, ref hits, materialFilter))
+            if (collisionWorld.OverlapSphere(playerTransform.Position, 2f, ref hits, materialFilter))
             {
-                foreach(var hit in hits)
+                itemTagLookup.Update(ref state);
+                foreach (var hit in hits)
                 {
                     if (!itemTagLookup.HasComponent(hit.Entity))
                     {
@@ -44,9 +45,16 @@ namespace ProjectGra
                     }
                     else
                     {
-                        playerItem.ValueRW.Count += 1;
+                        if (itemTagLookup.IsComponentEnabled(hit.Entity))
+                        {
+                            playerItem.ValueRW.Legendary += 1;
+                        }
+                        else
+                        {
+                            playerItem.ValueRW.Normal += 1;
+                        }
                     }
-                    
+
                     ecb.DestroyEntity(hit.Entity);
                 }
             }

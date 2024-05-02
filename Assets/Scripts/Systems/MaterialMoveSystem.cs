@@ -4,7 +4,7 @@ using Unity.Transforms;
 
 namespace ProjectGra
 {
-    public partial struct MaterialMoveSystem : ISystem, ISystemStartStop
+    public partial struct LootMoveSystem : ISystem, ISystemStartStop
     {
         private float speed;
         private float totalTimer;
@@ -29,13 +29,13 @@ namespace ProjectGra
         {
             var speedMulDeltaTimer = speed * SystemAPI.Time.DeltaTime;
             var deltatime = SystemAPI.Time.DeltaTime;
-            foreach(var (transform, materialMoveTag, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<MaterialMoveCom>>().WithEntityAccess())
+            foreach(var (transform, materialMoveTag, entity) in SystemAPI.Query<RefRW<LocalTransform>, RefRW<LootMoveCom>>().WithEntityAccess())
             {
                 transform.ValueRW.Position.xz += materialMoveTag.ValueRO.tarDir * speedMulDeltaTimer;
                 var ratio = (materialMoveTag.ValueRW.accumulateTimer += deltatime) / totalTimer;
                 if(ratio > 1f)
                 {
-                    SystemAPI.SetComponentEnabled<MaterialMoveCom>(entity, false);
+                    SystemAPI.SetComponentEnabled<LootMoveCom>(entity, false);
                 }
                 else
                 {

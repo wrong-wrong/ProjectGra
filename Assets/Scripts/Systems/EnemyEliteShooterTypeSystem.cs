@@ -84,7 +84,7 @@ namespace ProjectGra
                 _DmgIncreasePerWave = basicAttribute.DmgIncreasePerWave;
                 _Speed = basicAttribute.Speed;
                 _MaterialsDropped = basicAttribute.MaterialsDropped;
-                ItemPrefab = prefabContainer.ItemPrefab;
+                ItemPrefab = prefabContainer.NormalCratePrefab;
                 MaterialPrefab = prefabContainer.MaterialPrefab;
             }
 
@@ -237,7 +237,7 @@ namespace ProjectGra
                         for (int i = 0; i < _MaterialsDropped; ++i)
                         {
                             var material = ecb.Instantiate(MaterialPrefab);
-                            ecb.SetComponent(material, new MaterialMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
+                            ecb.SetComponent(material, new LootMoveCom { tarDir = random.NextFloat2Direction(), accumulateTimer = 0f });
                             ecb.SetComponent<LocalTransform>(material, transform.ValueRO);
                         }
                         ecb.DestroyEntity(entity);
