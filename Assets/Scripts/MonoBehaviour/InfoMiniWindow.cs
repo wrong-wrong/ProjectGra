@@ -64,7 +64,7 @@ namespace ProjectGra
             }
             else
             {
-                CanvasMonoSingleton.Instance.RecycleGameItemWithGO(itemIdx, itemPrice, calledItemSlot);
+                CanvasMonoSingleton.Instance.RecycleGameItemWithCom(itemIdx, itemPrice, itemSlotCom);
             }
             gameObject.SetActive(false);
             //WindowRect.localScale = Vector3.zero;
@@ -312,10 +312,11 @@ namespace ProjectGra
 
             //Set name text
         }
-        private GameObject calledItemSlot;
+        //private GameObject calledItemSlot;
+        private SingleGameItem itemSlotCom;
         private int itemIdx;
         private int itemPrice;
-        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, GameObject itemSlot, Vector3 showPos)
+        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, SingleGameItem itemSlotCom, Vector3 showPos)
         {
             for (int i = 0, n = CategoryRectList.Count; i < n; ++i)
             {
@@ -324,7 +325,7 @@ namespace ProjectGra
             //Setting info window
             this.itemIdx = itemIdx;
             itemPrice = currentPrice;
-            calledItemSlot = itemSlot;
+            this.itemSlotCom = itemSlotCom;
             ItemTextRect.localScale = Vector3.one;
             RecycleButtonRect.localScale = Vector3.zero;
             WeaponFixedTextRect.localScale = Vector3.zero;
@@ -367,16 +368,15 @@ namespace ProjectGra
             Icon.color = Color.white;
             Icon.sprite = currentItem.ItemSprite;
         }
-        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlot, Vector3 showPos)
+        private void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, Vector3 showPos)
         {
-            for(int i = 0, n = CategoryRectList.Count; i < n; ++i)
+            for (int i = 0, n = CategoryRectList.Count; i < n; ++i)
             {
                 CategoryRectList[i].localScale = Vector3.zero;
             }
             //Setting info window
             this.itemIdx = itemIdx;
             itemPrice = currentPrice;
-            calledItemSlot = itemSlot;
             ItemTextRect.localScale = Vector3.one;
             RecycleButtonRect.localScale = Vector3.one;
             WeaponFixedTextRect.localScale = Vector3.zero;
@@ -419,6 +419,15 @@ namespace ProjectGra
             Icon.color = Color.white;
             Icon.sprite = currentItem.ItemSprite;
         }
-
+        //public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlot, Vector3 showPos)
+        //{
+        //    calledItemSlot = itemSlot;
+        //    InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, showPos);
+        //}
+        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, SingleGameItem itemSlotCom, Vector3 showPos)
+        {
+            this.itemSlotCom = itemSlotCom;
+            InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, showPos);
+        }
     }
 }

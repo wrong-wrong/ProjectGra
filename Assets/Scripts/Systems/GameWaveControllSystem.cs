@@ -99,8 +99,9 @@ namespace ProjectGra
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
                 var cooldownModifier = math.clamp(1f - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 playerAttibute.MeleeRangedElementAttSpd.w *= 100f;
-                var calculatedDamageAfterBonus = (int)((1f + playerAttibute.DamagePercentage)
-                    * (config.BasicDamage[weaponLevel[0]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
+                var calculatedDamageAfterBonus = math.max(1, (int)((1f + playerAttibute.DamagePercentage)
+                    * (config.BasicDamage[weaponLevel[0]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd))));
+                Debug.Log("Calculated Damage - " +  calculatedDamageAfterBonus);    
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance[weaponLevel[0]];
                 
                 var calculatedCooldown = config.Cooldown[weaponLevel[0]] * cooldownModifier;
@@ -562,6 +563,10 @@ namespace ProjectGra
             state.EntityManager.DestroyEntity(enemyList);
             var spawneeList = SystemAPI.QueryBuilder().WithAll<SpawneeTimer>().WithOptions(EntityQueryOptions.IgnoreComponentEnabledState).Build().ToEntityArray(state.WorldUpdateAllocator);
             state.EntityManager.DestroyEntity(spawneeList);
+            var materialList = SystemAPI.QueryBuilder().WithAll<MaterialTag>().Build();
+            state.EntityManager.DestroyEntity(materialList);
+            var itemList = SystemAPI.QueryBuilder().WithAll<ItemTag>().WithOptions(EntityQueryOptions.IgnoreComponentEnabledState).Build();
+            state.EntityManager.DestroyEntity(itemList);
             //TODO destroy unpicked item
             //TODO maybe need to destory material to
             // destory health bar GO whose entity has been provisionally destoryed

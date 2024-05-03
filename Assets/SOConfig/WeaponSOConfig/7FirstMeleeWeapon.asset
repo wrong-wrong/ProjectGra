@@ -27,7 +27,7 @@ MonoBehaviour:
   WeaponModel: {fileID: 5106712197949598478, guid: 346df1cda119a124d86c32247c37feff,
     type: 3}
   SpawneePrefabs: {fileID: 0}
-  MeleeBonus: 100
+  MeleeBonus: 1
   RangedBonus: 0
   ElementBonus: 0
   AttackSpeedBonus: 0

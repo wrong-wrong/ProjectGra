@@ -74,12 +74,9 @@ namespace ProjectGra
             var icongo = Instantiate(upgradeIconPrefab, upgradeContainer);
             iconList.Add(icongo);
         }
-        public void UpdateWaveText(int codingWave)
+        public void UpdateWaveText(string text)
         {
-            var stringBuilder = CanvasMonoSingleton.Instance.stringBuilder;
-            stringBuilder.Append(codingWave);
-            inGameWaveText.text = stringBuilder.ToString();
-            stringBuilder.Clear();
+            inGameWaveText.text = text;
         }
         public void StartCountdownTimer(float totalTimer)
         {

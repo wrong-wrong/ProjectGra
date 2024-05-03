@@ -29,7 +29,7 @@ MonoBehaviour:
   SpawneePrefabs: {fileID: 365588521010595200, guid: 9911dd1a4c55ec04983ab9728709487d,
     type: 3}
   MeleeBonus: 0
-  RangedBonus: 50
+  RangedBonus: 0.5
   ElementBonus: 0
   AttackSpeedBonus: 0
   BasicDamage:

@@ -9,6 +9,7 @@ public class ShopItem : MonoBehaviour
 {
     static string lockedString = "(OvO)";
     static string unlockString = "Lock";
+    static string itemString = "Item";
     [SerializeField] RectTransform rectTransform;
     [SerializeField] TextMeshProUGUI priceText;
     [SerializeField] TextMeshProUGUI nameText;
@@ -111,6 +112,7 @@ public class ShopItem : MonoBehaviour
         }
         itemInfoText.text = strBuilder.ToString();
         strBuilder.Clear();
+        cateforyInfoText.text = itemString;
         ChangeBackgroundColor();
     }
     private void RerollWeapon()

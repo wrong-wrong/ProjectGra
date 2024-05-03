@@ -27,6 +27,7 @@ namespace ProjectGra
         [Header("Player Attribute")]
         [SerializeField] TextMeshProUGUI playerAttributeText;
 
+        private Dictionary<int, SingleGameItem> idxToItemSlotMap;
 
 
 
@@ -48,7 +49,7 @@ namespace ProjectGra
             {
                 weaponSlotList[i].Init(this);
             }
-
+            idxToItemSlotMap = new Dictionary<int, SingleGameItem>();
         }
         private void OnDestroy()
         {
@@ -110,22 +111,39 @@ namespace ProjectGra
         //    return new bool4(weaponSlotList[0].IsMeleeWeapon, weaponSlotList[1].IsMeleeWeapon, weaponSlotList[2].IsMeleeWeapon, weaponSlotList[3].IsMeleeWeapon);
         //}
 
-        public void AddGameItem(int itemIdx, int itemLevel,int basePrice, int costMaterialCount)
+        private void ModifyPlayerAttributeWithItem(int itemIdx, bool isAddItem)
+        {
+            int modifier = isAddItem ? 1 : -1;
+            var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+            for (int i = 0, n = currrentItem.AffectedAttributeIdx.Count; i < n; i++)
+            {
+                PlayerDataModel.Instance.AddAttributeValWith(currrentItem.AffectedAttributeIdx[i], currrentItem.BonusedValueList[i] * modifier);
+            }
+        }
+        private void AddNewGameItem(int itemIdx, int itemLevel, int basePrice, int costMaterialCount)
         {
             //currentPrice to set item info, costMaterialCount to update player's material count;
             var item = Instantiate(gameItemPrefab, content);
             item.gameObject.transform.SetAsFirstSibling();
-            item.GetComponent<SingleGameItem>().InitWithItemIdxAndLevel(itemIdx, itemLevel,basePrice);
+            var itemSlotCom = item.GetComponent<SingleGameItem>();
+            itemSlotCom.InitWithItemIdxAndLevel(itemIdx, itemLevel, basePrice);
             PlayerDataModel.Instance.AddMaterialValWith(-costMaterialCount);
-            var currrentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
-            for (int i = 0, n = currrentItem.AffectedAttributeIdx.Count; i < n; i++)
-            {
-                PlayerDataModel.Instance.AddAttributeValWith(currrentItem.AffectedAttributeIdx[i], currrentItem.BonusedValueList[i]);
-            }
-            //content.SetAsFirstSibling(content)
-            //setParent and then SetAsFirstSibling
+            ModifyPlayerAttributeWithItem(itemIdx, true);
+            idxToItemSlotMap[itemIdx] = itemSlotCom;
         }
-        internal void RecycleGameItemWithGO(int itemIdx, int currentPrice, GameObject calledItemSlot)
+        public void AddGameItem(int itemIdx, int itemLevel,int basePrice, int costMaterialCount)
+        {
+            if(idxToItemSlotMap.TryGetValue(itemIdx, out var slot))
+            {
+                ModifyPlayerAttributeWithItem(itemIdx, true);
+                slot.AddCount();
+            }
+            else
+            {
+                AddNewGameItem(itemIdx,itemLevel,basePrice,costMaterialCount);
+            }
+        }
+        public void RecycleGameItemWithCom(int itemIdx, int currentPrice, SingleGameItem itemSlotCom)
         {
             PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
             var itemConfig = SOConfigSingleton.Instance.ItemSOList[itemIdx];
@@ -134,8 +152,22 @@ namespace ProjectGra
                 //When you recycle an item, you modify player's attribute 
                 PlayerDataModel.Instance.AddAttributeValWith(itemConfig.AffectedAttributeIdx[i], -itemConfig.BonusedValueList[i]);
             }
-            Destroy(calledItemSlot);
+            if (itemSlotCom.Recycle())
+            {
+                idxToItemSlotMap.Remove(itemIdx);
+            }
         }
+        //internal void RecycleGameItemWithGO(int itemIdx, int currentPrice, GameObject calledItemSlot)
+        //{
+        //    PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
+        //    var itemConfig = SOConfigSingleton.Instance.ItemSOList[itemIdx];
+        //    for (int i = 0, n = itemConfig.AffectedAttributeIdx.Count; i < n; i++)
+        //    {
+        //        //When you recycle an item, you modify player's attribute 
+        //        PlayerDataModel.Instance.AddAttributeValWith(itemConfig.AffectedAttributeIdx[i], -itemConfig.BonusedValueList[i]);
+        //    }
+        //    Destroy(calledItemSlot);
+        //}
 
 
         public void RecycleWeaponFromSlot(int slotIdx)

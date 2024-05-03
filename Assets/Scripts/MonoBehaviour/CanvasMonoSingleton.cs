@@ -235,8 +235,9 @@ namespace ProjectGra
         {
             stringBuilder.Append("Wave ");
             stringBuilder.Append(CodingWave + 1);
-            shopWaveText.text = stringBuilder.ToString();
-            ingameUIManager.UpdateWaveText(CodingWave);
+            var str = stringBuilder.ToString();
+            shopWaveText.text = str;
+            ingameUIManager.UpdateWaveText(str);
             stringBuilder.Clear();
         }
         public void ShowShopAndOtherUI()
@@ -434,15 +435,15 @@ namespace ProjectGra
             infoMiniWindow.gameObject.SetActive(true);
             infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, currentPrice, showCombine, combineSlotIdx, calledSlotIdx, position);
         }
-        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlotGO, Vector3 showPos)
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, int currentPrice, SingleGameItem itemSlotCom, Vector3 showPos)
         {
             infoMiniWindow.gameObject.SetActive(true);
-            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, itemSlotGO, showPos);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, itemSlotCom, showPos);
         }
-        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, GameObject itemSlotGO, Vector3 showPos)
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, SingleGameItem itemSlotCom, Vector3 showPos)
         {
             infoMiniWindow.gameObject.SetActive(true);
-            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, itemSlotGO, showPos);
+            infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, itemSlotCom, showPos);
         }
         #endregion
 
@@ -541,12 +542,15 @@ namespace ProjectGra
             }
         }
 
-        public void RecycleGameItemWithGO(int itemIdx, int currentPrice, GameObject calledItemSlot)
+        //public void RecycleGameItemWithGO(int itemIdx, int currentPrice, GameObject calledItemSlot)
+        //{
+        //    shopUIManager.RecycleGameItemWithGO(itemIdx, currentPrice, calledItemSlot);
+        //}
+
+        public void RecycleGameItemWithCom(int itemIdx, int currentPrice, SingleGameItem itemSlotCom)
         {
-            shopUIManager.RecycleGameItemWithGO(itemIdx, currentPrice, calledItemSlot);
+            shopUIManager.RecycleGameItemWithCom(itemIdx, currentPrice, itemSlotCom);
         }
-
-
 
 
         #endregion

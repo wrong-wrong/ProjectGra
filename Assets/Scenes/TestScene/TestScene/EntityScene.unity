@@ -1090,7 +1090,7 @@ MonoBehaviour:
   CameraYSensitivity: 0.8
   PlayerBasicMoveSpeed: 4
   PlayerSprintMultiplier: 1.5
-  MaxHealthPoint: 10
+  MaxHealthPoint: 100
   HealthRegain: 0
   Armor: 0
   SpeedPercentage: 0

@@ -16,6 +16,6 @@ MonoBehaviour:
   ItemLevel: 0
   ItemBasePrice: 25
   ItemName: Goat Skull
-  ItemSprite: {fileID: 0}
+  ItemSprite: {fileID: 21300000, guid: a53772703ea33674fa22677acf06c2dc, type: 3}
   AffectedAttributeIdx: 0700000005000000
   BonusedValueList: 03000000feffffff

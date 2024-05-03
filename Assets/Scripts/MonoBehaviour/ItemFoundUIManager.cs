@@ -8,6 +8,10 @@ namespace ProjectGra
     {
         public int ItemFoundThisWave;
         //public static Dictionary<int, string> idxToAttributeName;
+        [SerializeField] float RectWidth;
+        [SerializeField] float RectBasicHeight;
+        [SerializeField] float heightModifyValuePerRow;
+        [SerializeField] RectTransform backgroundRect;
         [SerializeField] Image iconBg;
         [SerializeField] Image background;
         [SerializeField] Image icon;
@@ -84,8 +88,10 @@ namespace ProjectGra
             RecycleText.text = "Recycle (+" + currentPrice + ")";
             //SetItemInfoText();
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
+            int cnt = 0;
             for (int i = 0, n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
             {
+                ++cnt;
                 if (currentItem.BonusedValueList[i] > 0) strBuilder.Append("+");
                 strBuilder.Append(currentItem.BonusedValueList[i]);
                 strBuilder.Append(CanvasMonoSingleton.Instance.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
@@ -93,15 +99,21 @@ namespace ProjectGra
             }
             InfoText.text = strBuilder.ToString();
             strBuilder.Clear();
+            SetRectHeight(cnt * heightModifyValuePerRow);
 
         }
-
+        private void SetRectHeight(float height)
+        {
+            backgroundRect.sizeDelta = new Vector2(RectWidth, RectBasicHeight + height);
+        }
         private void SetItemInfoText()
         {
+            int cnt = 0;
             var currentItem = SOConfigSingleton.Instance.ItemSOList[itemIdx];
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             for (int i = 0, n = currentItem.AffectedAttributeIdx.Count; i < n; ++i)
             {
+                ++cnt;
                 if (currentItem.BonusedValueList[i] > 0) strBuilder.Append("+");
                 strBuilder.Append(currentItem.BonusedValueList[i]);
                 strBuilder.Append(CanvasMonoSingleton.Instance.IdxToAttributeName[currentItem.AffectedAttributeIdx[i]]);
@@ -109,6 +121,7 @@ namespace ProjectGra
             }
             InfoText.text = strBuilder.ToString();
             strBuilder.Clear();
+            SetRectHeight(cnt * heightModifyValuePerRow);
         }
     }
 }
