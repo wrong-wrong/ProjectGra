@@ -17,6 +17,8 @@ namespace ProjectGra
         float2 groupSpawnFixedRangePointOne;
         float2 groupSpawnFixedRangePointTwo;
         int groupSpawnCount;
+
+        float2 mapRightUpper;
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<GameControllInGame>();
@@ -28,7 +30,6 @@ namespace ProjectGra
                 random = Random.CreateFromIndex(0),
                 IsInit = false
             });
-
 
         }
 
@@ -42,6 +43,7 @@ namespace ProjectGra
                 _MaxEnemyBufferIdxExclusive = 0;
                 _LastUpdateWave = 0;
                 var config = SystemAPI.GetSingleton<EnemySpawningConfig>();
+                mapRightUpper = config.MapRightUpperPointF2;
                 sysData.ValueRW.minRadius = config.minRadius;
                 sysData.ValueRW.maxRadius = config.maxRadius;
 
@@ -52,15 +54,16 @@ namespace ProjectGra
                 if (spawnConfigCd > 0)
                 {
                     sysData.ValueRW.realCooldown = spawnConfigCd;
+                    sysData.ValueRW.spawningCooldown = spawnConfigCd;
                     sysData.ValueRW.IsHordeOrElite = false;
                 }
                 else
                 {
                     sysData.ValueRW.realCooldown = -spawnConfigCd;
+                    sysData.ValueRW.spawningCooldown = -spawnConfigCd;
                     sysData.ValueRW.IsHordeOrElite = true;
                 }
                 sysData.ValueRW.pointSpawnChance = spawningConfig.PointSpawnChance;
-                sysData.ValueRW.spawningCooldown = spawningConfig.SpawnCooldown;
 
                 for (int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
                 {
@@ -77,15 +80,16 @@ namespace ProjectGra
                 if (spawnConfigCd > 0)
                 {
                     sysData.ValueRW.realCooldown = spawnConfigCd;
+                    sysData.ValueRW.spawningCooldown = spawnConfigCd;
                     sysData.ValueRW.IsHordeOrElite = false;
                 }
                 else
                 {
                     sysData.ValueRW.realCooldown = -spawnConfigCd;
+                    sysData.ValueRW.spawningCooldown = -spawnConfigCd;
                     sysData.ValueRW.IsHordeOrElite = true;
                 }
                 sysData.ValueRW.pointSpawnChance = spawningConfig.PointSpawnChance;
-                sysData.ValueRW.spawningCooldown = spawningConfig.SpawnCooldown;
 
                 for (int n = updateEnemyCom.CodingWave; _LastUpdateWave <= n; ++_LastUpdateWave)
                 {
@@ -97,6 +101,7 @@ namespace ProjectGra
             }
             if (sysData.ValueRO.IsHordeOrElite)
             {
+                Debug.Log("SPECIAL WAVE");
                 if (groupSpawnCount < 0)
                 {
                     var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
@@ -105,6 +110,7 @@ namespace ProjectGra
                     var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(5,8)].Prefab);
                     var posf2 = sysData.ValueRW.random.NextFloat2(groupSpawnFixedRangePointOne, groupSpawnFixedRangePointTwo);
                     ecb.SetComponent(enemy, new LocalTransform { Position = new float3(posf2.x, 0, posf2.y), Scale = 1f });
+                    groupSpawnCount = -groupSpawnCount;
                 }
                 else
                 {
@@ -112,6 +118,8 @@ namespace ProjectGra
                     groupSpawnTimer *= 0.8f;
                 }
             }
+            Debug.Log("EnemySpawnSystem - GroupSpawnCount: " + groupSpawnCount);
+
             Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
             Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
             //Debug.Log("EnemySpawnSystem start running"); 
@@ -141,6 +149,9 @@ namespace ProjectGra
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
                 var playerPosition = SystemAPI.GetComponent<LocalTransform>(playerEntity).Position;
                 var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+
+                #region Spawn around Player
+                //choose a random point
                 float2 f2pos;
                 f2pos.x = sysData.ValueRW.random.NextFloat(playerPosition.x - sysData.ValueRO.minRadius, playerPosition.x + sysData.ValueRO.minRadius);
                 f2pos.y = playerPosition.z + math.sqrt((sysData.ValueRO.minRadius + f2pos.x - playerPosition.x) * (sysData.ValueRO.minRadius - f2pos.x + playerPosition.x)) * (sysData.ValueRW.random.NextBool() ? -1 : 1);
@@ -151,7 +162,11 @@ namespace ProjectGra
                 {
                     f2pos = f2pos.yx;
                 }
-                if (sysData.ValueRW.random.NextFloat() < sysData.ValueRO.pointSpawnChance) // spawn a group 
+                // clamp the spawn point within the map 
+                //f2pos = math.clamp(f2pos, mapLeftBottom, mapRightUpper);
+                // reposition the point into the range of the map
+                f2pos %= mapRightUpper;
+                if (sysData.ValueRW.random.NextFloat() < sysData.ValueRO.pointSpawnChance) // spawn a single enemy at a point
                 {
                     var enemy = ecb.Instantiate(allEnemyPrefabBuffer[sysData.ValueRW.random.NextInt(_MaxEnemyBufferIdxExclusive)].Prefab);
                     playerPosition.xz = f2pos;//GetRandomPointWithRangeRadius(playerPosition, sysData.ValueRO.minRadius, sysData.ValueRO.maxRadius); // now it is not player position,
@@ -159,7 +174,7 @@ namespace ProjectGra
                     EffectRequestSharedStaticBuffer.SharedValue.Data.AudioPosList.Add(playerPosition);
                     EffectRequestSharedStaticBuffer.SharedValue.Data.AudioEnumList.Add(AudioEnum.Spawn);
                 }
-                else
+                else // spawn a group
                 {
                     Debug.Log("Group Spawn");
                     groupSpawnRealCount = groupSpawnCount;
@@ -168,7 +183,7 @@ namespace ProjectGra
                     groupSpawnFixedRangePointOne = f2pos + dir;// + groupSpawnRangeOffset;
                     groupSpawnFixedRangePointTwo = f2pos - dir;// - groupSpawnRangeOffset;
                 }
-
+                #endregion
             }
 
             if (groupSpawnRealCount > 0)

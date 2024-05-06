@@ -10,6 +10,7 @@ namespace ProjectGra
         [SerializeField] private float3 leftAutoWpOffset;
         [SerializeField] private float3 rightAutoWpOffset;
         [SerializeField] private float3 midAutoWpOffset;
+        [SerializeField] private float ghostPlayerHeightOffset;
 
         [SerializeField] private float CameraXSensitivity = 1f;
         [SerializeField] private float CameraYSensitivity = 1f;
@@ -36,9 +37,12 @@ namespace ProjectGra
         [SerializeField] private float Dodge;
 
         [Header("Enemy Spawning Config")]
+        public float2 MapRightUpperPointF2;
+
         public float SpawningCooldown;
         public float minRadius;
         public float maxRadius;
+        public float EliteChanceInSpecialWave;
         [Header("Game Wave Time Config")]
         public float BeginWaveTimeSet;
         public float InWaveTimeSet;
@@ -53,6 +57,7 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.None);
                 AddComponent(entity, new PlayerConfigComponent
                 {
+                    ghostPlayerHeightOffset = authoring.ghostPlayerHeightOffset,
                     mainWpOffset = authoring.mainWpOffset,
                     midAutoWpOffset = authoring.midAutoWpOffset,
                     leftAutoWpOffset = authoring.leftAutoWpOffset,
@@ -81,9 +86,11 @@ namespace ProjectGra
                 });
                 AddComponent(entity, new EnemySpawningConfig
                 {
+                    MapRightUpperPointF2 = authoring.MapRightUpperPointF2,
                     SpawningCooldown = authoring.SpawningCooldown,
                     maxRadius = authoring.maxRadius,
                     minRadius = authoring.minRadius,
+                    EliteChanceInSpecialWave = authoring.EliteChanceInSpecialWave,
                 });
                 //AddComponent(entity, new GameWaveTimeConfig { InWaveTime = authoring.InWaveTimeSet, BeginWaveTime = authoring.BeginWaveTimeSet });
                 AddComponent(entity, new MaterialConfig { Speed = authoring.MaterialSpeed, TotalTimer = authoring.MaterialTotalTimer });
@@ -102,17 +109,20 @@ namespace ProjectGra
     //}
     public struct EnemySpawningConfig : IComponentData
     {
+        public float2 MapRightUpperPointF2;
         public float SpawningCooldown;
         public float minRadius;
         public float maxRadius;
+        public float EliteChanceInSpecialWave;
     }
     public struct PlayerConfigComponent : IComponentData
     {
-
         public float3 mainWpOffset;
         public float3 leftAutoWpOffset;
         public float3 rightAutoWpOffset;
         public float3 midAutoWpOffset;
+
+        public float ghostPlayerHeightOffset;
 
         public float CamXSensitivity;
         public float CamYSensitivity;

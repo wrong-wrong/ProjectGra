@@ -11,6 +11,7 @@ namespace ProjectGra.PlayerController
         private float _cameraPitch;
         private float _topClamp;
         private float _bottomClamp;
+        private float _ghostPlayerHeightOffset;
         private float CamYSensitivity;
         private float3 mainWpOffset;
         private NativeArray<float3> offsetList;
@@ -31,7 +32,7 @@ namespace ProjectGra.PlayerController
             offsetList = new NativeArray<float3>(3, Allocator.Persistent);
             var configCom = SystemAPI.GetSingleton<PlayerConfigComponent>();
             var mouseSensitivityModifier = CanvasMonoSingleton.Instance.GetMouseSensitivityModifier();
-
+            _ghostPlayerHeightOffset = configCom.ghostPlayerHeightOffset;
             CamYSensitivity = configCom.CamYSensitivity * mouseSensitivityModifier;
             mainWpOffset = configCom.mainWpOffset;
             offsetList[0] = configCom.leftAutoWpOffset;
@@ -54,7 +55,7 @@ namespace ProjectGra.PlayerController
 
             _cameraPitch -= moveandlook.ValueRO.lookVal.y * CamYSensitivity;
             _cameraPitch = clampAngle(_cameraPitch);
-            ghostPlayer.position = playerTransform.ValueRO.Position;
+            ghostPlayer.position = playerTransform.ValueRO.Position + new float3(0,_ghostPlayerHeightOffset,0);
             ghostPlayer.rotation = playerTransform.ValueRO.Rotation;
             cameraTarget.localRotation = quaternion.Euler(math.radians(_cameraPitch), 0f, 0f);
             var camforward = cameraTarget.forward;

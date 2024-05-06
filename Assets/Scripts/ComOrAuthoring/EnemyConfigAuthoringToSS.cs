@@ -62,6 +62,7 @@ namespace ProjectGra
         public float NormalRangedAttackDistance;
         public float NormalRangedFleeDistance;
         public float NormalRangedFleeSpeed;
+        public float NormalRangedSpawnPosHeightOffset;
         //public GameObject NormalSpawneePrefab;
         public float SpawneeSpeed;
         public float SpawneeTimer;
@@ -200,6 +201,7 @@ namespace ProjectGra
                     //SpawneePrefab = GetEntity(authoring.NormalSpawneePrefab, TransformUsageFlags.Dynamic),
                     SpawneeSpeed = authoring.SpawneeSpeed,
                     SpawneeTimer = authoring.SpawneeTimer,
+                    SpawnPosHeightOffset = authoring.NormalRangedSpawnPosHeightOffset,
                     BasicAttribute = new EnemyBasicAttribute
                     {
                         HealthPoint = SO.HealthPoint,
@@ -378,7 +380,7 @@ namespace ProjectGra
         public float AttackDistance;
         public float FleeDistance;
         public float FleeSpeed;
-
+        public float SpawnPosHeightOffset;
         //public Entity SpawneePrefab;
         public float SpawneeSpeed;
         public float SpawneeTimer;

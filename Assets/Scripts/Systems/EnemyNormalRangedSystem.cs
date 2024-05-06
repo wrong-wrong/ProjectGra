@@ -28,6 +28,7 @@ namespace ProjectGra
 
         float attackDistanceSq;
         float attackCooldown;
+        float spawnPosHeightOffset;
         float deathCountdown;
 
         float fleeDistanceSq;
@@ -73,6 +74,7 @@ namespace ProjectGra
                 deathCountdown = config.DeathCountdown;
                 fleeDistanceSq = config.FleeDistance * config.FleeDistance;
                 fleeSpeed = config.FleeSpeed;
+                spawnPosHeightOffset = config.SpawnPosHeightOffset;
                 state.EntityManager.SetComponentData(spawneePrefab, new SpawneeTimer { Value = config.SpawneeTimer });
                 state.EntityManager.SetComponentData(spawneePrefab, new AttackCurDamage { damage = _Damage });
                 var container = SystemAPI.GetSingleton<PrefabContainerCom>();
@@ -174,7 +176,9 @@ namespace ProjectGra
                             transform.ValueRW.Rotation = quaternion.LookRotation(tarDir, up);
                             attack.ValueRW.AttackCooldown = attackCooldown;
                             var spawnee = ecb.Instantiate(spawneePrefab);
-                            ecb.SetComponent(spawnee, transform.ValueRO);
+                            var tmpTransform = transform.ValueRO;
+                            tmpTransform.Position += new float3(0, spawnPosHeightOffset, 0);
+                            ecb.SetComponent(spawnee, tmpTransform);
                         }
                         break;
                     case EntityState.Dead:

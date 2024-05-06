@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using UnityEngine;
-
+using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp),OrderFirst = true)]
@@ -108,33 +108,38 @@ namespace ProjectGra
 
                 //Initializing Player with config
                 var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
-                state.EntityManager.SetComponentData(playerEntity, new PlayerAttributeMain
+                var presetMain = PlayerDataModel.Instance.GetMainAttribute();
+                var presetDamage = PlayerDataModel.Instance.GetDamageAttribute();
+                var calculatedMainAttribute = new PlayerAttributeMain
                 {
-                    MaxHealthPoint = configCom.MaxHealthPoint,
-                    HealthRegain = configCom.HealthRegain,
-                    Armor = configCom.Armor,
-                    SpeedPercentage = configCom.SpeedPercentage,
-                    Range = configCom.Range,
-                    LifeSteal = configCom.LifeSteal,
-                    Dodge = configCom.Dodge,
-                });
-                state.EntityManager.SetComponentData(playerEntity, new EntityHealthPoint { HealthPoint = configCom.MaxHealthPoint });
-                state.EntityManager.SetComponentData(playerEntity, new PlayerAtttributeDamageRelated
+                    MaxHealthPoint = configCom.MaxHealthPoint + presetMain.MaxHealthPoint,
+                    HealthRegain = configCom.HealthRegain + presetMain.HealthRegain,
+                    Armor = configCom.Armor + presetMain.Armor,
+                    SpeedPercentage = configCom.SpeedPercentage + presetMain.SpeedPercentage,
+                    Range = configCom.Range + presetMain.Range,
+                    LifeSteal = configCom.LifeSteal + presetMain.LifeSteal,
+                    Dodge = configCom.Dodge + presetMain.Dodge,
+                };
+                var calculatedDamageAttribute = new PlayerAtttributeDamageRelated
                 {
-                    MeleeRangedElementAttSpd = new float4(configCom.MeleeDamage, configCom.RangedDamage, configCom.ElementDamage, configCom.AttackSpeed),
-                    CriticalHitChance = configCom.CriticalHitChance,
-                    DamagePercentage = configCom.DamagePercentage,
-                });
+                    MeleeRangedElementAttSpd = new float4(configCom.MeleeDamage + presetDamage.MeleeRangedElementAttSpd.x,
+                    configCom.RangedDamage + presetDamage.MeleeRangedElementAttSpd.y,
+                    configCom.ElementDamage + presetDamage.MeleeRangedElementAttSpd.z,
+                    configCom.AttackSpeed + presetDamage.MeleeRangedElementAttSpd.w),
+                    CriticalHitChance = configCom.CriticalHitChance + presetDamage.CriticalHitChance,
+                    DamagePercentage = configCom.DamagePercentage + presetDamage.DamagePercentage,
+                };
+                state.EntityManager.SetComponentData(playerEntity, calculatedMainAttribute);
+                state.EntityManager.SetComponentData(playerEntity, new EntityHealthPoint { HealthPoint = configCom.MaxHealthPoint + presetMain.MaxHealthPoint });
+                state.EntityManager.SetComponentData(playerEntity, calculatedDamageAttribute);
+                PlayerDataModel.Instance.SetAttributeWithStruct(calculatedMainAttribute, calculatedDamageAttribute);
 
-                //Init in-game UI
-                CanvasMonoSingleton.Instance.IngameUIInit(configCom.MaxHealthPoint, 16);
-                //CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(playerHp.HealthPoint, 0, playerMaterialsCount.Count);
-                CanvasMonoSingleton.Instance.HideShop();
-                CanvasMonoSingleton.Instance.ShowInGameUI();
-                CanvasMonoSingleton.Instance.HidePresetChoosingCanvasGroup();
+
 
 
                 // Setting Spawning Config
+                var random = Random.CreateFromIndex(0);
+                var spawnConfig = SystemAPI.GetSingleton<EnemySpawningConfig>();
                 var SpawningConfigSO = MonoGameManagerSingleton.Instance.SpawningSOList[MonoGameManagerSingleton.Instance.CurrentDifficulty];
                 var spawnConfigBuffer = state.EntityManager.GetBuffer<SpawningConfigBuffer>(superSingleton);
                 spawnConfigBuffer.Clear();
@@ -152,13 +157,17 @@ namespace ProjectGra
                     }
                     else
                     {
+                        bool isElite = random.NextFloat() < spawnConfig.EliteChanceInSpecialWave;
+                        int modifier = isElite ? -1 : 1;
                         spawnConfigBuffer.Add(new SpawningConfigBuffer
                         {
                             SpawnCooldown = -SpawningConfigSO.SpawningCooldown[i],
                             PointSpawnChance = SpawningConfigSO.PointSpawnChance[i],
                             GroupSpawnCooldown = SpawningConfigSO.GroupSpawnCooldown[i],
-                            GroupSpawnCount = SpawningConfigSO.GroupSpawnCount[i],
+                            GroupSpawnCount = SpawningConfigSO.GroupSpawnCount[i] * modifier,
                         });
+                        CanvasMonoSingleton.Instance.AddCodingWaveAndIsElite(i, isElite);
+                        //Debug.LogError("asd");
                     }
                 }
                 //Debug.Log("GameInitializeSystem - SpawningConfigBuffer.Length : " + spawnConfigBuffer.Length);
@@ -168,7 +177,13 @@ namespace ProjectGra
                 //state.EntityManager.AddComponent<GameControllMonoDataApplied>(superSingleton);
                 state.EntityManager.AddComponent<GameControllMonoDataApplied>(waveControllSysHandle);
 
-
+                //Init in-game UI
+                CanvasMonoSingleton.Instance.IngameUIInit(calculatedMainAttribute.MaxHealthPoint, 16);
+                CanvasMonoSingleton.Instance.InitOtherUI();
+                //CanvasMonoSingleton.Instance.IngameUIUpdataPlayerStats(playerHp.HealthPoint, 0, playerMaterialsCount.Count);
+                CanvasMonoSingleton.Instance.HideShop();
+                CanvasMonoSingleton.Instance.ShowInGameUI();
+                CanvasMonoSingleton.Instance.HidePresetChoosingCanvasGroup();
             }
 
         }

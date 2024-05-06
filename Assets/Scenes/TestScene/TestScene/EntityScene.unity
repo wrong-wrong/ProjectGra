@@ -681,18 +681,19 @@ MonoBehaviour:
     type: 3}
   ScalingSpawneePrefab: {fileID: 6855698195050949098, guid: 51cd11a66adf01a4381494a346b1e858,
     type: 3}
-  EnemyEggMesh: {fileID: 4300000, guid: 66755b5184028fe42a3c26f5f81f584a, type: 2}
-  EnemyEliteEggAndShootMesh: {fileID: 4300000, guid: 2bf4702b8e1cc9141b4a50e74f5d558f,
+  EnemyEggMesh: {fileID: 4300000, guid: 4557a139b20c59042a31129dc1aa5511, type: 2}
+  EnemyEliteEggAndShootMesh: {fileID: 4300000, guid: 85e9c6ab403565049837141967d0915d,
     type: 2}
-  EnemyEliteShootMesh: {fileID: 4300000, guid: 6bfc74374bf6a5f449d91e726fe2f1d8, type: 2}
-  EnemyEliteSprintAndShootMesh: {fileID: 4300000, guid: 4c4043a138db5cc449ba69899ddece23,
+  EnemyEliteShootMesh: {fileID: 4300000, guid: 30e4b389135587f4b81eb0f55149042b, type: 2}
+  EnemyEliteSprintAndShootMesh: {fileID: 4300000, guid: 21ab52aa721002947b6c122596316ef1,
     type: 2}
-  EnemyNormalMeleeMesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
-  EnemyNormalRangedMesh: {fileID: 4300000, guid: 2d3284a0f6714614eb4ab2a658ca91c5,
+  EnemyNormalMeleeMesh: {fileID: 4300000, guid: 6e07ef5bff5f7f341ab667c9eb800c5c,
     type: 2}
-  EnemyNormalSprintMesh: {fileID: 4300000, guid: 72909d938aebdcf4e9c7034e8ef3e96b,
+  EnemyNormalRangedMesh: {fileID: 4300000, guid: 6a37168841c93c94997c15e2065a14a4,
     type: 2}
-  EnemySummonerMesh: {fileID: 4300000, guid: c0bb55a433fb676448bb7cd760e3b479, type: 2}
+  EnemyNormalSprintMesh: {fileID: 4300000, guid: e0544464cedc7dd46b5523509a9741d0,
+    type: 2}
+  EnemySummonerMesh: {fileID: 4300000, guid: 97a25adac1d137a44ac090809740be39, type: 2}
 --- !u!4 &695474579
 Transform:
   m_ObjectHideFlags: 0
@@ -922,6 +923,89 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1df3a143e78faa24c8b93a5c449580b0, type: 3}
+--- !u!1 &1345588181
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1345588185}
+  - component: {fileID: 1345588184}
+  - component: {fileID: 1345588183}
+  m_Layer: 0
+  m_Name: Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &1345588183
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345588181}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: dfc08c90188302847afb04f628582097, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1345588184
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345588181}
+  m_Mesh: {fileID: 4300000, guid: 097b4a1f5202d7747824aad5d6544817, type: 2}
+--- !u!4 &1345588185
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345588181}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1441102706
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1086,6 +1170,7 @@ MonoBehaviour:
     x: 0
     y: -0.6
     z: 2.2
+  ghostPlayerHeightOffset: 1
   CameraXSensitivity: 2
   CameraYSensitivity: 0.8
   PlayerBasicMoveSpeed: 4
@@ -1103,9 +1188,13 @@ MonoBehaviour:
   Range: 0
   LifeSteal: 0
   Dodge: 0
+  MapRightUpperPointF2:
+    x: 50
+    y: 50
   SpawningCooldown: 1
   minRadius: 6
   maxRadius: 13
+  EliteChanceInSpecialWave: 0.7
   BeginWaveTimeSet: 3
   InWaveTimeSet: 30
   MaterialSpeed: 2
@@ -1171,6 +1260,7 @@ MonoBehaviour:
   NormalRangedAttackDistance: 18
   NormalRangedFleeDistance: 10
   NormalRangedFleeSpeed: 5
+  NormalRangedSpawnPosHeightOffset: 1
   SpawneeSpeed: 10
   SpawneeTimer: 4
   NormalSprintAttackVal: 20
@@ -1437,7 +1527,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3594628699546418229}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: acc39fea2bcd73444a0730d62a81db33, type: 2}
 --- !u!114 &5166331250322419827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,7 +1543,7 @@ MonoBehaviour:
   m_ShapeType: 0
   m_PrimitiveCenter:
     x: 0
-    y: 0
+    y: 1
     z: 0
   m_PrimitiveSize:
     x: 1
@@ -1818,3 +1908,4 @@ SceneRoots:
   - {fileID: 684888321}
   - {fileID: 466151389}
   - {fileID: 156874863}
+  - {fileID: 1345588185}

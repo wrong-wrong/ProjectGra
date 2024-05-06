@@ -58,6 +58,8 @@ namespace ProjectGra
 
         [Header("Shop UI Manger")]
         [SerializeField] ShopUIManager shopUIManager;
+        [Header("Notice Container")]
+        [SerializeField] NoticeContainer noticeContainer;
         //For Weapon Category
         public Action<int, bool> OnWeaponAddOrDeleteAction;
 
@@ -105,6 +107,21 @@ namespace ProjectGra
         //{
         //    OnPauseContinueButtonClicked?.Invoke();
         //}
+        public void RestartGame()
+        {
+            noticeContainer.Restart();
+        }
+        public void InitOtherUI()
+        {
+            //ingameUIManager.
+            noticeContainer.InitAfterInitialize();
+            UpdateWaveNumberText();
+        }
+        public void AddCodingWaveAndIsElite(int codingWave, bool isElite)
+        {
+            noticeContainer.AddCodingWaveAndIsElite(codingWave, isElite);
+        }
+
         public float GetMouseSensitivityModifier()
         {
             return settingManager.GetMouseSensitivityModifier();

@@ -84,7 +84,7 @@ namespace ProjectGra
                 // TODO : apply life steal logic
                 for (int i = 0, n = playerSuccessHitCount.ValueRO.Value; i < n; i++)
                 {
-                    if(random.NextFloat()<playerAttribute.ValueRW.LifeSteal)
+                    if(random.NextFloat()<playerAttribute.ValueRW.LifeSteal && playerHpRW.ValueRO.HealthPoint + 1 <= playerAttribute.ValueRO.MaxHealthPoint)
                     {
                         ++playerHpRW.ValueRW.HealthPoint;
                         Debug.Log("Attribute related - Life Steal!");

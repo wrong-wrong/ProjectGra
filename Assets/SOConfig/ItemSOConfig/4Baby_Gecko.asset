@@ -16,6 +16,6 @@ MonoBehaviour:
   ItemLevel: 0
   ItemBasePrice: 18
   ItemName: Baby Gecko
-  ItemSprite: {fileID: 0}
+  ItemSprite: {fileID: 21300000, guid: d8c3ebd62355be4439f2243eac0af253, type: 3}
   AffectedAttributeIdx: 04000000
   BonusedValueList: 32000000

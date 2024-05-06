@@ -51,6 +51,7 @@ namespace ProjectGra
         private void OnRestartButtonClicked()
         {
             buttonClickedEnum = ButtonClickedEnum.Restart;
+            CanvasMonoSingleton.Instance.RestartGame();
             CanvasMonoSingleton.Instance.HidePauseCanvasGroup();
             CanvasMonoSingleton.Instance.HideInGameUI();
             CanvasMonoSingleton.Instance.ShowPresetChoosingCanvasGroup();

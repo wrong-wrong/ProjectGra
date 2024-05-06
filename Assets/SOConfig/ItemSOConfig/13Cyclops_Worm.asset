@@ -16,6 +16,6 @@ MonoBehaviour:
   ItemLevel: 1
   ItemBasePrice: 45
   ItemName: Cyclops Worm
-  ItemSprite: {fileID: 0}
+  ItemSprite: {fileID: 21300000, guid: 608b64af96b497b439bb16f4c10bd540, type: 3}
   AffectedAttributeIdx: 0600000004000000
   BonusedValueList: 0c000000c4ffffff

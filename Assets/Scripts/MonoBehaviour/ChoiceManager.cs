@@ -55,6 +55,7 @@ namespace ProjectGra
         private void ApplyWeaponPreset(int Idx)
         {
             MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx = Idx;
+            CanvasMonoSingleton.Instance.OnWeaponAddOrDelete(Idx, true);
         }
 
         private void ApplyCharacterPreset(int Idx)

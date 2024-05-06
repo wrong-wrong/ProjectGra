@@ -128,7 +128,6 @@ namespace ProjectGra
                 //Debug.Log("AudioEnum : " + audioEnum + "ClipListCount :" + clipList.Count);
                 //audioSourceRingList[_audioTail].
                 audioSourceRingList[_audioTail].transform.position = worldPos;
-                //Debug.LogWarning("Using Play() to play default audio clip, should use PlayOnShot with audioClip related to the audio enum");
                 if(clipList.Count > 1)
                 {
                     audioSourceRingList[_audioTail].PlayOneShot(clipList[random.NextInt(clipList.Count)]);

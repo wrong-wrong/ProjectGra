@@ -44,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3866693097470072034}
-  m_Mesh: {fileID: 4300000, guid: 66755b5184028fe42a3c26f5f81f584a, type: 2}
+  m_Mesh: {fileID: 4300000, guid: a86f10bcccec2df4eb88d230ccd395ac, type: 2}
 --- !u!23 &8851882400737560051
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -99,8 +99,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 011814ac30fb0da49b2c6062b3affd3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ToBeHatchedEntityPrefab: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
-    type: 3}
 --- !u!114 &1277914929336635252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,5 +268,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b1ddeb0b92012344bcf837d56ea29c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 1
-  CycleTime: 1
+  FlashingCycleTime: 0
+  SpawningTimerAndFlashDuration: 0
