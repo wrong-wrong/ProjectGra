@@ -313,10 +313,10 @@ namespace ProjectGra
             //Set name text
         }
         //private GameObject calledItemSlot;
-        private SingleGameItem itemSlotCom;
+        private GameItemSingleSlot itemSlotCom;
         private int itemIdx;
         private int itemPrice;
-        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, SingleGameItem itemSlotCom, Vector3 showPos)
+        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, GameItemSingleSlot itemSlotCom, Vector3 showPos)
         {
             for (int i = 0, n = CategoryRectList.Count; i < n; ++i)
             {
@@ -424,7 +424,7 @@ namespace ProjectGra
         //    calledItemSlot = itemSlot;
         //    InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, showPos);
         //}
-        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, SingleGameItem itemSlotCom, Vector3 showPos)
+        public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, GameItemSingleSlot itemSlotCom, Vector3 showPos)
         {
             this.itemSlotCom = itemSlotCom;
             InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, showPos);

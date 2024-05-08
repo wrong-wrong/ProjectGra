@@ -15,7 +15,7 @@ MonoBehaviour:
   CategoryName: Gun
   AffectedAttributeIdxList: 04000000
   BonusValueInDifferentCountList:
-  - x: 2
-    y: 3
-    z: 4
-    w: 5
+  - x: 100
+    y: 150
+    z: 250
+    w: 400

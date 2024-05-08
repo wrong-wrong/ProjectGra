@@ -6,7 +6,7 @@ using Unity.Transforms;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpUpdateAfterPhysicsSysGrp))]
-    public partial struct DetectMaterialsSystem : ISystem
+    public partial struct DetectLootSystem : ISystem
     {
         private CollisionFilter materialFilter;
         private ComponentLookup<ItemTag> itemTagLookup;

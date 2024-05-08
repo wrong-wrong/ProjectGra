@@ -4,6 +4,7 @@ using Unity.Transforms;
 
 namespace ProjectGra
 {
+    [UpdateInGroup(typeof(MySysGrpAfterFixedBeforeVariableRate))]
     public partial struct LootMoveSystem : ISystem, ISystemStartStop
     {
         private float speed;

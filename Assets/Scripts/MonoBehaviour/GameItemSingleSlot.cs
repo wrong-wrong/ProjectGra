@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace ProjectGra
 {
-    public class SingleGameItem : MonoBehaviour, IPointerClickHandler
+    public class GameItemSingleSlot: MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] Image background;
         [SerializeField] Image iconImg;

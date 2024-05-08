@@ -15,7 +15,7 @@ MonoBehaviour:
   Icon: {fileID: 21300000, guid: d0b2ef25719327544b360cacec45b62d, type: 3}
   UpgradeName: Range
   BonusValueInFourLevel:
-    x: 1
-    y: 3
-    z: 5
-    w: 7
+    x: 50
+    y: 150
+    z: 250
+    w: 350

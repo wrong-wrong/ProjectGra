@@ -7,7 +7,7 @@ using UnityEngine;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySystemGroupInInitializationSysGrp))]
-    public partial struct GameWaveControllSystem : ISystem, ISystemStartStop
+    public partial struct GameWaveControlSystem : ISystem, ISystemStartStop
     {
         private float timer;
         private ComponentLookup<AttackExplosiveCom> explosiveLookup;
@@ -35,8 +35,6 @@ namespace ProjectGra
         {
             CanvasMonoSingleton.Instance.OnShopContinueButtonClicked += ShopContinueButtonCallback;
             beginWaveTimeSet = CanvasMonoSingleton.Instance.beforeWaveTime;
-            timer = beginWaveTimeSet;
-
             //CanvasMonoSingleton.Instance.OnPauseContinueButtonClicked += PauseContinueButtonCallback;
             //tmp test code
             //var idxList = SystemAPI.GetComponent<WaveControllSystemData>(state.SystemHandle).idxList;
@@ -44,7 +42,7 @@ namespace ProjectGra
             var tmpI4 = new int4(MonoGameManagerSingleton.Instance.CurrentWeaponPresetIdx, -1, -1, -1);
             sysData.ValueRW.tmpWpIdx = tmpI4;
             sysData.ValueRW.tmpWpLevel = int4.zero;
-            timer = beginWaveTimeSet;
+            sysData.ValueRW.timer = beginWaveTimeSet;
             //playerPrefab = SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab;
             PopulateWeaponStateWithWeaponIdx(ref state, tmpI4);
         }
@@ -56,7 +54,7 @@ namespace ProjectGra
         public void ShopContinueButtonCallback()
         {
 
-            ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControllSystem>();
+            ref var state = ref World.DefaultGameObjectInjectionWorld.EntityManager.WorldUnmanaged.GetExistingSystemState<GameWaveControlSystem>();
             ExitShopState(ref state);
         }
 
@@ -98,7 +96,8 @@ namespace ProjectGra
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
                 var cooldownModifier = math.clamp(1f - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
-                playerAttibute.MeleeRangedElementAttSpd.w *= 100f;
+                //playerAttibute.MeleeRangedElementAttSpd.w *= 100f;
+                config.DamageBonus.w *= 100f;
                 var calculatedDamageAfterBonus = math.max(1, (int)((1f + playerAttibute.DamagePercentage)
                     * (config.BasicDamage[weaponLevel[0]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd))));
                 Debug.Log("Calculated Damage - " +  calculatedDamageAfterBonus);    
@@ -206,11 +205,11 @@ namespace ProjectGra
                 }
 
                 var config = wpHashMapWrapperCom.wpNativeHashMap[weaponIdx[i + 1]];
-
+                config.DamageBonus.w *= 100f;
                 var newWpModel = ecb.Instantiate(config.WeaponPrefab);
                 var ModelTransform = SystemAPI.GetComponent<LocalTransform>(config.WeaponPrefab);
-                var calculatedDamageAfterBonus = (int)((1 + playerAttibute.DamagePercentage)
-                    * (config.BasicDamage[weaponLevel[i + 1]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd)));
+                var calculatedDamageAfterBonus = math.max(1, (int)((1 + playerAttibute.DamagePercentage)
+                    * (config.BasicDamage[weaponLevel[i + 1]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd))));
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance[weaponLevel[i + 1]];
                 var calculatedCooldown = config.Cooldown[weaponLevel[i + 1]] * math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f);
                 //Debug.Log("Attribute related - Auto wp " + i + 1 + "Cooldown modified with percentage:" + math.clamp(1 - playerAttibute.MeleeRangedElementAttSpd.w, 0.2f, 2f));
@@ -292,7 +291,7 @@ namespace ProjectGra
             SystemAPI.SetComponent(playerEntity, new EntityHealthPoint { HealthPoint = PlayerDataModel.Instance.GetMaxHealthPoint() });
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetDamageAttribute());
             SystemAPI.SetComponent(playerEntity, PlayerDataModel.Instance.GetMainAttribute());
-            state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab));
+            //state.EntityManager.AddComponentData(playerEntity, state.EntityManager.GetComponentData<PhysicsCollider>(SystemAPI.GetSingleton<PrefabContainerCom>().PlayerPrefab));
 
 
             //Update weaponstate
@@ -310,13 +309,14 @@ namespace ProjectGra
             //CanvasMonoSingleton.Instance.ShowInGameUI();
 
 
-            //set spawning system
-            var spawningConfig = SystemAPI.GetSingletonRW<EnemySpawningConfig>();
-            spawningConfig.ValueRW.SpawningCooldown = 1f;
-            Debug.Log("spawningCooldown after set" + spawningConfig.ValueRO.SpawningCooldown);
+            ////set spawning system
+            //var spawningConfig = SystemAPI.GetSingletonRW<EnemySpawningConfig>();
+            //spawningConfig.ValueRW.SpawningCooldown = 1f;
+            //Debug.Log("spawningCooldown after set" + spawningConfig.ValueRO.SpawningCooldown);
             //set gamestate
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
+            timer = beginWaveTimeSet;
             Debug.Log("InShop to BeforeWave!");
 
             //set should enemy update
@@ -384,17 +384,18 @@ namespace ProjectGra
             switch (gameState.ValueRO.CurrentState)
             {
                 case GameControllState.BeforeWave:
-                    if ((timer -= deltatime) < 0f)   //state change
+                    var sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
+                    if ((sysData.ValueRW.timer -= deltatime) < 0f)   //state change
                     {
                         var wave = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>().CodingWave;
 
-                        timer = math.clamp(20 + wave * 5, 20, 60) + 1; // setting in wave time;
+                        sysData.ValueRW.timer = math.clamp(20 + wave * 5, 20, 60) + 1; // setting in wave time;
                         gameState.ValueRW.PreviousState = GameControllState.BeforeWave;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
-
-                        state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
-                        CanvasMonoSingleton.Instance.StartCountdownTimer(timer);
+                        CanvasMonoSingleton.Instance.StartCountdownTimer(sysData.ValueRO.timer);
                         Debug.Log("BeforeWave to InWave!");
+                        state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
+
                     }
                     if (Input.GetKeyUp(KeyCode.P))
                     {
@@ -406,7 +407,8 @@ namespace ProjectGra
                     }
                     break;
                 case GameControllState.InWave:
-                    if ((timer -= deltatime) < 0f)
+                    sysData = SystemAPI.GetSingletonRW<WaveControllSystemData>();
+                    if ((sysData.ValueRW.timer -= deltatime) < 0f)
                     {
                         gameState.ValueRW.PreviousState = GameControllState.InWave;  // setting only for InShop state, InShop checks previous state to decide if Pause
                         gameState.ValueRW.CurrentState = GameControllState.AfterWave;
@@ -429,7 +431,6 @@ namespace ProjectGra
                 case GameControllState.AfterWave:
                     if (!SystemAPI.HasComponent<GameControllWaveCleanup>(state.SystemHandle))  
                     {
-                        timer = beginWaveTimeSet; // setting begin wave time;!!!!
                         // if coding wave is 19 , and you survived it then you won
                         var wave = SystemAPI.GetSingleton<GameControllShouldUpdateEnemy>().CodingWave;
                         if(wave == 19)
@@ -458,9 +459,9 @@ namespace ProjectGra
                     gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
                     state.EntityManager.AddComponent<GameControllNotPaused>(state.SystemHandle);
                     state.EntityManager.AddComponent<GameControllNotInShop>(state.SystemHandle);
-                    var sysData = SystemAPI.GetSingleton<WaveControllSystemData>();
-                    CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.tmpWpIdx, sysData.tmpWpLevel);
-                    CanvasMonoSingleton.Instance.StartCountdownTimer(timer);
+                    var sysDataCom = SystemAPI.GetSingleton<WaveControllSystemData>();
+                    CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysDataCom.tmpWpIdx, sysDataCom.tmpWpLevel);
+                    CanvasMonoSingleton.Instance.StartCountdownTimer(beginWaveTimeSet);
                     Debug.Log("Uninitialized to BeforeWave!");
 
                     break;
@@ -486,6 +487,11 @@ namespace ProjectGra
                             PauseUIManager.Instance.buttonClickedEnum = ButtonClickedEnum.None;
                             gameState.ValueRW.CurrentState = GameControllState.Uninitialized;
                             gameState.ValueRW.PreviousState = GameControllState.Uninitialized;
+
+                            // Reset Spawn System
+                            var SpawnSysData = SystemAPI.GetSingletonRW<EnemySpawnSystemDataSingleton>();
+                            SpawnSysData.ValueRW.IsInit = false;
+
                             // just do wave clean on my own
                             //      destory enemy, spawnee, item, material
                             //      destory healthBar in cleanup Component
@@ -586,6 +592,7 @@ namespace ProjectGra
         //public NativeArray<int> idxList;
         public int4 tmpWpIdx;
         public int4 tmpWpLevel;
+        public float timer;
         //public bool4 tmpIsMeleeWp;
     }
     public struct GameControllNotPaused : IComponentData { }

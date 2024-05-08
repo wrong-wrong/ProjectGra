@@ -86,9 +86,9 @@ namespace ProjectGra.PlayerController
                 ref var wp = ref autoWpBuffer.ElementAt(i);
                 if (wp.WeaponIndex != -1)
                 {
-                    var offset = wp.WeaponPositionOffset + offsetList[i];
+                    var offset = offsetList[i];//wp.WeaponPositionOffset + offsetList[i];
                     //transformRW.ValueRW.Position = (camforward * offset.z + camright * offset.x + camup * offset.y + cameraTarget.position);
-                    wp.autoWeaponLocalTransform.Position = (forward * offset.z + right * offset.x + playerTransform.ValueRO.Position);
+                    wp.autoWeaponLocalTransform.Position = (forward * offset.z + right * offset.x + playerTransform.ValueRO.Position) + new float3(0,_ghostPlayerHeightOffset,0);
                     if (!wp.IsMeleeWeapon || wp.WeaponCurrentState == WeaponState.None)//(wp.WeaponCurrentState != WeaponState.Thrust && wp.WeaponCurrentState != WeaponState.Retrieve))
                     {
                         SystemAPI.GetComponentRW<LocalTransform>(wp.WeaponModel).ValueRW.Position = wp.autoWeaponLocalTransform.Position;

@@ -59,7 +59,7 @@ namespace ProjectGra
         [Header("Shop UI Manger")]
         [SerializeField] ShopUIManager shopUIManager;
         [Header("Notice Container")]
-        [SerializeField] NoticeContainer noticeContainer;
+        [SerializeField] NoticeManager noticeContainer;
         //For Weapon Category
         public Action<int, bool> OnWeaponAddOrDeleteAction;
 
@@ -452,12 +452,12 @@ namespace ProjectGra
             infoMiniWindow.gameObject.SetActive(true);
             infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithWeapon(WeaponIdx, WeaponLevel, currentPrice, showCombine, combineSlotIdx, calledSlotIdx, position);
         }
-        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, int currentPrice, SingleGameItem itemSlotCom, Vector3 showPos)
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, int currentPrice, GameItemSingleSlot itemSlotCom, Vector3 showPos)
         {
             infoMiniWindow.gameObject.SetActive(true);
             infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, currentPrice, itemSlotCom, showPos);
         }
-        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, SingleGameItem itemSlotCom, Vector3 showPos)
+        public void ShowAndInitInfoWindowWithItem(int itemIdx, int itemLevel, GameItemSingleSlot itemSlotCom, Vector3 showPos)
         {
             infoMiniWindow.gameObject.SetActive(true);
             infoMiniWindow.InitInfoMimiWindowAndShowAtPositionWithItem(itemIdx, itemLevel, itemSlotCom, showPos);
@@ -564,7 +564,7 @@ namespace ProjectGra
         //    shopUIManager.RecycleGameItemWithGO(itemIdx, currentPrice, calledItemSlot);
         //}
 
-        public void RecycleGameItemWithCom(int itemIdx, int currentPrice, SingleGameItem itemSlotCom)
+        public void RecycleGameItemWithCom(int itemIdx, int currentPrice, GameItemSingleSlot itemSlotCom)
         {
             shopUIManager.RecycleGameItemWithCom(itemIdx, currentPrice, itemSlotCom);
         }

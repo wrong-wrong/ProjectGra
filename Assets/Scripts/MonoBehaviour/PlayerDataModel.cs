@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -32,13 +31,13 @@ namespace ProjectGra
         public Action OnPlayerAttributeChanged;
         public void Awake()
         {
-            if(Instance != null)
+            if (Instance != null)
             {
                 Destroy(gameObject);
             }
             Instance = this;
             attributeValueList.Capacity = 13;
-            for(int i = 0; i < 13; ++i)
+            for (int i = 0; i < 13; ++i)
             {
                 attributeValueList.Add(0);
             }
@@ -46,7 +45,7 @@ namespace ProjectGra
         }
         public void ResetData()
         {
-            for(int i = 0; i < 13; ++i)
+            for (int i = 0; i < 13; ++i)
             {
                 attributeValueList[i] = 0;
             }
@@ -124,11 +123,11 @@ namespace ProjectGra
         {
             return new PlayerAtttributeDamageRelated
             {
-                CriticalHitChance = attributeValueList[5]/100f,
-                DamagePercentage = attributeValueList[6]/100f,
+                CriticalHitChance = attributeValueList[5] / 100f,
+                DamagePercentage = attributeValueList[6] / 100f,
                 MeleeRangedElementAttSpd = new float4(attributeValueList[7],
                 attributeValueList[8], attributeValueList[9],
-                attributeValueList[10]/100f)
+                attributeValueList[10] / 100f)
             };
         }
 
@@ -139,8 +138,8 @@ namespace ProjectGra
                 MaxHealthPoint = (int)attributeValueList[0],
                 HealthRegain = (int)attributeValueList[1],
                 Armor = attributeValueList[2] / 100f,
-                SpeedPercentage = attributeValueList[3]/100f,
-                Range = attributeValueList[4]/100f,
+                SpeedPercentage = attributeValueList[3] / 100f,
+                Range = attributeValueList[4] / 100f,
                 LifeSteal = attributeValueList[11] / 100f,
                 Dodge = attributeValueList[12] / 100f,
             };

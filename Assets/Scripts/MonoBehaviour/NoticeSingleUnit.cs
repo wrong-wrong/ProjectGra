@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace ProjectGra
 {
-    public class SingleNotice : MonoBehaviour
+    public class NoticeSingleUnit : MonoBehaviour
     {
         [SerializeField] TextMeshProUGUI waveNumberText;
         [SerializeField] RectTransform noticeRect;

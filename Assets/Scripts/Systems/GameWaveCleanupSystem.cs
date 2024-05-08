@@ -36,7 +36,7 @@ namespace ProjectGra
             if((realTimer -= deltatime) < 0f)
             {
                 realTimer = cleanupTimer;
-                var waveControllSys = state.WorldUnmanaged.GetExistingUnmanagedSystem<GameWaveControllSystem>();
+                var waveControllSys = state.WorldUnmanaged.GetExistingUnmanagedSystem<GameWaveControlSystem>();
                 state.EntityManager.RemoveComponent<GameControllWaveCleanup>(waveControllSys);
                 var enemyList = SystemAPI.QueryBuilder().WithAll<EnemyTag>().Build().ToEntityArray(state.WorldUpdateAllocator);
                 state.EntityManager.DestroyEntity(enemyList);

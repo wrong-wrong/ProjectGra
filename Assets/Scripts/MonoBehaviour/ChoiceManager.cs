@@ -6,8 +6,8 @@ namespace ProjectGra
 {
     public class ChoiceManager : MonoBehaviour
     {
-        [SerializeField] ChoiceContainer infoContainer;
-        [SerializeField] ChoiceContainer slotContainer;
+        [SerializeField] RectTransform infoContainerRect;
+        [SerializeField] RectTransform slotContainerRect;
         [SerializeField] GameObject ChoiceSlotPrefab;
         [SerializeField] GameObject InfoWindowPrefab;
         [SerializeField] float infoWindowWidth;
@@ -114,7 +114,7 @@ namespace ProjectGra
             var characterSOCount = SOConfigSingleton.Instance.CharacterPresetSOList.Count;
             for (int i = 0; i < characterSOCount; i++)
             {
-                var go = Instantiate(ChoiceSlotPrefab, slotContainer.transform);
+                var go = Instantiate(ChoiceSlotPrefab, slotContainerRect);
                 var slotCom = go.GetComponent<ChoiceSlot>();
                 slotCom.InitSlot(i, currentSlotType);
                 slotList.Add(slotCom);
@@ -135,7 +135,7 @@ namespace ProjectGra
             {
                 for (int i = currentCount; i < weaponSOCount; i++)
                 {
-                    var go = Instantiate(ChoiceSlotPrefab, slotContainer.transform);
+                    var go = Instantiate(ChoiceSlotPrefab, slotContainerRect);
                     var slotCom = go.GetComponent<ChoiceSlot>();
                     slotCom.InitSlot(i, currentSlotType);
                     slotList.Add(slotCom);
@@ -166,7 +166,7 @@ namespace ProjectGra
             {
                 for (int i = currentCount; i < difficultyCount; i++)
                 {
-                    var go = Instantiate(ChoiceSlotPrefab, slotContainer.transform);
+                    var go = Instantiate(ChoiceSlotPrefab, slotContainerRect);
                     var slotCom = go.GetComponent<ChoiceSlot>();
                     slotCom.InitSlot(i, currentSlotType);
                     slotList.Add(slotCom);
@@ -190,7 +190,7 @@ namespace ProjectGra
             if(infoList.Count > 0)infoList[infoList.Count - 1].RemoveListener();
 
             // add info window
-            var infoWindow = Instantiate(InfoWindowPrefab, infoContainer.transform);
+            var infoWindow = Instantiate(InfoWindowPrefab, infoContainerRect);
             infoList.Add(infoWindow.GetComponent<ChoiceInfoWindow>());
             // trigger first slot's event
             slotList[0].TriggerEvent();
@@ -199,8 +199,11 @@ namespace ProjectGra
             infoContainerCurrentPreferredPosX = -((infoList.Count - 1) * (infoWindowWidth + infoWindowSpacing) + infoWindowWidth)/2;
             slotContainerCurrentPreferredPosX = -((slotList.Count - 1) * (slotWidth+ slotSpacing) + slotWidth)/2;
 
-            infoContainer.RePosition(infoContainerCurrentPreferredPosX);
-            slotContainer.RePosition(slotContainerCurrentPreferredPosX);
+            //infoContainerRect.RePosition(infoContainerCurrentPreferredPosX);
+            //slotContainerRect.RePosition(slotContainerCurrentPreferredPosX);
+            infoContainerRect.localPosition = new Vector3(infoContainerCurrentPreferredPosX, infoContainerRect.localPosition.y);
+            slotContainerRect.localPosition = new Vector3(slotContainerCurrentPreferredPosX, slotContainerRect.localPosition.y);
+
         }
 
 

@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 namespace ProjectGra
 {
-    public class NoticeContainer : MonoBehaviour
+    public class NoticeManager : MonoBehaviour
     {
         [SerializeField] Sprite hordeSprite;
         [SerializeField] Sprite eliteSprite;
         [SerializeField] TextMeshProUGUI warningText;
-        [SerializeField] List<SingleNotice> singleNoticeList;
+        [SerializeField] List<NoticeSingleUnit> singleNoticeList;
         List<int> noticeCodingWaveList;
         List<bool> noticeIsEliteList;
-        [SerializeField] Button TestButton;
-        [SerializeField] int testInt;
+        //[SerializeField] Button TestButton;
+        //[SerializeField] int testInt;
         int warningWave;
         //List<KeyValuePair<int,bool>> noticeList;
         private void Awake()
@@ -22,7 +22,7 @@ namespace ProjectGra
             noticeCodingWaveList = new List<int>(5);
             noticeIsEliteList = new List<bool>(5);
             //noticeList = new List<KeyValuePair<int,bool>>(5);
-            TestButton.onClick.AddListener(() => { UpdateNotice(testInt); }) ;
+            //TestButton.onClick.AddListener(() => { UpdateNotice(testInt); }) ;
             CanvasMonoSingleton.Instance.OnNewWaveBegin += UpdateNotice;
         }
         private void OnDestroy()
@@ -48,7 +48,9 @@ namespace ProjectGra
 
         public void UpdateNotice(int codingWave)
         {
+            // in order to go ahead of current wave
             ++codingWave;
+
             if(noticeCodingWaveList.Count == 0)
             {
                 Debug.Log("NoticeList.Count Equals to ZERO");
@@ -56,7 +58,7 @@ namespace ProjectGra
                 return;
             }
             // update the array with codingWave
-            if (noticeCodingWaveList[0] < codingWave)
+            while (noticeCodingWaveList.Count > 0 && noticeCodingWaveList[0] < codingWave)
             {
                 noticeIsEliteList.RemoveAt(0);
                 noticeCodingWaveList.RemoveAt(0);

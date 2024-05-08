@@ -17,7 +17,7 @@ namespace ProjectGra
         [Header("WeaponSlot")]
         [SerializeField] List<WeaponSlot> weaponSlotList;
         [Header("ShopItem")]
-        [SerializeField] List<ShopItem> shopItemList;
+        [SerializeField] List<ShopMerchandise> shopItemList;
         [SerializeField] TextMeshProUGUI shopMaterialCountText;
         [SerializeField] TextMeshProUGUI MainWeaponInfoText;
         [SerializeField] Button ShopContinueButton;
@@ -27,12 +27,12 @@ namespace ProjectGra
         [Header("Player Attribute")]
         [SerializeField] TextMeshProUGUI playerAttributeText;
 
-        private Dictionary<int, SingleGameItem> idxToItemSlotMap;
+        private Dictionary<int, GameItemSingleSlot> idxToItemSlotMap;
 
 
 
         private Vector3 tmpShopItemPosition; // for swap;
-        private ShopItem tmpShopItem;
+        private ShopMerchandise tmpShopItem;
         private void Awake()
         {
             Debug.LogWarning("Current reroll is adding player's material");
@@ -49,7 +49,7 @@ namespace ProjectGra
             {
                 weaponSlotList[i].Init(this);
             }
-            idxToItemSlotMap = new Dictionary<int, SingleGameItem>();
+            idxToItemSlotMap = new Dictionary<int, GameItemSingleSlot>();
         }
         private void OnDestroy()
         {
@@ -125,7 +125,7 @@ namespace ProjectGra
             //currentPrice to set item info, costMaterialCount to update player's material count;
             var item = Instantiate(gameItemPrefab, content);
             item.gameObject.transform.SetAsFirstSibling();
-            var itemSlotCom = item.GetComponent<SingleGameItem>();
+            var itemSlotCom = item.GetComponent<GameItemSingleSlot>();
             itemSlotCom.InitWithItemIdxAndLevel(itemIdx, itemLevel, basePrice);
             PlayerDataModel.Instance.AddMaterialValWith(-costMaterialCount);
             ModifyPlayerAttributeWithItem(itemIdx, true);
@@ -143,7 +143,7 @@ namespace ProjectGra
                 AddNewGameItem(itemIdx,itemLevel,basePrice,costMaterialCount);
             }
         }
-        public void RecycleGameItemWithCom(int itemIdx, int currentPrice, SingleGameItem itemSlotCom)
+        public void RecycleGameItemWithCom(int itemIdx, int currentPrice, GameItemSingleSlot itemSlotCom)
         {
             PlayerDataModel.Instance.AddMaterialValWith(currentPrice);
             var itemConfig = SOConfigSingleton.Instance.ItemSOList[itemIdx];
@@ -216,6 +216,13 @@ namespace ProjectGra
             CanvasMonoSingleton.Instance.ShowAndInitInfoWindowWithWeapon(slot.WeaponIdx, slot.WeaponLevel, slot.CurrentPrice,showCombine, combineSlotIdx, calledSlotIdx, slot.gameObject.transform.position);
         }
 
+        private void UpdateAllShopItemBuyState(int currentMaterialCount)
+        {
+            for (int i = 0, n = shopItemList.Count; i < n; ++i)
+            {
+                shopItemList[i].UpdateBuyButtonState(currentMaterialCount);
+            }
+        }
         private void UpdateAllShopItemBuyState()
         {
             for (int i = 0, n = shopItemList.Count; i < n; ++i)
@@ -233,7 +240,7 @@ namespace ProjectGra
                     weaponSlotList[i].CurrentPrice = currentprice;
                     weaponSlotList[i].InitSlot(weaponIdx, baseprice,weaponLevel);
                     PlayerDataModel.Instance.AddMaterialValWith(-currentprice);
-                    UpdateAllShopItemBuyState();
+                    //UpdateAllShopItemBuyState();
                     // Weapon Category Bonus Should change
                     //OnWeaponAddOrDelete?.Invoke(weaponIdx, true);
                     CanvasMonoSingleton.Instance.OnWeaponAddOrDelete(weaponIdx, true);
@@ -253,7 +260,7 @@ namespace ProjectGra
                 tmp.WeaponLevel++;
                 tmp.InitSlot();
                 PlayerDataModel.Instance.AddMaterialValWith(-currentprice);
-                UpdateAllShopItemBuyState();
+                //UpdateAllShopItemBuyState();
                 //UpdateMaterialCount();
                 return true;
             }
@@ -262,7 +269,7 @@ namespace ProjectGra
         private void UpdateMaterialCount(int count)
         {
             shopMaterialCountText.text = count.ToString();
-            UpdateAllShopItemBuyState();
+            UpdateAllShopItemBuyState(count);
         }
 
         private void SwapShopItem(int idx1, int idx2)

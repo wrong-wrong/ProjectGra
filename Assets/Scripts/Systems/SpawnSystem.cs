@@ -6,7 +6,7 @@ using Random = Unity.Mathematics.Random;
 namespace ProjectGra
 {
     [UpdateInGroup(typeof(MySysGrpUpdateAfterPhysicsSysGrp))]
-    public partial struct EnemySpawnSystem : ISystem, ISystemStartStop
+    public partial struct SpawnSystem : ISystem, ISystemStartStop
     {
         int _MaxEnemyBufferIdxExclusive;
         int _LastUpdateWave;

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Mathematics;
 //using UnityEngine.UIElements;
-public class ShopItem : MonoBehaviour
+public class ShopMerchandise : MonoBehaviour
 {
     static string lockedString = "(OvO)";
     static string unlockString = "Lock";
@@ -135,7 +135,7 @@ public class ShopItem : MonoBehaviour
         nameText.text = managedConfig.weaponNameMap[weaponIdx].ToString();
         //Setting Text
         var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
-        var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage())
+        var calculatedDamageAfterBonus = (int)((1 + PlayerDataModel.Instance.GetDamage()/100f)
             * (config.BasicDamage[contentLevel] + math.csum(config.DamageBonus * PlayerDataModel.Instance.GetDamageBonus())));
         var calculatedCritHitChance = PlayerDataModel.Instance.GetCritHitChance() + config.WeaponCriticalHitChance[contentLevel];
         var calculatedCooldown = config.Cooldown[contentLevel] * math.clamp(1 -PlayerDataModel.Instance.GetAttackSpeed(), 0.2f, 2f);

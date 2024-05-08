@@ -1,4 +1,3 @@
-using OOPExperiment;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -32,7 +31,7 @@ namespace ProjectGra
             attackPierceTagLookup = SystemAPI.GetComponentLookup<AttackPierce>(true);
             attackKnockBackTagLookup = SystemAPI.GetComponentLookup<AttackKnockBackTag>(true);
             attackExplosiveTagLookup = SystemAPI.GetComponentLookup<AttackExplosiveCom>(true);
-            entityKnockBackComLookup = SystemAPI.GetComponentLookup<EntityKnockBackCom>();  
+            entityKnockBackComLookup = SystemAPI.GetComponentLookup<EntityKnockBackCom>();
             entityHealthPointLookup = SystemAPI.GetComponentLookup<EntityHealthPoint>();
             entityStateMachineLookup = SystemAPI.GetComponentLookup<EntityStateMachine>();
             hitBufferLookup = SystemAPI.GetBufferLookup<HitBuffer>();
@@ -41,6 +40,7 @@ namespace ProjectGra
         }
         public void OnUpdate(ref SystemState state)
         {
+            state.Dependency.Complete();
             var simulationSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
             entityHealthPointLookup.Update(ref state);
             spawneeCurDamageLookup.Update(ref state);
@@ -50,10 +50,10 @@ namespace ProjectGra
             attackKnockBackTagLookup.Update(ref state);
             attackPierceTagLookup.Update(ref state);
             localTransformLookup.Update(ref state);
-            hitBufferLookup.Update(ref state); 
+            hitBufferLookup.Update(ref state);
             flashingComLookup.Update(ref state);
             attackCountLookup.Update(ref state);
-            var beginSimECB = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+            var endFixed = SystemAPI.GetSingleton<EndFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerTag>();
             var playerTransform = localTransformLookup[playerEntity];
             var normalSpawneeTriggerJob = new DetectNormalSpawneeTriggerJob
@@ -61,7 +61,7 @@ namespace ProjectGra
                 attackCountLookup = attackCountLookup,
                 PlayerEntity = playerEntity,
                 PlayerPosition = playerTransform.Position,
-                ecb = beginSimECB,
+                ecb = endFixed,
                 CurDamageLookup = spawneeCurDamageLookup,
                 EntityHealthPointLookup = entityHealthPointLookup,
                 EntityStateMachineLookup = entityStateMachineLookup,
@@ -74,14 +74,14 @@ namespace ProjectGra
                 posList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextWorldPosList,
                 disSqList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextDistanceSqList,
                 valList = EffectRequestSharedStaticBuffer.SharedValue.Data.PopupTextValueList,
-                
+
             };
             var pierceSpawneeTriggerJob = new DetectPierceSpawneeTriggerJob
             {
                 attackCountLookup = attackCountLookup,
                 PlayerEntity = playerEntity,
                 PlayerPosition = playerTransform.Position,
-                ecb = beginSimECB,
+                ecb = endFixed,
                 CurDamageLookup = spawneeCurDamageLookup,
                 EntityHealthPointLookup = entityHealthPointLookup,
                 EntityStateMachineLookup = entityStateMachineLookup,
@@ -103,7 +103,7 @@ namespace ProjectGra
             state.Dependency.Complete();
         }
     }
-    
+
     public struct DetectNormalSpawneeTriggerJob : ITriggerEventsJob
     {
         public ComponentLookup<PlayerSuccessfulAttackCount> attackCountLookup;
@@ -169,12 +169,12 @@ namespace ProjectGra
                 return;
             }
             //ecb.AppendToBuffer<PlayerDamagedRecordBuffer>(PlayerEntity, new PlayerDamagedRecordBuffer { Value = damage });
-            
+
             var refHP = EntityHealthPointLookup.GetRefRW(GetHitEntity);
             //Debug.Log("NormalSpawneeJob");
             if ((refHP.ValueRW.HealthPoint -= damage) <= 0)
             {
-                ecb.RemoveComponent<PhysicsCollider>(GetHitEntity);
+                //ecb.RemoveComponent<PhysicsCollider>(GetHitEntity);
                 //both way setting state machine works
                 //ecb.SetComponent(Enemy, new EntityStateMachine { CurrentState = EntityState.Dead });    
                 EntityStateMachineLookup.GetRefRW(GetHitEntity).ValueRW.CurrentState = EntityState.Dead;
@@ -220,14 +220,14 @@ namespace ProjectGra
             //EntityA tends to be spawnee
             Entity Spawnee = triggerEvent.EntityA;
             Entity GetHitEntity = triggerEvent.EntityB;
-            if (!AttackPierceLookup.TryGetComponent(Spawnee,out AttackPierce pierceCom)) return;
+            if (!AttackPierceLookup.TryGetComponent(Spawnee, out AttackPierce pierceCom)) return;
             //Debug.Log("Pierced Job Executing");
             HitBufferLookup.TryGetBuffer(Spawnee, out var hitBuffer);
             //Debug.Log(hitBuffer.Length);
             //if (hitBuffer.Length == 0) return;
-            for(int i = 0, n = hitBuffer.Length; i < n; i++)
+            for (int i = 0, n = hitBuffer.Length; i < n; i++)
             {
-                if (hitBuffer[i].HitEntity == GetHitEntity) {return; }
+                if (hitBuffer[i].HitEntity == GetHitEntity) { return; }
             }
             var spawneeLocalTransform = LocalTransformLookup[Spawnee];
 
@@ -244,11 +244,12 @@ namespace ProjectGra
             if (AttackExplosiveLookup.TryGetComponent(Spawnee, out var explosiveCom))
             {
                 var explosion = ecb.Instantiate(explosiveCom.ExplosionPrefab);
-                ecb.SetComponent<LocalTransform>(explosion, LocalTransformLookup[Spawnee]);
+                ecb.SetComponent<LocalTransform>(explosion, spawneeLocalTransform);
             }
             if (hitBuffer.Length + 1 >= pierceCom.MaxPierceCount)
             {
                 ecb.DestroyEntity(Spawnee);
+                return;
             }
             var damage = CurDamageLookup[Spawnee].damage;
             if (GetHitEntity == PlayerEntity)
@@ -271,7 +272,7 @@ namespace ProjectGra
             }
             else
             {
-                FlashingComLookup.SetComponentEnabled(GetHitEntity, true);  
+                FlashingComLookup.SetComponentEnabled(GetHitEntity, true);
             }
             attackCountLookup.GetRefRW(PlayerEntity).ValueRW.Value++;
 

@@ -111,6 +111,7 @@ namespace ProjectGra
         //    slotRect.localPosition = posAtPauseUI;
 
         //}
+
         public void ResetIcon()
         {
             iconTransform.localPosition = Vector3.zero;
@@ -126,6 +127,7 @@ namespace ProjectGra
             {
                 iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
                 bgImg.color = SOConfigSingleton.Instance.levelBgColor[WeaponLevel];
+                basePrice = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponBasePriceMap[WeaponIdx][WeaponLevel];
             }
         }
         public void InitSlot(int idx, int basePrice, int level = 0)

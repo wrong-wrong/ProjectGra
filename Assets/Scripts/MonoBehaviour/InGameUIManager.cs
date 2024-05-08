@@ -29,8 +29,8 @@ namespace ProjectGra
         private int currentPlayerLevel;
         private int lastTotalExp;
         private int currentExp;
-        private float countdownTimer;
-        private int lastCountdown;
+        [SerializeField]private float countdownTimer;
+        [SerializeField]private int lastCountdown;
         private bool updateCountdown;
         private void Awake()
         {
