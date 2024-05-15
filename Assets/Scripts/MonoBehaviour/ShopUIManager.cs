@@ -355,7 +355,7 @@ namespace ProjectGra
         }
         public void UpdateShopPlayerAttribute()
         {
-            Debug.Log("ShopUIManager - UpdateShopPlayerAttribute");
+            //Debug.Log("ShopUIManager - UpdateShopPlayerAttribute");
             var strBuilder = CanvasMonoSingleton.Instance.stringBuilder;
             for(int i = 0; i < 13; ++i)
             {

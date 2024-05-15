@@ -21,6 +21,7 @@ namespace ProjectGra
                 var wpNameMap = new Dictionary<int, string>();
                 var wpBasePriceMap = new Dictionary<int, int4>();
                 var wpColorMap = new Dictionary<int, Color>();
+                var wpIconSpriteMap = new Dictionary<int, Sprite>();
                 var wpCategoryMap = new Dictionary<int, List<int>>();
                 for (int i = 0, count = authoring.WeaponSOList.Count; i < count; ++i)
                 {
@@ -78,7 +79,7 @@ namespace ProjectGra
                             MeleeForwardSpeed = so.MeleeForwardSpeed
                         });
                     }
-
+                    wpIconSpriteMap[so.WeaponIndex] = so.IconSprite;
                     wpColorMap[so.WeaponIndex] = so.color;
                     wpNameMap[so.WeaponIndex] = so.WeaponName;
                     wpBasePriceMap[so.WeaponIndex] = so.BasePrice;
@@ -86,6 +87,7 @@ namespace ProjectGra
                 }
                 AddComponentObject<WeaponManagedAndMonoOnlyConfigCom>(entity, new WeaponManagedAndMonoOnlyConfigCom
                 {
+                    weaponIconSpriteMap = wpIconSpriteMap,
                     weaponNameMap = wpNameMap,
                     weaponBasePriceMap = wpBasePriceMap,
                     weaponColorInsteadOfIconMap = wpColorMap,
@@ -123,6 +125,7 @@ namespace ProjectGra
     }
     public class WeaponManagedAndMonoOnlyConfigCom : IComponentData
     {
+        public Dictionary<int, Sprite> weaponIconSpriteMap;
         public Dictionary<int, Color> weaponColorInsteadOfIconMap; 
         public Dictionary<int, string> weaponNameMap;
         public Dictionary<int, int4> weaponBasePriceMap;

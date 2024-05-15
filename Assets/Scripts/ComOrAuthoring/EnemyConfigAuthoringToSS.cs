@@ -102,11 +102,6 @@ namespace ProjectGra
         public float3 ScaleToSetInLaterThreeState;
         public float3 TimerToSetInLaterThreeState;
 
-
-        public void Reset()
-        {
-            Debug.Log("Unity function Reset called");
-        }
         public class Baker : Baker<EnemyConfigAuthoringToSS>
         {
             public override void Bake(EnemyConfigAuthoringToSS authoring)
@@ -114,7 +109,7 @@ namespace ProjectGra
                 var entity = GetEntity(TransformUsageFlags.None);
                 var buffer = AddBuffer<AllEnemyPrefabBuffer>(entity);
                 var SOList = authoring.EnemySOList;
-                Debug.Log("Baking SOList.Count : " + SOList.Count);
+                //Debug.Log("Baking SOList.Count : " + SOList.Count);
                 var waveNewEnemyBuffer = AddBuffer<WaveNewEnemyBuffer>(entity);
                 for (int i = 0; i < 20; ++i)
                 {
@@ -152,10 +147,10 @@ namespace ProjectGra
                     tmpStrArr[j + 1] = baseName;
                 }
 
-                for (int i = 0; i < SOList.Count; i++)
-                {
-                    Debug.Log(tmpStrArr[i] + " - Idx :" + i);
-                }
+                //for (int i = 0; i < SOList.Count; i++)
+                //{
+                //    Debug.Log(tmpStrArr[i] + " - Idx :" + i);
+                //}
 
 
                 //buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.NormalMeleePrefab, TransformUsageFlags.Dynamic) });
@@ -167,7 +162,7 @@ namespace ProjectGra
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteEggAndShootSO.EnemyPrefab, TransformUsageFlags.Dynamic) });
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteShooterSO.EnemyPrefab, TransformUsageFlags.Dynamic) });
                 buffer.Add(new AllEnemyPrefabBuffer { Prefab = GetEntity(authoring.EliteSprintAndShootSO.EnemyPrefab, TransformUsageFlags.Dynamic) });
-                Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
+                //Debug.Log("EnemyConfigAuthoring - PrefabBuffer.Length:" + buffer.Length);
 
                 EnemyBasicAttributeScriptableObjectConfig SO;
                 SO = SOList[0];

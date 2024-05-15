@@ -30,7 +30,7 @@ namespace ProjectGra
             playerSprintMultiplier = configCom.PlayerSprintMultiplierValue;
             CamXSensitivity = configCom.CamXSensitivity * mouseSensitivityModifier;
             var playerAttribute = SystemAPI.GetSingleton<PlayerAttributeMain>();
-            Debug.Log("Attribute related - Speed modified with percentage : " + (playerAttribute.SpeedPercentage + 1));
+            //Debug.Log("Attribute related - Speed modified with percentage : " + (playerAttribute.SpeedPercentage + 1));
             playerBasicSpeed = playerOriginalSpeed * (1 + playerAttribute.SpeedPercentage);
         }
         public void OnStopRunning(ref SystemState state) { }

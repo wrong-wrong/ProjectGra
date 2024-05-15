@@ -17,6 +17,7 @@ namespace ProjectGra
         public int4 BasePrice;
         //TODO : ImageIcon for Shop Display
         public Color color; // to temporarily replace Icon
+        public Sprite IconSprite;
 
         [Header("Common field")]
         public int WeaponIndex;

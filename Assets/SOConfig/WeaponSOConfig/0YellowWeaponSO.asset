@@ -23,8 +23,8 @@ MonoBehaviour:
     z: 3
     w: 4
   color: {r: 0.86274517, g: 0.48627454, b: 0.03137255, a: 1}
+  IconSprite: {fileID: 21300000, guid: 787447727f1d73b408c4248e5547e49e, type: 3}
   WeaponIndex: 0
-  WeaponLevel: 0
   WeaponModel: {fileID: 5069078350183642497, guid: c9d9bb21ae68e76469eeafedbb4142df,
     type: 3}
   SpawneePrefabs: {fileID: 1601605760723225021, guid: cb6fe829959919d4c8ba9a3d041702a0,

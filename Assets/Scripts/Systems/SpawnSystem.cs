@@ -95,13 +95,13 @@ namespace ProjectGra
                 {
                     _MaxEnemyBufferIdxExclusive += WaveNewEnemyBuffer[_LastUpdateWave].Value;
                 }
-                Debug.Log("EnemySpawnSystem - SpawnCooldown : " + sysData.ValueRO.spawningCooldown + " - PointSpawnChance : " + sysData.ValueRO.pointSpawnChance);
+                //Debug.Log("EnemySpawnSystem - SpawnCooldown : " + sysData.ValueRO.spawningCooldown + " - PointSpawnChance : " + sysData.ValueRO.pointSpawnChance);
                 groupSpawnCount = spawningConfig.GroupSpawnCount;
                 groupSpawnTimer = spawningConfig.GroupSpawnCooldown;
             }
             if (sysData.ValueRO.IsHordeOrElite)
             {
-                Debug.Log("SPECIAL WAVE");
+                //Debug.Log("SPECIAL WAVE");
                 if (groupSpawnCount < 0)
                 {
                     var ecb = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
@@ -118,10 +118,10 @@ namespace ProjectGra
                     groupSpawnTimer *= 0.8f;
                 }
             }
-            Debug.Log("EnemySpawnSystem - GroupSpawnCount: " + groupSpawnCount);
+            //Debug.Log("EnemySpawnSystem - GroupSpawnCount: " + groupSpawnCount);
 
-            Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
-            Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
+            //Debug.Log("EnemySpawnSystem  - MaxEnemyBufferIdx: " + _MaxEnemyBufferIdxExclusive);
+            //Debug.Log("EnemySpawnSystem  - _LashUpdateWave: " + _LastUpdateWave);
             //Debug.Log("EnemySpawnSystem start running"); 
         }
 

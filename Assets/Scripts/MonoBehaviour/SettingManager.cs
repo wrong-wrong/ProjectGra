@@ -35,8 +35,8 @@ namespace ProjectGra
         }
         public void OnBackButtonClicked()
         {
-            Debug.Log(audioVolumeSlider.value);
-            Debug.Log(sensitivitySlider.value);
+            //Debug.Log(audioVolumeSlider.value);
+            //Debug.Log(sensitivitySlider.value);
             CanvasMonoSingleton.Instance.HideSettingCanvasGroup();
         }
     }

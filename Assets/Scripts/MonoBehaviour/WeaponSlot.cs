@@ -120,12 +120,16 @@ namespace ProjectGra
         {
             if (WeaponIdx == -1)
             {
+                //iconImg.color = Color.black;
+                iconImg.sprite = null;
                 iconImg.color = Color.black;
                 bgImg.color = SOConfigSingleton.Instance.levelBgColor[0];
             }
             else
             {
-                iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
+                //iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[WeaponIdx];
+                iconImg.color = Color.white;
+                iconImg.sprite = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponIconSpriteMap[WeaponIdx];
                 bgImg.color = SOConfigSingleton.Instance.levelBgColor[WeaponLevel];
                 basePrice = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponBasePriceMap[WeaponIdx][WeaponLevel];
             }

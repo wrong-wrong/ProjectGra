@@ -100,12 +100,12 @@ namespace ProjectGra
                 config.DamageBonus.w *= 100f;
                 var calculatedDamageAfterBonus = math.max(1, (int)((1f + playerAttibute.DamagePercentage)
                     * (config.BasicDamage[weaponLevel[0]] + math.csum(config.DamageBonus * playerAttibute.MeleeRangedElementAttSpd))));
-                Debug.Log("Calculated Damage - " +  calculatedDamageAfterBonus);    
+                //Debug.Log("Calculated Damage - " +  calculatedDamageAfterBonus);    
                 var calculatedCritHitChance = playerAttibute.CriticalHitChance + config.WeaponCriticalHitChance[weaponLevel[0]];
                 
                 var calculatedCooldown = config.Cooldown[weaponLevel[0]] * cooldownModifier;
                 var calculatedRange = playerRange + config.Range[weaponLevel[0]];   //used to set spawnee's timer
-                Debug.Log("Attribute related - All Weapon Cooldown modified with : " + cooldownModifier);
+                //Debug.Log("Attribute related - All Weapon Cooldown modified with : " + cooldownModifier);
                 if (!config.IsMeleeWeapon) // Ranged Weapon
                 {
                     //using ecb or set directly
@@ -303,7 +303,7 @@ namespace ProjectGra
             };
             SystemAPI.SetComponent(state.SystemHandle, newSysData);
 
-            Debug.Log(newSysData.tmpWpIdx);
+            //Debug.Log(newSysData.tmpWpIdx);
             PopulateWeaponStateWithWeaponIdx(ref state, newSysData.tmpWpIdx, newSysData.tmpWpLevel);
             //CanvasMonoSingleton.Instance.HideShop();
             //CanvasMonoSingleton.Instance.ShowInGameUI();
@@ -317,7 +317,7 @@ namespace ProjectGra
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
             gameState.ValueRW.CurrentState = GameControllState.BeforeWave;
             timer = beginWaveTimeSet;
-            Debug.Log("InShop to BeforeWave!");
+            //Debug.Log("InShop to BeforeWave!");
 
             //set should enemy update
             var updateEnemyCom = SystemAPI.GetSingletonRW<GameControllShouldUpdateEnemy>();
@@ -338,7 +338,7 @@ namespace ProjectGra
 
             //set gamestate
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
-            Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
+            //Debug.Log("Pausing at state : " + gameState.ValueRW.CurrentState);
             gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
             gameState.ValueRW.CurrentState = GameControllState.InShop;
 
@@ -346,7 +346,7 @@ namespace ProjectGra
             //TODO maybe not necessary to setWeaponIdx When Pause,  if we set the weapon in initialize system, that's when we are able to select out role and init weapon
             //CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysData.tmpWpIdx, sysData.tmpWpLevel);
             CanvasMonoSingleton.Instance.ShowShopAndOtherUI(PlayerAttibuteCom, PlayerDamagedRelatedAttributeCom, 1, materialCount.Count);
-            Debug.Log("Using Test Fixed number for itemCount");
+            //Debug.Log("Using Test Fixed number for itemCount");
 
             //CanvasMonoSingleton.Instance.HideInGameUI();
 
@@ -359,7 +359,7 @@ namespace ProjectGra
 
             CanvasMonoSingleton.Instance.ShowPauseCanvasGroup(true);
             var gameState = SystemAPI.GetSingletonRW<GameStateCom>();
-            Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
+            //Debug.Log("Real Pausing at state : " + gameState.ValueRW.CurrentState);
             gameState.ValueRW.PreviousState = gameState.ValueRO.CurrentState;
             gameState.ValueRW.CurrentState = GameControllState.Paused;
 
@@ -393,7 +393,7 @@ namespace ProjectGra
                         gameState.ValueRW.PreviousState = GameControllState.BeforeWave;
                         gameState.ValueRW.CurrentState = GameControllState.InWave;
                         CanvasMonoSingleton.Instance.StartCountdownTimer(sysData.ValueRO.timer);
-                        Debug.Log("BeforeWave to InWave!");
+                        //Debug.Log("BeforeWave to InWave!");
                         state.EntityManager.AddComponent<GameControllInGame>(state.SystemHandle);
 
                     }
@@ -416,7 +416,7 @@ namespace ProjectGra
                         state.EntityManager.RemoveComponent<GameControllInGame>(state.SystemHandle);
                         state.EntityManager.AddComponent<GameControllWaveCleanup>(state.SystemHandle);
                         CanvasMonoSingleton.Instance.StopCountdown();
-                        Debug.Log("InWave to AfterWave!");
+                        //Debug.Log("InWave to AfterWave!");
 
                     }
                     if (Input.GetKeyUp(KeyCode.P))
@@ -437,12 +437,12 @@ namespace ProjectGra
                         {
                             gameState.ValueRW.CurrentState = GameControllState.Gameover;
                             gameState.ValueRW.PreviousState = GameControllState.AfterWave;
-                            Debug.Log("YOU WON");
+                            //Debug.Log("YOU WON");
                             return;
                         }
                         gameState.ValueRW.CurrentState = GameControllState.InShop;
                         EnterShopState(ref state);
-                        Debug.Log("AfterWave to InShop!");
+                        //Debug.Log("AfterWave to InShop!");
                     }
                     if (Input.GetKeyUp(KeyCode.P))
                     {
@@ -462,14 +462,14 @@ namespace ProjectGra
                     var sysDataCom = SystemAPI.GetSingleton<WaveControllSystemData>();
                     CanvasMonoSingleton.Instance.SetSlotWeaponIdxInShop(sysDataCom.tmpWpIdx, sysDataCom.tmpWpLevel);
                     CanvasMonoSingleton.Instance.StartCountdownTimer(beginWaveTimeSet);
-                    Debug.Log("Uninitialized to BeforeWave!");
+                    //Debug.Log("Uninitialized to BeforeWave!");
 
                     break;
                 case GameControllState.Paused:
                     if (Input.GetKeyUp(KeyCode.P))
                     {
                         Unpause(ref state);
-                        Debug.Log("Unpaused");
+                        //Debug.Log("Unpaused");
                         return;
                     }
                     // nothing happeds when setting clicked

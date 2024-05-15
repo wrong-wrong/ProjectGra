@@ -54,7 +54,7 @@ namespace ProjectGra
             postiveOne = new float2(1, 1);
             offsetMin = new float3(-8, 0, -8);
             offsetMax = new float3(8, 2, 8);
-            Debug.LogWarning("using fixed number in EliteEggAndShoot to get egg prefab");
+            //Debug.LogWarning("using fixed number in EliteEggAndShoot to get egg prefab");
         }
 
         public void OnStartRunning(ref SystemState state)

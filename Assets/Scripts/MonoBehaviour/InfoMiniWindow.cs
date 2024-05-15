@@ -107,7 +107,8 @@ namespace ProjectGra
             }
 
             var monoOnlyConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
-            Icon.sprite = null;
+            Icon.sprite = monoOnlyConfig.weaponIconSpriteMap[weaponIdx];
+
             NameText.text = monoOnlyConfig.weaponNameMap[weaponIdx];
             strBuilder.Append("Recycle (");
             strBuilder.Append(currentPrice);
@@ -228,7 +229,7 @@ namespace ProjectGra
 
             var monoOnlyConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
             this.currentPrice = currentPrice;
-            Icon.sprite = null;
+            Icon.sprite = monoOnlyConfig.weaponIconSpriteMap[weaponIdx];
             NameText.text = monoOnlyConfig.weaponNameMap[weaponIdx];
             strBuilder.Append("Recycle (");
             strBuilder.Append(currentPrice);
@@ -365,7 +366,7 @@ namespace ProjectGra
             RecycleText.text = strBuilder.ToString();
             strBuilder.Clear();
             //
-            Icon.color = Color.white;
+            //Icon.color = Color.white;
             Icon.sprite = currentItem.ItemSprite;
         }
         private void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, Vector3 showPos)
@@ -416,7 +417,7 @@ namespace ProjectGra
             RecycleText.text = strBuilder.ToString();
             strBuilder.Clear();
             //
-            Icon.color = Color.white;
+            //Icon.color = Color.white;
             Icon.sprite = currentItem.ItemSprite;
         }
         //public void InitInfoMimiWindowAndShowAtPositionWithItem(int itemIdx, int itemLevel, int currentPrice, GameObject itemSlot, Vector3 showPos)

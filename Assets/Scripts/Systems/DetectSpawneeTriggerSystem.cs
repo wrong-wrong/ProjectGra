@@ -138,7 +138,7 @@ namespace ProjectGra
             }
             else if (CurDamageLookup.HasComponent(triggerEvent.EntityB) && EntityHealthPointLookup.HasComponent(triggerEvent.EntityA))
             {
-                Debug.LogError("Rare Situation in DetectSpawneeTriggerSystem, not always that Spawnee is EntityA. This time, Spawnee is EntityB, Entity is EntityA");
+                //Debug.LogError("Rare Situation in DetectSpawneeTriggerSystem, not always that Spawnee is EntityA. This time, Spawnee is EntityB, Entity is EntityA");
                 Spawnee = triggerEvent.EntityB;
                 GetHitEntity = triggerEvent.EntityA;
             }

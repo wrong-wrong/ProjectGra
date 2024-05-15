@@ -154,7 +154,7 @@ namespace ProjectGra
                     case EntityState.MeleeAttack:
                         stateMachine.ValueRW.CurrentState = EntityState.Follow;
                         attack.ValueRW.AttackCooldown = cooldown;
-                        Debug.Log("Player attacked by normal melee");
+                        //Debug.Log("Player attacked by normal melee");
                         //playerHealthPoint.ValueRW.HealthPoint -= (int)(_Damage * transform.ValueRO.Scale);
                         ecb.AppendToBuffer<PlayerDamagedRecordBuffer>(playerEntity, new PlayerDamagedRecordBuffer { Value = (int)(_Damage * transform.ValueRO.Scale) });
                         break;

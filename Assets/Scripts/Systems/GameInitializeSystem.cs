@@ -39,11 +39,11 @@ namespace ProjectGra
                 {
                     if (weaponConfigBuffer.Length == 0)
                     {
-                        Debug.Log("weaponTypeList.Length is zero");
+                        //Debug.Log("weaponTypeList.Length is zero");
                     }
                     else
                     {
-                        Debug.Log("WeaponConfigInfoCom Count : " + weaponConfigBuffer.Length);
+                        //Debug.Log("WeaponConfigInfoCom Count : " + weaponConfigBuffer.Length);
                         var wpHashMp = new NativeHashMap<int, WeaponConfigInfoCom>(weaponConfigBuffer.Length, Allocator.Persistent);
                         for (int i = 0, n = weaponConfigBuffer.Length; i < n; i++)
                         {

@@ -125,10 +125,11 @@ public class ShopMerchandise : MonoBehaviour
 
         contentLevel = SOConfigSingleton.Instance.GetRandomLevel(); // should pass in player's level;
         var config = SOConfigSingleton.Instance.GetRandomWeaponConfig(); // should pass in player's level;
-        icon.sprite = null;
+        //icon.sprite = null;
         isMeleeWp = config.IsMeleeWeapon;
         weaponIdx = config.WeaponIndex;
         var managedConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
+        icon.sprite = managedConfig.weaponIconSpriteMap[weaponIdx];
         basePrice = managedConfig.weaponBasePriceMap[weaponIdx][contentLevel];
         currentPrice = CanvasMonoSingleton.Instance.CalculateFinalPrice(basePrice);
         priceText.text = currentPrice.ToString();
@@ -205,7 +206,7 @@ public class ShopMerchandise : MonoBehaviour
             }
             else
             {
-                Debug.Log("No empty slot!!!");
+                //Debug.Log("No empty slot!!!");
             }
         }
         else

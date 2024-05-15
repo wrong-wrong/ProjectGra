@@ -619,6 +619,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyPrefab-NormalSprint
       objectReference: {fileID: 0}
+    - target: {fileID: 7729229364226617895, guid: 958eeb8e711c66b449beb217fb811b89,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -726,6 +731,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemyPrefab-NormalRanged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4558332914012663045, guid: 4e472d916b3157a48945b8eb855d2d8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7854184295829290718, guid: 4e472d916b3157a48945b8eb855d2d8b,
         type: 3}
@@ -844,6 +854,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EnemySummoner
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459702177960271996, guid: 5a5368a97aba921419cf8891b22bebf8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1493,6 +1508,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EliteEggAndShootModel
+      objectReference: {fileID: 0}
+    - target: {fileID: 6137897146074687371, guid: 9c94ef48d6b3c4048a8fcd46172b4930,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -23,6 +23,7 @@ MonoBehaviour:
     z: 61
     w: 122
   color: {r: 0.98823535, g: 0.1764706, b: 0.25882354, a: 1}
+  IconSprite: {fileID: 21300000, guid: c69979c4fe379d54c93e1669a3d75d3d, type: 3}
   WeaponIndex: 5
   WeaponModel: {fileID: 5069078350183642497, guid: 6236b3f27bd71cc46b3266884d53cdd7,
     type: 3}

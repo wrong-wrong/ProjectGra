@@ -64,7 +64,7 @@ namespace ProjectGra
             normalInfoText.text = null;
 
             var managedConfig = SOConfigSingleton.Instance.WeaponManagedConfigCom;
-            iconImg.sprite = null;
+            iconImg.sprite = managedConfig.weaponIconSpriteMap[idx];
             nameText.text = managedConfig.weaponNameMap[idx];
             typeText.text = weaponTypeStr;
 

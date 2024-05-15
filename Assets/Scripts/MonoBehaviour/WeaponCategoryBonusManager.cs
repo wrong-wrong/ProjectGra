@@ -8,7 +8,7 @@ namespace ProjectGra
         [SerializeField]private List<int> CategoryCount;
         public void Start()
         {
-            Debug.Log("WeaponCategoryManager - Start");
+            //Debug.Log("WeaponCategoryManager - Start");
             CanvasMonoSingleton.Instance.OnWeaponAddOrDeleteAction += ModifyWeaponCategoryBonus;
             CategoryCount = new List<int>(SOConfigSingleton.Instance.WeaponCategorySOList.Count);
             for(int i = 0; i < CategoryCount.Capacity; i++)

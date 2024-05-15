@@ -29,8 +29,8 @@ namespace ProjectGra
                     iconImg.sprite = SOConfigSingleton.Instance.CharacterPresetSOList[Idx].CharacterSprite;
                     break;
                 case ChoiceSlotType.Weapon:
-                    iconImg.sprite = null;
-                    iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[Idx];
+                    iconImg.sprite = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponIconSpriteMap[Idx];
+                    //iconImg.color = SOConfigSingleton.Instance.WeaponManagedConfigCom.weaponColorInsteadOfIconMap[Idx];
                     break;
                 case ChoiceSlotType.Difficulty:
                     iconImg.sprite = SOConfigSingleton.Instance.DifficultySpriteList[Idx];

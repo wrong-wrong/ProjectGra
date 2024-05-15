@@ -55,7 +55,7 @@ namespace ProjectGra
             }
             //Debug.Log(audioEnumToClipList.Keys.ToString());
             //Debug.Log(audioEnumToClipList.Values.ToString());
-            Debug.LogWarning("Using Play() to play default particle, play particle related to the particle enum");
+            //Debug.LogWarning("Using Play() to play default particle, play particle related to the particle enum");
             this.enabled = false;
 
         }

@@ -53,7 +53,7 @@ namespace ProjectGra
 
             if(noticeCodingWaveList.Count == 0)
             {
-                Debug.Log("NoticeList.Count Equals to ZERO");
+                //Debug.Log("NoticeList.Count Equals to ZERO");
                 HideAll();
                 return;
             }
